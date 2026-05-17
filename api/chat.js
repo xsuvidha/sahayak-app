@@ -9,14 +9,22 @@ export default async function handler(req, res) {
   try {
     const { messages, system } = req.body;
 
+    const apiKey = process.env.GEMINI_API_KEY;
+
+    // Check if key exists
+    if (!apiKey) {
+      return res.status(200).json({
+        content: [{ type: 'text', text: 'DEBUG: GEMINI_API_KEY not found in environment!' }]
+      });
+    }
+
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+
     // Convert messages to Gemini format
     const geminiMessages = messages.map(m => ({
       role: m.role === 'assistant' ? 'model' : 'user',
       parts: [{ text: m.content }]
     }));
-
-    const apiKey = process.env.GEMINI_API_KEY;
-    const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
     const response = await fetch(url, {
       method: 'POST',
@@ -35,7 +43,13 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
-    // Convert Gemini response to Anthropic-like format for frontend compatibility
+    // If Gemini returned an error, show it
+    if (data.error) {
+      return res.status(200).json({
+        content: [{ type: 'text', text: `DEBUG Error: ${data.error.message}` }]
+      });
+    }
+
     const text = data?.candidates?.[0]?.content?.parts?.[0]?.text || 'कृपया पुनः प्रयास करें।';
 
     return res.status(200).json({
@@ -43,8 +57,8 @@ export default async function handler(req, res) {
     });
 
   } catch (error) {
-    return res.status(500).json({ 
-      content: [{ type: 'text', text: 'नेटवर्क त्रुटि। कृपया पुनः प्रयास करें।' }]
+    return res.status(200).json({
+      content: [{ type: 'text', text: `DEBUG Catch: ${error.message}` }]
     });
   }
 }
