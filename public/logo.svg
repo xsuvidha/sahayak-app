@@ -1,57 +1,134 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="400" height="400">
   <defs>
-    <linearGradient id="bg" x1="0%" y1="100%" x2="100%" y2="0%">
-      <stop offset="0%" style="stop-color:#f39c12"/>
-      <stop offset="50%" style="stop-color:#e74c3c"/>
-      <stop offset="100%" style="stop-color:#8e44ad"/>
+    <linearGradient id="bgGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#e67e00"/>
+      <stop offset="45%" style="stop-color:#c0392b"/>
+      <stop offset="100%" style="stop-color:#5b2c6f"/>
     </linearGradient>
-    <linearGradient id="shine" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:rgba(255,255,255,0.3)"/>
-      <stop offset="100%" style="stop-color:rgba(255,255,255,0)"/>
+    <radialGradient id="innerGlow" cx="50%" cy="30%" r="60%">
+      <stop offset="0%" style="stop-color:rgba(255,255,255,0.2)"/>
+      <stop offset="100%" style="stop-color:rgba(0,0,0,0)"/>
+    </radialGradient>
+    <linearGradient id="goldText" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ffe44d"/>
+      <stop offset="40%" style="stop-color:#ffffff"/>
+      <stop offset="100%" style="stop-color:#ffe44d"/>
     </linearGradient>
-    <clipPath id="squircle">
-      <path d="M50 2 C22 2 2 22 2 50 C2 78 22 98 50 98 C78 98 98 78 98 50 C98 22 78 2 50 2 Z"/>
+    <linearGradient id="turbanGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ff9900"/>
+      <stop offset="50%" style="stop-color:#ffffff"/>
+      <stop offset="100%" style="stop-color:#138808"/>
+    </linearGradient>
+    <radialGradient id="faceGrad" cx="45%" cy="38%" r="65%">
+      <stop offset="0%" style="stop-color:#1e1e5e"/>
+      <stop offset="100%" style="stop-color:#080820"/>
+    </radialGradient>
+    <filter id="softShadow">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="2" flood-color="rgba(0,0,0,0.5)"/>
+    </filter>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="1.2" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="textGlow">
+      <feGaussianBlur stdDeviation="0.8" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <clipPath id="clip">
+      <path d="M50,2 C75,2 98,25 98,50 C98,75 75,98 50,98 C25,98 2,75 2,50 C2,25 25,2 50,2Z"/>
     </clipPath>
   </defs>
 
-  <!-- Instagram-style squircle background -->
-  <path d="M50 2 C22 2 2 22 2 50 C2 78 22 98 50 98 C78 98 98 78 98 50 C98 22 78 2 50 2 Z" fill="url(#bg)"/>
+  <!-- Drop shadow behind squircle -->
+  <path d="M50,4 C74,4 96,26 96,50 C96,74 74,96 50,96 C26,96 4,74 4,50 C4,26 26,4 50,4Z"
+    fill="rgba(0,0,0,0.4)" transform="translate(1.5,2.5)"/>
 
-  <!-- Shine overlay -->
-  <path d="M50 2 C22 2 2 22 2 50 C2 78 22 98 50 98 C78 98 98 78 98 50 C98 22 78 2 50 2 Z" fill="url(#shine)"/>
+  <!-- Squircle background -->
+  <path d="M50,2 C75,2 98,25 98,50 C98,75 75,98 50,98 C25,98 2,75 2,50 C2,25 25,2 50,2Z"
+    fill="url(#bgGrad)"/>
+  <path d="M50,2 C75,2 98,25 98,50 C98,75 75,98 50,98 C25,98 2,75 2,50 C2,25 25,2 50,2Z"
+    fill="url(#innerGlow)"/>
 
-  <!-- Tricolor strip at top -->
-  <rect x="2" y="2" width="32" height="8" fill="#ff9900" rx="8" ry="0" clip-path="url(#squircle)"/>
-  <rect x="34" y="2" width="32" height="8" fill="#ffffff" clip-path="url(#squircle)"/>
-  <rect x="66" y="2" width="32" height="8" fill="#138808" rx="0" ry="8" clip-path="url(#squircle)"/>
+  <!-- Tricolor top strip -->
+  <g clip-path="url(#clip)">
+    <rect x="2" y="2" width="32" height="6.5" fill="#ff9900"/>
+    <rect x="34" y="2" width="32" height="6.5" fill="white"/>
+    <rect x="66" y="2" width="32" height="6.5" fill="#138808"/>
+  </g>
+
+  <!-- Outer glow ring -->
+  <path d="M50,2 C75,2 98,25 98,50 C98,75 75,98 50,98 C25,98 2,75 2,50 C2,25 25,2 50,2Z"
+    fill="none" stroke="rgba(255,220,100,0.2)" stroke-width="1.2"/>
 
   <!-- Headphone arc -->
-  <path d="M25 50 C25 35 35 25 50 25 C65 25 75 35 75 50" fill="none" stroke="white" stroke-width="5" stroke-linecap="round"/>
+  <path d="M21 51 C21 32 33 19 50 19 C67 19 79 32 79 51"
+    fill="none" stroke="white" stroke-width="5"
+    stroke-linecap="round" filter="url(#glow)"/>
 
-  <!-- Left ear cup -->
-  <rect x="19" y="48" width="10" height="14" rx="5" fill="white"/>
+  <!-- Ear cups -->
+  <rect x="14" y="49" width="12" height="17" rx="6" fill="white" filter="url(#softShadow)"/>
+  <rect x="16.5" y="52" width="7" height="11" rx="3.5" fill="rgba(255,180,60,0.35)"/>
+  <rect x="74" y="49" width="12" height="17" rx="6" fill="white" filter="url(#softShadow)"/>
+  <rect x="76.5" y="52" width="7" height="11" rx="3.5" fill="rgba(255,180,60,0.35)"/>
 
-  <!-- Right ear cup -->
-  <rect x="71" y="48" width="10" height="14" rx="5" fill="white"/>
+  <!-- Turban - 3 elegant layers -->
+  <ellipse cx="50" cy="29" rx="16" ry="7.5" fill="#0e6600" opacity="0.85"/>
+  <ellipse cx="50" cy="27" rx="13" ry="6" fill="url(#turbanGrad)"/>
+  <ellipse cx="50" cy="25.5" rx="9" ry="4.8" fill="white" opacity="0.95"/>
+  <!-- Turban knot -->
+  <ellipse cx="50" cy="24" rx="4.5" ry="3.2" fill="#ff9900"/>
+  <circle cx="50" cy="23.5" r="2" fill="#ffe066" filter="url(#glow)"/>
 
-  <!-- Turban -->
-  <ellipse cx="50" cy="36" rx="13" ry="6" fill="#138808"/>
-  <ellipse cx="50" cy="34" rx="10" ry="5" fill="#ff9900"/>
-  <ellipse cx="50" cy="32" rx="7" ry="4" fill="white"/>
+  <!-- Face -->
+  <circle cx="50" cy="53" r="17" fill="url(#faceGrad)" filter="url(#softShadow)"/>
+  <circle cx="50" cy="53" r="16.5" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="0.7"/>
 
-  <!-- Face circle -->
-  <circle cx="50" cy="52" r="14" fill="#1a1a3e"/>
-
-  <!-- Smile -->
-  <path d="M43 55 Q50 62 57 55" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  <!-- Eyebrows -->
+  <path d="M42 47.5 Q44.5 46 47 47.5" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.2" stroke-linecap="round"/>
+  <path d="M53 47.5 Q55.5 46 58 47.5" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="1.2" stroke-linecap="round"/>
 
   <!-- Eyes -->
-  <circle cx="45" cy="50" r="2" fill="white"/>
-  <circle cx="55" cy="50" r="2" fill="white"/>
+  <ellipse cx="44.5" cy="51" rx="2.8" ry="3" fill="white"/>
+  <ellipse cx="55.5" cy="51" rx="2.8" ry="3" fill="white"/>
+  <circle cx="44.8" cy="51.5" r="1.5" fill="#050520"/>
+  <circle cx="55.8" cy="51.5" r="1.5" fill="#050520"/>
+  <!-- Eye sparkle -->
+  <circle cx="45.5" cy="50.5" r="0.6" fill="white"/>
+  <circle cx="56.5" cy="50.5" r="0.6" fill="white"/>
 
-  <!-- Mic dot -->
-  <circle cx="50" cy="68" r="3" fill="#f39c12"/>
+  <!-- Smile -->
+  <path d="M43.5 57 Q50 64 56.5 57"
+    fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
 
-  <!-- "स" text -->
-  <text x="50" y="90" font-family="serif" font-size="11" font-weight="900" fill="white" text-anchor="middle" opacity="0.9">सहायक</text>
+  <!-- Cheeks -->
+  <ellipse cx="41.5" cy="58" rx="4" ry="2.2" fill="rgba(255,80,80,0.22)"/>
+  <ellipse cx="58.5" cy="58" rx="4" ry="2.2" fill="rgba(255,80,80,0.22)"/>
+
+  <!-- Mic boom -->
+  <path d="M63 63 Q69 67 69 72" fill="none" stroke="rgba(255,255,255,0.75)"
+    stroke-width="2" stroke-linecap="round"/>
+  <circle cx="69" cy="74.5" r="3.5" fill="#f39c12" filter="url(#glow)"/>
+  <circle cx="69" cy="74.5" r="2" fill="#ffe066"/>
+
+  <!-- ══ BIG SAHAYAK TEXT ══ -->
+  <!-- Dark backdrop for contrast -->
+  <rect x="8" y="83" width="84" height="13" rx="4" fill="rgba(0,0,0,0.45)"/>
+
+  <!-- Main text - BIG and BOLD -->
+  <text x="50" y="92.5"
+    font-family="'Noto Sans Devanagari', 'Mangal', serif"
+    font-size="13"
+    font-weight="900"
+    fill="url(#goldText)"
+    text-anchor="middle"
+    letter-spacing="1"
+    filter="url(#textGlow)">सहायक</text>
+
+  <!-- Sparkles -->
+  <circle cx="18" cy="20" r="1.2" fill="rgba(255,255,255,0.55)"/>
+  <circle cx="82" cy="20" r="1.2" fill="rgba(255,255,255,0.55)"/>
+  <circle cx="12" cy="50" r="0.8" fill="rgba(255,210,80,0.7)"/>
+  <circle cx="88" cy="50" r="0.8" fill="rgba(255,210,80,0.7)"/>
+  <circle cx="18" cy="78" r="0.8" fill="rgba(255,255,255,0.35)"/>
+  <circle cx="82" cy="78" r="0.8" fill="rgba(255,255,255,0.35)"/>
 </svg>
