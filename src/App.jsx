@@ -242,9 +242,9 @@ export default function SahayakV5(){
     setMessages(updated); setLoading(true);
     try{
       const sysPrompt=agent.isSolar?`${SOLAR_PROMPT}\n\n${langInstruction(lang)}`:`${BASE_PROMPT(agent.domain)}\n\n${langInstruction(lang)}`;
-      const res=await fetch("https://api.anthropic.com/v1/messages",{
+      const res=await fetch("/api/chat",{
         method:"POST",headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,system:sysPrompt,messages:updated.map(m=>({role:m.role,content:m.content}))})
+        body:JSON.stringify({system:sysPrompt,messages:updated.map(m=>({role:m.role,content:m.content}))})
       });
       const data=await res.json();
       const reply=data.content?.map(c=>c.text||"").join("")||"कृपया पुनः प्रयास करें।";
