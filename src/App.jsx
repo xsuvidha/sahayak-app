@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 
-const LOGO = "/logo.jpg";
+const LOGO = "/logo.svg?v=3";
 const WA = "https://wa.me/918115776644";
 const CONTACT = "+918115776644";
 
@@ -183,7 +183,7 @@ export default function Sahayak() {
 
   useEffect(function() {
     var u = msgs.filter(function(m){return m.role==="user";}).length;
-    if (u >= 3 && !showLead) setShowLead(true);
+    if (u >= 7 && !showLead) setShowLead(true);
     if (agent && agent.solar && u === 1 && !showCalc) setShowCalc(true);
   }, [msgs]);
 
@@ -226,7 +226,7 @@ export default function Sahayak() {
 
   if (screen === "home") return (
     <div style={{minHeight:"100vh",fontFamily:"'Noto Sans Devanagari','Segoe UI',sans-serif",background:"#080810",color:"#fff",display:"flex",flexDirection:"column"}}>
-      <div style={{padding:"13px 16px",display:"flex",alignItems:"center",justifyContent:"space-between",borderBottom:"1px solid rgba(255,255,255,0.05)"}}>
+      <div style={{padding:"13px 16px",display:"flex",alignItems:"center",justifyContent:"space-between",borderBottom:"1px solid rgba(255,255,255,0.03)"}}>
         <div style={{display:"flex",alignItems:"center",gap:10}}>
           <img src={LOGO} alt="SAHAYAK" onError={function(e){e.target.style.display="none";}} style={{width:44,height:44,borderRadius:11,objectFit:"cover",boxShadow:"0 0 20px rgba(255,153,0,0.25)"}}/>
           <div>
@@ -290,7 +290,7 @@ export default function Sahayak() {
   var starters = agent.starters[isH ? "hi" : "en"];
   return (
     <div style={{minHeight:"100vh",fontFamily:"'Noto Sans Devanagari','Segoe UI',sans-serif",background:"#080810",color:"#fff",display:"flex",flexDirection:"column"}}>
-      <div style={{padding:"9px 13px",display:"flex",alignItems:"center",gap:9,background:"rgba(8,8,16,0.9)",borderBottom:"1px solid rgba(255,255,255,0.05)",position:"sticky",top:0,zIndex:10}}>
+      <div style={{padding:"9px 13px",display:"flex",alignItems:"center",gap:9,background:"rgba(8,8,16,0.9)",borderBottom:"1px solid rgba(255,255,255,0.03)",position:"sticky",top:0,zIndex:10}}>
         <button onClick={function(){setScreen("home");stopSpeak();setSpeaking(null);}} style={{background:"none",border:"none",color:"rgba(255,255,255,0.55)",fontSize:20,cursor:"pointer",padding:0,lineHeight:1}}>{"<"}</button>
         <img src={LOGO} alt="s" onError={function(e){e.target.style.display="none";}} style={{width:36,height:36,borderRadius:9,objectFit:"cover"}}/>
         <div style={{flex:1}}>
@@ -335,7 +335,7 @@ export default function Sahayak() {
         {loading && (
           <div style={{display:"flex",alignItems:"flex-end",gap:7}}>
             <img src={LOGO} alt="s" onError={function(e){e.target.style.display="none";}} style={{width:28,height:28,borderRadius:"50%",objectFit:"cover",flexShrink:0}}/>
-            <div style={{background:"rgba(255,255,255,0.055)",borderRadius:"18px 18px 18px 4px",padding:"11px 15px",display:"flex",gap:4,border:"1px solid rgba(255,255,255,0.07)"}}>
+            <div style={{background:"rgba(255,255,255,0.055)",borderRadius:"18px 18px 18px 4px",padding:"11px 15px",display:"flex",gap:4,border:"1px solid rgba(255,255,255,0.04)"}}>
               {[0,1,2].map(function(i){return <div key={i} style={{width:6,height:6,borderRadius:"50%",background:agent.color,animation:"bounce 1.2s " + (i*0.2) + "s infinite"}}/>;})}
             </div>
           </div>
@@ -343,7 +343,7 @@ export default function Sahayak() {
         <div ref={endRef}/>
       </div>
 
-      <div style={{padding:"9px 13px 13px",background:"rgba(8,8,16,0.9)",borderTop:"1px solid rgba(255,255,255,0.05)"}}>
+      <div style={{padding:"9px 13px 13px",background:"rgba(8,8,16,0.9)",borderTop:"1px solid rgba(255,255,255,0.03)"}}>
         <div style={{display:"flex",gap:7,alignItems:"flex-end"}}>
           <textarea value={input} onChange={function(e){setInput(e.target.value);}}
             onKeyDown={function(e){if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send();}}}
