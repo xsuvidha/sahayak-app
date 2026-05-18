@@ -156,7 +156,8 @@ RESPONSE STYLE:
 - Use simple Indian examples: compare insurance premium to "chai ka kharcha", SIP to "piggy bank", etc.
 - Give specific numbers, not vague answers.
 - Format: 2-3 short paragraphs max. Use bullet points for lists.
-- Speak like a trusted elder brother/sister explaining finances.
+- Speak like a trusted elder brother explaining finances — confident, warm, direct male tone.
+- In Hindi responses, use masculine form: "main batata hoon", "samjhata hoon" etc.
 - NEVER mention any phone number. After 7 exchanges, user will see a WhatsApp button automatically.
 - Do NOT say "feel free to ask" or similar filler phrases.
 
@@ -403,9 +404,18 @@ export default function Sahayak() {
     window.speechSynthesis.cancel();
     const clean = text.replace(/[*#_]/g, "").replace(/[\u0060]/g, "").trim();
     const utt = new SpeechSynthesisUtterance(clean);
-    utt.lang = lang === "english" ? "en-IN" : "hi-IN";
+    const targetLang = lang === "english" ? "en-IN" : "hi-IN";
+    utt.lang = targetLang;
+    // Try to find male voice for gender sync with agent
+    const voices = window.speechSynthesis.getVoices();
+    const maleVoice = voices.find(v =>
+      v.lang.startsWith(lang === "english" ? "en" : "hi") &&
+      (v.name.toLowerCase().includes("male") || v.name.toLowerCase().includes("man") || v.name.toLowerCase().includes("rajan") || v.name.toLowerCase().includes("hemant"))
+    ) || voices.find(v => v.lang.startsWith(lang === "english" ? "en" : "hi"));
+    if (maleVoice) utt.voice = maleVoice;
     utt.rate = 0.88;
-    utt.pitch = 1;
+    utt.pitch = 0.85; // Slightly lower pitch = more masculine
+    utt.volume = 1;
     utt.onend = () => setSpeaking(null);
     utt.onerror = () => setSpeaking(null);
     setSpeaking(idx);
@@ -607,12 +617,31 @@ export default function Sahayak() {
                 {renderText(msg.content)}
               </div>
               {msg.role==="assistant" && (
-                <button onClick={() => handleSpeak(msg.content, i)} style={{ marginTop:4, display:"flex", alignItems:"center", gap:5, background:"none", border:"none", cursor:"pointer", padding:"3px 6px", fontFamily:"inherit", borderRadius:20, transition:"all 0.15s",
-                  color: speaking===i ? agent.color : "rgba(255,255,255,0.3)",
-                  background: speaking===i ? `${agent.color}15` : "transparent",
+                <button onClick={() => handleSpeak(msg.content, i)} style={{
+                  marginTop:5, display:"flex", alignItems:"center", gap:5,
+                  border:"none", cursor:"pointer", fontFamily:"inherit",
+                  borderRadius:22, padding:"5px 12px 5px 8px",
+                  background: speaking===i
+                    ? `linear-gradient(135deg, ${agent.color}, ${agent.color}99)`
+                    : "linear-gradient(145deg,rgba(255,255,255,0.09),rgba(255,255,255,0.03))",
+                  boxShadow: speaking===i
+                    ? `0 4px 15px ${agent.glow}, 0 2px 4px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.2)`
+                    : "0 3px 8px rgba(0,0,0,0.3), 0 1px 2px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08)",
+                  transform: speaking===i ? "translateY(1px)" : "translateY(0)",
+                  border: speaking===i ? "none" : "1px solid rgba(255,255,255,0.08)",
+                  transition:"all 0.18s",
+                  color:"#fff",
                 }}>
-                  <span style={{ fontSize:16 }}>{speaking===i?"⏸":"▶️"}</span>
-                  <span style={{ fontSize:11, fontWeight:600 }}>{speaking===i ? t.stop : t.listen}</span>
+                  <span style={{
+                    width:22, height:22, borderRadius:"50%",
+                    background: speaking===i ? "rgba(255,255,255,0.2)" : `${agent.color}33`,
+                    display:"flex", alignItems:"center", justifyContent:"center",
+                    fontSize:12, flexShrink:0,
+                    boxShadow: "inset 0 1px 2px rgba(0,0,0,0.3)",
+                  }}>{speaking===i?"⏸":"▶"}</span>
+                  <span style={{ fontSize:11, fontWeight:700, letterSpacing:0.3, color: speaking===i ? "#fff" : "rgba(255,255,255,0.55)" }}>
+                    {speaking===i ? t.stop : t.listen}
+                  </span>
                 </button>
               )}
             </div>
@@ -639,8 +668,22 @@ export default function Sahayak() {
       <div style={{ padding:"9px 13px 13px", background:"rgba(10,10,15,0.92)", backdropFilter:"blur(16px)", borderTop:"1px solid rgba(255,255,255,0.04)" }}>
         <div style={{ display:"flex", gap:7, alignItems:"flex-end" }}>
 
-          {/* Mic Button */}
-          <button onClick={startVoice} style={{ width:42, height:42, borderRadius:12, flexShrink:0, background:isListening?"rgba(239,68,68,0.2)":"rgba(255,255,255,0.05)", border:isListening?"1px solid rgba(239,68,68,0.5)":"1px solid rgba(255,255,255,0.08)", cursor:"pointer", color:isListening?"#ef4444":"rgba(255,255,255,0.4)", fontSize:18, display:"flex", alignItems:"center", justifyContent:"center", transition:"all 0.2s", animation:isListening?"pulse 1s infinite":"none" }}>
+          {/* Mic Button - 3D */}
+          <button onClick={startVoice} style={{
+            width:44, height:44, borderRadius:14, flexShrink:0,
+            background: isListening
+              ? "linear-gradient(145deg,#ef4444,#b91c1c)"
+              : "linear-gradient(145deg,#374151,#1f2937)",
+            border: isListening ? "1px solid rgba(239,68,68,0.6)" : "1px solid rgba(255,255,255,0.1)",
+            cursor:"pointer", fontSize:18,
+            display:"flex", alignItems:"center", justifyContent:"center",
+            transition:"all 0.2s",
+            animation: isListening ? "pulse 1s infinite" : "none",
+            boxShadow: isListening
+              ? "0 4px 20px rgba(239,68,68,0.5), 0 2px 4px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.15)"
+              : "0 4px 12px rgba(0,0,0,0.4), 0 2px 4px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.08)",
+            transform: isListening ? "translateY(1px) scale(0.97)" : "translateY(0) scale(1)",
+          }}>
             🎤
           </button>
 
@@ -651,7 +694,31 @@ export default function Sahayak() {
             onFocus={e => e.target.style.borderColor=`${agent.color}60`}
             onBlur={e => e.target.style.borderColor=`${agent.color}25`}/>
 
-          <button onClick={() => send()} disabled={!input.trim()||loading} style={{ width:42, height:42, borderRadius:12, flexShrink:0, background:input.trim()&&!loading?`linear-gradient(${agent.grad})`:"rgba(255,255,255,0.05)", border:"none", cursor:input.trim()&&!loading?"pointer":"not-allowed", color:"#fff", fontSize:18, display:"flex", alignItems:"center", justifyContent:"center", transition:"all 0.2s", boxShadow:input.trim()&&!loading?`0 3px 12px ${agent.glow}`:"none" }}>→</button>
+          {/* Instagram-style Send Button */}
+          <button onClick={() => send()} disabled={!input.trim()||loading} style={{
+            width:44, height:44, borderRadius:"50%", flexShrink:0,
+            background: input.trim()&&!loading
+              ? "linear-gradient(145deg,#0ea5e9,#2563eb,#4f46e5)"
+              : "linear-gradient(145deg,#1e293b,#0f172a)",
+            border: input.trim()&&!loading
+              ? "1px solid rgba(99,102,241,0.5)"
+              : "1px solid rgba(255,255,255,0.06)",
+            cursor: input.trim()&&!loading ? "pointer" : "not-allowed",
+            color:"#fff", display:"flex", alignItems:"center", justifyContent:"center",
+            transition:"all 0.2s",
+            boxShadow: input.trim()&&!loading
+              ? "0 4px 20px rgba(79,70,229,0.5), 0 2px 6px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.2)"
+              : "0 2px 6px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.04)",
+            transform: input.trim()&&!loading ? "translateY(0)" : "translateY(0)",
+          }}
+          onMouseDown={e=>{ if(input.trim()&&!loading) e.currentTarget.style.transform="translateY(2px) scale(0.95)"; }}
+          onMouseUp={e=>e.currentTarget.style.transform="translateY(0) scale(1)"}
+          onMouseLeave={e=>e.currentTarget.style.transform="translateY(0) scale(1)"}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+              <path d="M22 2L11 13" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" fill="rgba(255,255,255,0.15)"/>
+            </svg>
+          </button>
         </div>
         <div style={{ fontSize:9.5, opacity:0.18, textAlign:"center", marginTop:6 }}>SAHAYAK • GST Suvidha • VLE-IRDAI • MFINS Solar • 🇮🇳</div>
       </div>
