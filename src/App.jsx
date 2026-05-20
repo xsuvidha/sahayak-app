@@ -216,25 +216,111 @@ function calcSolar(kw, state) {
 
 function renderText(text) {
   return text.split("\n").map((line, i) => {
-    if (line.startsWith("• ") || line.startsWith("- ")) {
+    // Bullet points — use • symbol, never *
+    if (line.startsWith("• ") || line.startsWith("- ") || line.startsWith("* ")) {
+      const content = line.startsWith("* ") ? line.slice(2) : line.slice(2);
       return (
-        <div key={i} style={{ display: "flex", gap: 8, margin: "6px 0", alignItems: "flex-start" }}>
-          <span style={{ color: "#a78bfa", marginTop: 6, flexShrink: 0, fontSize: 8 }}>●</span>
-          <span style={{ lineHeight: 1.7, color: TOKENS.colors.textMuted }}>
-            {line.slice(2).split(/\*\*(.*?)\*\*/g).map((p, j) => 
-              j % 2 === 1 ? <strong key={j} style={{ color: TOKENS.colors.text, fontWeight: 700 }}>{p}</strong> : p
-            )}
+        <div key={i} style={{ display: "flex", gap: 10, margin: "5px 0", alignItems: "flex-start" }}>
+          <span style={{
+            color: "#a78bfa", flexShrink: 0, fontSize: 16, lineHeight: 1.7,
+            textShadow: "0 0 8px rgba(167,139,250,0.5)"
+          }}>•</span>
+          <span style={{ lineHeight: 1.75, color: TOKENS.colors.textMuted, flex: 1 }}>
+            {formatInline(content)}
           </span>
         </div>
       );
     }
-    const parts = line.split(/\*\*(.*?)\*\*/g);
+    // Numbered list
+    if (/^\d+\.\s/.test(line)) {
+      const num = line.match(/^(\d+)\.\s/)[1];
+      const rest = line.replace(/^\d+\.\s/, "");
+      return (
+        <div key={i} style={{ display: "flex", gap: 10, margin: "5px 0", alignItems: "flex-start" }}>
+          <span style={{
+            color: "#a78bfa", flexShrink: 0, fontWeight: 800, fontSize: 13,
+            lineHeight: 1.75, minWidth: 18
+          }}>{num}.</span>
+          <span style={{ lineHeight: 1.75, color: TOKENS.colors.textMuted, flex: 1 }}>
+            {formatInline(rest)}
+          </span>
+        </div>
+      );
+    }
+    // Heading (##)
+    if (line.startsWith("## ") || line.startsWith("# ")) {
+      const txt = line.replace(/^#+\s/, "");
+      return (
+        <p key={i} style={{
+          margin: "10px 0 5px", lineHeight: 1.5,
+          color: TOKENS.colors.text, fontWeight: 800,
+          fontSize: 15, borderBottom: "1px solid rgba(167,139,250,0.2)",
+          paddingBottom: 4
+        }}>{txt}</p>
+      );
+    }
+    // Horizontal rule
+    if (line === "---" || line === "———") {
+      return <div key={i} style={{ height: 1, background: "rgba(255,255,255,0.08)", margin: "8px 0" }}/>;
+    }
+    // Empty line
+    if (!line.trim()) return <div key={i} style={{ height: 6 }}/>;
+    // Normal paragraph
     return (
       <p key={i} style={{ margin: "4px 0", lineHeight: 1.75, color: TOKENS.colors.textMuted }}>
-        {parts.map((p, j) => j % 2 === 1 ? <strong key={j} style={{ color: TOKENS.colors.text, fontWeight: 700 }}>{p}</strong> : p)}
+        {formatInline(line)}
       </p>
     );
   });
+}
+
+// Format inline styles: **bold**, __underline__, ==highlight==, \`code\`
+function formatInline(text) {
+  const parts = [];
+  let remaining = text;
+  let key = 0;
+
+  while (remaining.length > 0) {
+    // Bold **text**
+    const boldMatch = remaining.match(/^(.*?)\*\*(.*?)\*\*(.*)/s);
+    // Underline __text__
+    const underlineMatch = remaining.match(/^(.*?)__(.*?)__(.*)/s);
+    // Highlight ==text==
+    const highlightMatch = remaining.match(/^(.*?)==(.*?)==(.*)/s);
+    // Inline code `text`
+    const codeMatch = remaining.match(/^(.*?)`(.*?)`(.*)/s);
+
+    // Find which match comes first
+    const matches = [
+      boldMatch && { type: "bold", before: boldMatch[1], inner: boldMatch[2], after: boldMatch[3], idx: boldMatch[1].length },
+      underlineMatch && { type: "underline", before: underlineMatch[1], inner: underlineMatch[2], after: underlineMatch[3], idx: underlineMatch[1].length },
+      highlightMatch && { type: "highlight", before: highlightMatch[1], inner: highlightMatch[2], after: highlightMatch[3], idx: highlightMatch[1].length },
+      codeMatch && { type: "code", before: codeMatch[1], inner: codeMatch[2], after: codeMatch[3], idx: codeMatch[1].length },
+    ].filter(Boolean);
+
+    if (matches.length === 0) {
+      parts.push(<span key={key++}>{remaining}</span>);
+      break;
+    }
+
+    const first = matches.reduce((a, b) => a.idx <= b.idx ? a : b);
+
+    if (first.before) parts.push(<span key={key++}>{first.before}</span>);
+
+    if (first.type === "bold") {
+      parts.push(<strong key={key++} style={{ color: TOKENS.colors.text, fontWeight: 700 }}>{first.inner}</strong>);
+    } else if (first.type === "underline") {
+      parts.push(<span key={key++} style={{ textDecoration: "underline", textDecorationColor: "#a78bfa", textUnderlineOffset: 3 }}>{first.inner}</span>);
+    } else if (first.type === "highlight") {
+      parts.push(<mark key={key++} style={{ background: "rgba(167,139,250,0.25)", color: TOKENS.colors.text, borderRadius: 4, padding: "1px 4px" }}>{first.inner}</mark>);
+    } else if (first.type === "code") {
+      parts.push(<code key={key++} style={{ background: "rgba(255,255,255,0.08)", color: "#a78bfa", padding: "1px 6px", borderRadius: 5, fontSize: "0.9em", fontFamily: "monospace" }}>{first.inner}</code>);
+    }
+
+    remaining = first.after;
+  }
+
+  return parts;
 }
 
 export default function SahayakPremium() {
@@ -539,12 +625,12 @@ export default function SahayakPremium() {
   }, [msgs, input, loading, agent, lang]);
 
   const handleLeadSubmit = (name) => {
-    setShowLead(false);
     if (name) setUserName(name);
     const msg = lang === "english"
-      ? `Thank you${name ? `, ${name}` : ""}! 🙏 Our expert will contact you on WhatsApp soon.`
-      : `धन्यवाद${name ? `, ${name} जी` : ""}! 🙏 हमारे विशेषज्ञ जल्द WhatsApp पर संपर्क करेंगे।`;
+      ? `Thank you${name ? `, ${name}` : ""}! 🙏 Our expert will contact you on WhatsApp soon. Feel free to continue chatting!`
+      : `धन्यवाद${name ? `, ${name} जी` : ""}! 🙏 हमारे विशेषज्ञ जल्द WhatsApp पर संपर्क करेंगे। आप बात जारी रख सकते हैं!`;
     setMsgs(prev => [...prev, { role: "assistant", content: msg, timestamp: new Date() }]);
+    setTimeout(() => setShowLead(false), 1800);
   };
 
   // ═══════════════════════════════════════════════════════════════
@@ -938,7 +1024,7 @@ export default function SahayakPremium() {
           from { opacity: 0; }
           to { opacity: 1; }
         }
-        input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.2); }
+        input::placeholder { color: rgba(26,26,46,0.4); } textarea::placeholder { color: rgba(26,26,46,0.4); }
         ::-webkit-scrollbar { width: 3px; }
         ::-webkit-scrollbar-thumb { background: rgba(124,58,237,0.25); border-radius: 3px; }
         select option { background: #0c0c14; color: #fff; }
@@ -1234,11 +1320,11 @@ export default function SahayakPremium() {
                         display: "flex", alignItems: "center", gap: 6,
                         padding: "6px 12px 6px 8px",
                         borderRadius: 20,
-                        border: `1px solid ${speaking === i ? `${agent.color}50` : TOKENS.colors.border}`,
+                        border: `2px solid ${speaking === i ? agent.color : "rgba(255,255,255,0.9)"}`,
                         background: speaking === i 
-                          ? `linear-gradient(135deg, ${agent.color}30, ${agent.color}15)`
-                          : TOKENS.colors.surface,
-                        color: speaking === i ? "#fff" : TOKENS.colors.textMuted,
+                          ? `linear-gradient(135deg, ${agent.color}90, ${agent.color}60)`
+                          : "rgba(255,255,255,0.92)",
+                        color: speaking === i ? "#fff" : "#1a1a2e",
                         fontSize: 11,
                         fontWeight: 700,
                         fontFamily: "inherit",
@@ -1414,15 +1500,17 @@ export default function SahayakPremium() {
               width: 44, height: 44, borderRadius: 14, flexShrink: 0,
               background: isListening
                 ? "linear-gradient(145deg,#ef4444,#b91c1c)"
-                : "linear-gradient(145deg,#374151,#1f2937)",
-              border: isListening ? "1px solid rgba(239,68,68,0.6)" : `1px solid ${TOKENS.colors.border}`,
+                : "rgba(255,255,255,0.95)",
+              border: isListening
+                ? "2px solid rgba(239,68,68,0.8)"
+                : "2px solid rgba(255,255,255,1)",
               cursor: "pointer", fontSize: 18,
               display: "flex", alignItems: "center", justifyContent: "center",
               transition: "all 0.2s",
               animation: isListening ? "pulse-glow 1s infinite" : "none",
               boxShadow: isListening
-                ? "0 4px 20px rgba(239,68,68,0.5), 0 2px 4px rgba(0,0,0,0.5)"
-                : "0 4px 12px rgba(0,0,0,0.4), 0 2px 4px rgba(0,0,0,0.5)"
+                ? "0 4px 20px rgba(239,68,68,0.5), 0 2px 4px rgba(0,0,0,0.3)"
+                : "0 4px 14px rgba(255,255,255,0.25), 0 2px 6px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,1)"
             }}
           >
             🎤
@@ -1436,11 +1524,11 @@ export default function SahayakPremium() {
             rows={1}
             style={{
               flex: 1,
-              background: TOKENS.colors.surface,
-              border: `1px solid ${agent.color}25`,
+              background: "rgba(255,245,235,0.92)",
+              border: `1.5px solid ${agent.color}40`,
               borderRadius: 14,
               padding: "10px 14px",
-              color: TOKENS.colors.text,
+              color: "#1a1a2e",
               fontSize: 13.5,
               resize: "none",
               outline: "none",
@@ -1448,11 +1536,11 @@ export default function SahayakPremium() {
               minHeight: 44,
               maxHeight: 100,
               lineHeight: 1.5,
-              transition: "border-color 0.2s",
-              backdropFilter: TOKENS.blur.sm
+              transition: "all 0.2s",
+              boxShadow: "inset 0 1px 3px rgba(0,0,0,0.08)"
             }}
-            onFocus={e => e.target.style.borderColor = `${agent.color}60`}
-            onBlur={e => e.target.style.borderColor = `${agent.color}25`}
+            onFocus={e => { e.target.style.borderColor = agent.color; e.target.style.boxShadow = `0 0 0 3px ${agent.color}20, inset 0 1px 3px rgba(0,0,0,0.08)`; }}
+            onBlur={e => { e.target.style.borderColor = `${agent.color}40`; e.target.style.boxShadow = "inset 0 1px 3px rgba(0,0,0,0.08)"; }}
           />
 
           {/* Send Button */}
@@ -1526,7 +1614,7 @@ export default function SahayakPremium() {
           from { opacity: 0; }
           to { opacity: 1; }
         }
-        input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.2); }
+        input::placeholder { color: rgba(26,26,46,0.4); } textarea::placeholder { color: rgba(26,26,46,0.4); }
         ::-webkit-scrollbar { width: 3px; }
         ::-webkit-scrollbar-thumb { background: rgba(124,58,237,0.25); border-radius: 3px; }
         select option { background: #0c0c14; color: #fff; }
