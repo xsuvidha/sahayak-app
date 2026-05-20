@@ -481,10 +481,10 @@ export default function SahayakPremium() {
     // which are actually Edge voices on Chromium browsers
 
     const utt = new SpeechSynthesisUtterance(text);
-    const voices = window.speechSynthesis.getVoices();
+    const browserVoices1 = window.speechSynthesis.getVoices();
 
     // Find Edge voices (they appear as "Microsoft * Online" in Chromium)
-    const edgeVoice = voices.find(v => 
+    const edgeVoice = browserVoices1.find(v => 
       v.name.includes("Microsoft") && 
       v.name.includes("Online") &&
       v.lang.includes(voiceLang === "english" ? "en-IN" : "hi-IN")
@@ -511,7 +511,7 @@ export default function SahayakPremium() {
   // ── Browser TTS Fallback (Enhanced Selection) ──
   const playBrowserTTS = (text, voiceLang, idx) => {
     const utt = new SpeechSynthesisUtterance(text);
-    const voices = window.speechSynthesis.getVoices();
+    const browserVoices = window.speechSynthesis.getVoices();
     const targetLang = voiceLang === "english" ? "en-IN" : "hi-IN";
 
     // Priority order for best free voices
@@ -536,7 +536,7 @@ export default function SahayakPremium() {
     let selectedVoice = null;
 
     for (const priority of voicePriority) {
-      selectedVoice = voices.find(v => 
+      selectedVoice = browserVoices.find(v => 
         priority.pattern.test(v.name) && 
         v.lang.startsWith(priority.lang.split("-")[0])
       );
@@ -545,8 +545,8 @@ export default function SahayakPremium() {
 
     // Fallback to any matching language voice
     if (!selectedVoice) {
-      selectedVoice = voices.find(v => v.lang === targetLang) || 
-                      voices.find(v => v.lang.startsWith(voiceLang === "english" ? "en" : "hi"));
+      selectedVoice = browserVoices.find(v => v.lang === targetLang) || 
+                      browserVoices.find(v => v.lang.startsWith(voiceLang === "english" ? "en" : "hi"));
     }
 
     if (selectedVoice) utt.voice = selectedVoice;
