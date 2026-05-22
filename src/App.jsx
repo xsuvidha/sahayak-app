@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
+import { Analytics } from '@vercel/analytics/react';
 
 const LOGO = "/logo.svg?v=3";
 const WA_NUMBER = "918115776644";
@@ -634,7 +635,7 @@ export default function SahayakPremium() {
       : "";
     setMsgs(prev => [
       ...prev,
-      { role: "user", content: lang === "hindi" ? `📎 दस्तावेज़ अपलोड किया: ${fileName || "file"}` : `📎 Uploaded document: ${fileName || "file"}`, timestamp: new Date() },
+      { role: "user", content: lang === "hindi" ? `��� दस्तावेज़ अपलोड किया: ${fileName || "file"}` : `📎 Uploaded document: ${fileName || "file"}`, timestamp: new Date() },
       { role: "assistant", content: prefix + analysisText, timestamp: new Date() }
     ]);
   };
@@ -2192,6 +2193,7 @@ function PremiumSolarPanel({ lang, onSend }) {
           </div>
         </>
       )}
+      <Analytics />
     </>
   );
 }
