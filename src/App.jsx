@@ -624,13 +624,29 @@ export default function SahayakPremium() {
     setLoading(false);
   }, [msgs, input, loading, agent, lang]);
 
+  const handleDocResult = (analysisText, fileName) => {
+    const prefix = fileName 
+      ? (lang === "hindi" ? `📄 **${fileName}** का विश्लेषण:
+
+` : `📄 **${fileName}** Analysis:
+
+`)
+      : "";
+    setMsgs(prev => [
+      ...prev,
+      { role: "user", content: lang === "hindi" ? `📎 दस्तावेज़ अपलोड किया: ${fileName || "file"}` : `📎 Uploaded document: ${fileName || "file"}`, timestamp: new Date() },
+      { role: "assistant", content: prefix + analysisText, timestamp: new Date() }
+    ]);
+  };
+
   const handleLeadSubmit = (name) => {
     if (name) setUserName(name);
+    // Immediately hide lead form
+    setShowLead(false);
     const msg = lang === "english"
       ? `Thank you${name ? `, ${name}` : ""}! 🙏 Our expert will contact you on WhatsApp soon. Feel free to continue chatting!`
       : `धन्यवाद${name ? `, ${name} जी` : ""}! 🙏 हमारे विशेषज्ञ जल्द WhatsApp पर संपर्क करेंगे। आप बात जारी रख सकते हैं!`;
     setMsgs(prev => [...prev, { role: "assistant", content: msg, timestamp: new Date() }]);
-    setTimeout(() => setShowLead(false), 1800);
   };
 
   // ═══════════════════════════════════════════════════════════════
@@ -1024,7 +1040,10 @@ export default function SahayakPremium() {
           from { opacity: 0; }
           to { opacity: 1; }
         }
-        input::placeholder { color: rgba(26,26,46,0.4); } textarea::placeholder { color: rgba(26,26,46,0.4); }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      html, body, #root { width: 100%; height: 100%; overflow-x: hidden; background: #05050a; }
+      input::placeholder { color: rgba(26,26,46,0.4); }
+      textarea::placeholder { color: rgba(26,26,46,0.4); }
         ::-webkit-scrollbar { width: 3px; }
         ::-webkit-scrollbar-thumb { background: rgba(124,58,237,0.25); border-radius: 3px; }
         select option { background: #0c0c14; color: #fff; }
@@ -1424,7 +1443,7 @@ export default function SahayakPremium() {
               </div>
 
               {/* Form */}
-              <SmartLeadForm agent={agent} t={t} onSubmit={handleLeadSubmit} onSkip={() => setShowLead(false)} />
+              <SmartLeadForm agent={agent} t={t} lang={lang} onSubmit={handleLeadSubmit} onSkip={() => setShowLead(false)} />
             </div>
           </div>
         )}
@@ -1574,6 +1593,15 @@ export default function SahayakPremium() {
               <path d="M22 2L15 22L11 13L2 9L22 2Z" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" fill="rgba(255,255,255,0.15)"/>
             </svg>
           </button>
+
+          {/* 📎 Document Upload */}
+          <DocUploadBtn
+            agent={agent}
+            lang={lang}
+            t={t}
+            onResult={handleDocResult}
+          />
+
         </div>
         <div style={{ fontSize: 9.5, opacity: 0.18, textAlign: "center", marginTop: 6 }}>
           SAHAYAK • GST Suvidha • VLE-IRDAI • MFINS Solar • 🇮🇳
@@ -1614,7 +1642,10 @@ export default function SahayakPremium() {
           from { opacity: 0; }
           to { opacity: 1; }
         }
-        input::placeholder { color: rgba(26,26,46,0.4); } textarea::placeholder { color: rgba(26,26,46,0.4); }
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      html, body, #root { width: 100%; height: 100%; overflow-x: hidden; background: #05050a; }
+      input::placeholder { color: rgba(26,26,46,0.4); }
+      textarea::placeholder { color: rgba(26,26,46,0.4); }
         ::-webkit-scrollbar { width: 3px; }
         ::-webkit-scrollbar-thumb { background: rgba(124,58,237,0.25); border-radius: 3px; }
         select option { background: #0c0c14; color: #fff; }
@@ -1624,6 +1655,150 @@ export default function SahayakPremium() {
 }
 
 // ── Smart Lead Form Component ──
+
+// ── Document Upload Component ──
+function DocUploadBtn({ agent, lang, t, onResult }) {
+  const fileRef = useRef(null);
+  const [analyzing, setAnalyzing] = useState(false);
+
+  const handleFile = async (file) => {
+    if (!file) return;
+    const maxMB = 10;
+    if (file.size > maxMB * 1024 * 1024) {
+      onResult(lang === "hindi" ? "❌ फ़ाइल बहुत बड़ी है। 10MB से कम होनी चाहिए।" : "❌ File too large. Max 10MB.");
+      return;
+    }
+
+    setAnalyzing(true);
+    const reader = new FileReader();
+
+    reader.onload = async (e) => {
+      try {
+        const base64 = e.target.result.split(",")[1];
+        const mediaType = file.type;
+        const isImage = mediaType.startsWith("image/");
+        const isPDF = mediaType === "application/pdf";
+
+        let analysisText = "";
+
+        if (isImage) {
+          // Send to GROQ vision API
+          const res = await fetch("/api/chat", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              system: `You are SAHAYAK's ${agent?.name || "Financial"} expert. Analyze this document/image carefully. ${
+                lang === "hindi" ? "Respond ENTIRELY in Hindi (Devanagari). Simple language." :
+                lang === "english" ? "Respond in clear English." :
+                "Respond in Hinglish."
+              }
+              
+              ANALYSIS FORMAT:
+              1. Document type identify karo
+              2. Key information extract karo (amounts, dates, names, notice numbers)
+              3. Simple explanation do — kya matlab hai is document ka
+              4. Urgency batao: 🔴 Urgent / 🟡 Important / 🟢 Routine
+              5. Next steps clearly batao (numbered list)
+              
+              Be specific and actionable. Use bullet points.`,
+              messages: [{
+                role: "user",
+                content: [
+                  { type: "image_url", image_url: { url: `data:${mediaType};base64,${base64}` } },
+                  { type: "text", text: lang === "hindi" 
+                    ? "इस दस्तावेज़ का विश्लेषण करें और बताएं इसका क्या मतलब है और क्या करना चाहिए।"
+                    : "Analyze this document and tell me what it means and what action to take." }
+                ]
+              }]
+            })
+          });
+          const data = await res.json();
+          analysisText = data?.content?.[0]?.text || (lang === "hindi" ? "विश्लेषण में समस्या। WhatsApp पर भेजें।" : "Analysis failed. Please send on WhatsApp.");
+        } else if (isPDF) {
+          // PDF - use text extraction approach
+          analysisText = lang === "hindi"
+            ? `📄 **PDF प्राप्त हुआ:** ${file.name}
+
+PDF का विश्लेषण करने के लिए:
+• WhatsApp पर +918115776644 भेजें
+• हमारे विशेषज्ञ 2 मिनट में जवाब देंगे
+
+या PDF की फ़ोटो खींचकर यहाँ upload करें — AI तुरंत पढ़ेगा!`
+            : `📄 **PDF received:** ${file.name}
+
+To analyze this PDF:
+• Send to WhatsApp +918115776644
+• Our expert will respond in 2 minutes
+
+Or take a photo of the PDF and upload here — AI will read it instantly!`;
+        } else {
+          analysisText = lang === "hindi"
+            ? `📎 **फ़ाइल प्राप्त:** ${file.name}
+
+Word/Excel फ़ाइलों के लिए:
+• Screenshot लें और यहाँ upload करें
+• या WhatsApp +918115776644 पर भेजें`
+            : `📎 **File received:** ${file.name}
+
+For Word/Excel files:
+• Take a screenshot and upload here
+• Or send to WhatsApp +918115776644`;
+        }
+
+        onResult(analysisText, file.name);
+      } catch (err) {
+        onResult(lang === "hindi" 
+          ? "❌ विश्लेषण में त्रुटि। WhatsApp पर +918115776644 भेजें।"
+          : "❌ Analysis error. Please send to WhatsApp +918115776644.");
+      }
+      setAnalyzing(false);
+    };
+
+    reader.onerror = () => {
+      setAnalyzing(false);
+      onResult(lang === "hindi" ? "❌ फ़ाइल पढ़ने में त्रुटि।" : "❌ Error reading file.");
+    };
+
+    reader.readAsDataURL(file);
+  };
+
+  const openFilePicker = () => fileRef.current?.click();
+
+  return (
+    <>
+      <input
+        ref={fileRef}
+        type="file"
+        accept="image/*,application/pdf,.doc,.docx,.xls,.xlsx"
+        capture={false}
+        style={{ display: "none" }}
+        onChange={e => handleFile(e.target.files?.[0])}
+      />
+      <button
+        onClick={openFilePicker}
+        disabled={analyzing}
+        title={lang === "hindi" ? "दस्तावेज़ या फ़ोटो अपलोड करें" : "Upload document or photo"}
+        style={{
+          width: 44, height: 44, borderRadius: 14, flexShrink: 0,
+          background: analyzing
+            ? "linear-gradient(145deg,#7c3aed,#4f46e5)"
+            : "rgba(255,255,255,0.95)",
+          border: analyzing ? "2px solid #7c3aed" : "2px solid rgba(255,255,255,1)",
+          cursor: analyzing ? "not-allowed" : "pointer",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          transition: "all 0.2s",
+          boxShadow: "0 4px 14px rgba(255,255,255,0.2), 0 2px 6px rgba(0,0,0,0.3)",
+          fontSize: analyzing ? 12 : 20,
+          animation: analyzing ? "pulse-glow 1s infinite" : "none",
+          color: analyzing ? "#fff" : "#1a1a2e",
+        }}
+      >
+        {analyzing ? "⏳" : "📎"}
+      </button>
+    </>
+  );
+}
+
 function SmartLeadForm({ agent, t, onSubmit, onSkip }) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
@@ -1632,6 +1807,13 @@ function SmartLeadForm({ agent, t, onSubmit, onSkip }) {
 
   const submit = () => {
     if (!ready) return;
+    // Open WhatsApp with pre-filled message
+    const agentName = agent?.name || "Financial";
+    const agentHi = agent?.hi || "वित्तीय";
+    const txt = lang === "english"
+      ? `Hello! I am ${name || "a user"}.%0AAgent: ${agentName}%0AMobile: +91${phone}%0AI need help — contacting via SAHAYAK App.`
+      : `नमस्ते! मैं ${name || "उपयोगकर्ता"} हूँ।%0Aविशेषज्ञ: ${agentHi}%0AMobile: +91${phone}%0ASAHAYAK App से संपर्क कर रहा/रही हूँ।`;
+    window.open(`${WA_BASE}?text=${encodeURIComponent(decodeURIComponent(txt))}`, "_blank");
     setStep("success");
     onSubmit(name);
   };
