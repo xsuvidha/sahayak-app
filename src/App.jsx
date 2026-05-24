@@ -216,7 +216,6 @@ function calcSolar(kw, state) {
 
 function renderText(text) {
   return text.split("\n").map((line, i) => {
-    // Bullet points — use • symbol, never *
     if (line.startsWith("• ") || line.startsWith("- ") || line.startsWith("* ")) {
       const content = line.startsWith("* ") ? line.slice(2) : line.slice(2);
       return (
@@ -231,7 +230,6 @@ function renderText(text) {
         </div>
       );
     }
-    // Numbered list
     if (/^\d+\.\s/.test(line)) {
       const num = line.match(/^(\d+)\.\s/)[1];
       const rest = line.replace(/^\d+\.\s/, "");
@@ -247,7 +245,6 @@ function renderText(text) {
         </div>
       );
     }
-    // Heading (##)
     if (line.startsWith("## ") || line.startsWith("# ")) {
       const txt = line.replace(/^#+\s/, "");
       return (
@@ -259,13 +256,10 @@ function renderText(text) {
         }}>{txt}</p>
       );
     }
-    // Horizontal rule
     if (line === "---" || line === "———") {
       return <div key={i} style={{ height: 1, background: "rgba(255,255,255,0.08)", margin: "8px 0" }}/>;
     }
-    // Empty line
     if (!line.trim()) return <div key={i} style={{ height: 6 }}/>;
-    // Normal paragraph
     return (
       <p key={i} style={{ margin: "4px 0", lineHeight: 1.75, color: TOKENS.colors.textMuted }}>
         {formatInline(line)}
@@ -274,23 +268,17 @@ function renderText(text) {
   });
 }
 
-// Format inline styles: **bold**, __underline__, ==highlight==, \`code\`
 function formatInline(text) {
   const parts = [];
   let remaining = text;
   let key = 0;
 
   while (remaining.length > 0) {
-    // Bold **text**
     const boldMatch = remaining.match(/^(.*?)\*\*(.*?)\*\*(.*)/s);
-    // Underline __text__
     const underlineMatch = remaining.match(/^(.*?)__(.*?)__(.*)/s);
-    // Highlight ==text==
     const highlightMatch = remaining.match(/^(.*?)==(.*?)==(.*)/s);
-    // Inline code `text`
     const codeMatch = remaining.match(/^(.*?)`(.*?)`(.*)/s);
 
-    // Find which match comes first
     const matches = [
       boldMatch && { type: "bold", before: boldMatch[1], inner: boldMatch[2], after: boldMatch[3], idx: boldMatch[1].length },
       underlineMatch && { type: "underline", before: underlineMatch[1], inner: underlineMatch[2], after: underlineMatch[3], idx: underlineMatch[1].length },
@@ -323,6 +311,73 @@ function formatInline(text) {
   return parts;
 }
 
+function SmartLeadForm({ agent, t, lang = "hindi", onSubmit, onSkip }) {
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [step, setStep] = useState("form");
+  const ready = phone.length === 10;
+
+  const submit = () => {
+    if (!ready) return;
+    const agentName = agent?.name || "Financial";
+    const agentHi = agent?.hi || "वित्तीय";
+    const txt = lang === "english"
+      ? `Hello! I am ${name || "a user"}.%0AAgent: ${agentName}%0AMobile: +91${phone}%0AFrom SAHAYAK App — need expert help.`
+      : `नमस्ते! मैं ${name || "उपयोगकर्ता"} हूँ।%0Aविशेषज्ञ: ${agentHi}%0AMobile: +91${phone}%0ASAHAYAK App से — मुझे सहायता चाहिए।`;
+    window.open(`https://wa.me/918115776644?text=${txt}`, "_blank");
+    setStep("success");
+    onSubmit(name);
+  };
+
+  if (step === "success") {
+    return (
+      <div style={{ background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.3)", borderRadius: 16, padding: "16px", textAlign: "center", margin: "4px 0" }}>
+        <div style={{ fontSize: 28, marginBottom: 8 }}>🎉</div>
+        <div style={{ fontWeight: 700, color: "#4ade80", fontSize: 14, marginBottom: 4 }}>
+          {lang === "hindi" ? "धन्यवाद! विशेषज्ञ जल्द संपर्क करेंगे।" : "Thank you! Expert will contact you soon."}
+        </div>
+        <div style={{ fontSize: 11, opacity: 0.5 }}>
+          {lang === "hindi" ? "WhatsApp पर जुड़ेंगे" : "Connecting on WhatsApp"}
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", gap: 10, background: `${agent?.color || "#7c3aed"}10`, border: `1px solid ${agent?.color || "#7c3aed"}30`, borderRadius: 16, padding: 14, margin: "4px 0" }}>
+      <div style={{ fontWeight: 800, fontSize: 13, color: agent?.color || "#7c3aed" }}>🎯 {t?.callback || "निःशुल्क कॉलबैक पाएं!"}</div>
+      <div style={{ fontSize: 11, opacity: 0.45 }}>{t?.callbackSub || "हमारे विशेषज्ञ WhatsApp पर संपर्क करेंगे"}</div>
+      <input
+        placeholder={t?.namePlaceholder || "आपका नाम (वैकल्पिक)"}
+        value={name}
+        onChange={e => setName(e.target.value)}
+        style={{ width: "100%", padding: "8px 12px", borderRadius: 10, border: `1px solid ${agent?.color || "#7c3aed"}30`, background: "rgba(255,255,255,0.05)", color: "#fff", fontSize: 13, outline: "none", fontFamily: "inherit", boxSizing: "border-box" }}
+      />
+      <input
+        placeholder={t?.phonePlaceholder || "मोबाइल नंबर (10 अंक)"}
+        value={phone}
+        onChange={e => setPhone(e.target.value.replace(/\D/, "").slice(0, 10))}
+        type="tel"
+        style={{ width: "100%", padding: "8px 12px", borderRadius: 10, border: `1px solid ${agent?.color || "#7c3aed"}30`, background: "rgba(255,255,255,0.05)", color: "#fff", fontSize: 13, outline: "none", fontFamily: "inherit", boxSizing: "border-box" }}
+      />
+      <div style={{ display: "flex", gap: 7 }}>
+        <button
+          onClick={submit}
+          style={{ flex: 1, padding: "10px 0", borderRadius: 10, border: "none", background: ready ? (agent?.grad ? `linear-gradient(${agent.grad})` : "#7c3aed") : "rgba(255,255,255,0.07)", color: "#fff", fontWeight: 800, cursor: ready ? "pointer" : "not-allowed", fontSize: 13, fontFamily: "inherit" }}
+        >
+          📱 {t?.sendWA || "WhatsApp पर भेजें"}
+        </button>
+        <button
+          onClick={onSkip}
+          style={{ padding: "10px 13px", borderRadius: 10, border: "1px solid rgba(255,255,255,0.1)", background: "transparent", color: "rgba(255,255,255,0.4)", cursor: "pointer", fontSize: 12, fontFamily: "inherit" }}
+        >
+          {t?.later || "बाद में"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 export default function SahayakPremium() {
   const [screen, setScreen] = useState("home");
   const [agent, setAgent] = useState(null);
@@ -332,6 +387,8 @@ export default function SahayakPremium() {
   const [showLead, setShowLead] = useState(false);
   const [lang, setLang] = useState("hindi");
   const [speaking, setSpeaking] = useState(null);
+  const [uploadedDoc, setUploadedDoc] = useState(null);
+  const [showAbout, setShowAbout] = useState(false);
   const [isListening, setIsListening] = useState(false);
   const [userName, setUserName] = useState("");
   const [scrollY, setScrollY] = useState(0);
@@ -352,7 +409,6 @@ export default function SahayakPremium() {
     endRef.current?.scrollIntoView({ behavior: "smooth" }); 
   }, [msgs, showLead]);
 
-  // Smart lead trigger - after 5-7 meaningful exchanges or high-intent signals
   useEffect(() => {
     const agentMsgs = msgs.filter(m => m.role === "assistant").length;
     const userMsgs = msgs.filter(m => m.role === "user").length;
@@ -389,18 +445,9 @@ export default function SahayakPremium() {
     setScreen("chat");
   }, [lang, t, userName]);
 
-  // Premium TTS with Indian Voice Optimization
-
-  // ═══════════════════════════════════════════════════════════════
-  //  HYBRID VOICE ENGINE — Lifetime Free + Premium Quality
-  //  Primary: Microsoft Edge TTS (Free, Streaming, Indian Voices)
-  //  Fallback: Browser Web Speech API
-  // ═══════════════════════════════════════════════════════════════
-
   const audioRef = useRef(null);
   const audioContextRef = useRef(null);
 
-  // Clean up audio on unmount
   useEffect(() => {
     return () => {
       if (audioRef.current) {
@@ -413,7 +460,6 @@ export default function SahayakPremium() {
     };
   }, []);
 
-  // ── Edge TTS Voice Map (Free, Streaming, High Quality) ──
   const EDGE_VOICES = {
     hindi: [
       { name: "hi-IN-MadhurNeural", gender: "Male", style: "warm, authoritative" },
@@ -428,9 +474,7 @@ export default function SahayakPremium() {
     ]
   };
 
-  // ── Premium TTS with Edge + Browser Fallback ──
   const handleSpeak = async (text, idx) => {
-    // Stop current audio
     if (speaking === idx) {
       if (audioRef.current) {
         audioRef.current.pause();
@@ -441,7 +485,6 @@ export default function SahayakPremium() {
       return;
     }
 
-    // Stop any existing audio
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current = null;
@@ -453,37 +496,22 @@ export default function SahayakPremium() {
     const voiceLang = detectedLang === "english" ? "english" : "hindi";
 
     try {
-      // Try Edge TTS first (Free, Premium Quality)
       await playEdgeTTS(cleanText, voiceLang, idx);
     } catch (err) {
       console.log("Edge TTS failed, falling back to browser TTS:", err);
-      // Fallback to browser TTS
       playBrowserTTS(cleanText, voiceLang, idx);
     }
   };
 
-  // ── Edge TTS Implementation (Free Streaming) ──
   const playEdgeTTS = async (text, voiceLang, idx) => {
     const voices = EDGE_VOICES[voiceLang] || EDGE_VOICES.hindi;
     const selectedVoice = voices[0]; // Use first voice (male for authority)
 
-    // Edge TTS uses Microsoft's streaming endpoint
-    // This is free and doesn't require API keys for basic usage
     const edgeTTSUrl = `https://speech.platform.bing.com/speech/recognition/interactive/cognitiveservices/v1?language=${selectedVoice.name.split("-")[0]}-${selectedVoice.name.split("-")[1]}`;
-
-    // Alternative: Use Edge's TTS demo endpoint (free, no auth)
-    // We use a proxy approach via a simple fetch to get audio stream
-
-    // For production, you should set up a simple backend proxy
-    // or use the direct Edge TTS websocket (complex)
-    // 
-    // SIMPLIFIED APPROACH: Use the browser's built-in enhanced voices
-    // which are actually Edge voices on Chromium browsers
 
     const utt = new SpeechSynthesisUtterance(text);
     const browserVoices1 = window.speechSynthesis.getVoices();
 
-    // Find Edge voices (they appear as "Microsoft * Online" in Chromium)
     const edgeVoice = browserVoices1.find(v => 
       v.name.includes("Microsoft") && 
       v.name.includes("Online") &&
@@ -504,100 +532,180 @@ export default function SahayakPremium() {
       return;
     }
 
-    // If no Edge voice found, throw to trigger fallback
     throw new Error("No Edge voice available");
   };
 
-  // ── Browser TTS Fallback (Enhanced Selection) ──
   const playBrowserTTS = (text, voiceLang, idx) => {
     const utt = new SpeechSynthesisUtterance(text);
-    const browserVoices = window.speechSynthesis.getVoices();
     const targetLang = voiceLang === "english" ? "en-IN" : "hi-IN";
-
-    // Priority order for best free voices
-    const voicePriority = [
-      // Microsoft Edge voices (premium, free)
-      { pattern: /Microsoft.*Online.*Natural/, lang: targetLang },
-      { pattern: /Microsoft.*Online/, lang: targetLang },
-      // Google voices (good quality)
-      { pattern: /Google.*हिन्दी/, lang: "hi-IN" },
-      { pattern: /Google.*Hindi/, lang: "hi-IN" },
-      { pattern: /Google.*UK.*Male/, lang: "en-GB" },
-      { pattern: /Google.*US.*Male/, lang: "en-US" },
-      // Apple voices (Siri quality)
-      { pattern: /Siri/, lang: targetLang },
-      // Samsung voices
-      { pattern: /Samsung/, lang: targetLang },
-      // Generic male voices
-      { pattern: /Male/, lang: targetLang },
-      { pattern: /male/, lang: targetLang },
-    ];
-
-    let selectedVoice = null;
-
-    for (const priority of voicePriority) {
-      selectedVoice = browserVoices.find(v => 
-        priority.pattern.test(v.name) && 
-        v.lang.startsWith(priority.lang.split("-")[0])
-      );
-      if (selectedVoice) break;
-    }
-
-    // Fallback to any matching language voice
-    if (!selectedVoice) {
-      selectedVoice = browserVoices.find(v => v.lang === targetLang) || 
-                      browserVoices.find(v => v.lang.startsWith(voiceLang === "english" ? "en" : "hi"));
-    }
-
-    if (selectedVoice) utt.voice = selectedVoice;
-
-    // Premium prosody settings
     utt.lang = targetLang;
-    utt.rate = 0.9;      // Slightly slower = more authoritative
-    utt.pitch = 0.88;    // Deeper = masculine trust
+    utt.rate = 0.82;
+    utt.pitch = 0.9;
     utt.volume = 1;
 
-    // Add natural pauses
-    utt.onboundary = (e) => {
-      if (e.name === "sentence" && ",।.!?".includes(e.target.text[e.charIndex])) {
-        // Micro-pause handled by rate
+    const trySetVoice = () => {
+      const voices = window.speechSynthesis.getVoices();
+      if (voices.length === 0) return false;
+
+      const priorities = voiceLang === "hindi"
+        ? [
+            v => v.name.includes("Microsoft") && v.name.includes("Swara") && v.name.includes("Online"),
+            v => v.name.includes("Microsoft") && v.name.includes("Madhur"),
+            v => v.name.includes("Google") && v.lang === "hi-IN",
+            v => v.lang === "hi-IN",
+            v => v.lang.startsWith("hi"),
+          ]
+        : [
+            v => v.name.includes("Microsoft") && v.name.includes("Ravi") && v.name.includes("Online"),
+            v => v.name.includes("Microsoft") && v.name.includes("Neural") && v.lang.startsWith("en-IN"),
+            v => v.name.includes("Google") && v.lang === "en-IN",
+            v => v.lang === "en-IN",
+            v => v.lang.startsWith("en") && v.name.includes("Male"),
+            v => v.lang.startsWith("en"),
+          ];
+
+      for (const priority of priorities) {
+        const match = voices.find(priority);
+        if (match) { utt.voice = match; return true; }
       }
+      return false;
     };
 
+    if (!trySetVoice()) {
+      window.speechSynthesis.onvoiceschanged = () => { trySetVoice(); window.speechSynthesis.onvoiceschanged = null; };
+    }
+
+    utt.onstart = () => setSpeaking(idx);
     utt.onend = () => setSpeaking(null);
     utt.onerror = () => setSpeaking(null);
-
-    setSpeaking(idx);
+    window.speechSynthesis.cancel();
     window.speechSynthesis.speak(utt);
-  };
-  const startVoice = () => {
+  };;
+  const startVoiceHold = () => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SpeechRecognition) { alert("Voice not supported on this browser"); return; }
-    if (isListening) {
-      recognitionRef.current?.stop();
-      setIsListening(false);
+    if (!SpeechRecognition) {
+      alert(lang === "hindi" ? "यह browser voice support नहीं करता। Chrome use करें।" : "Voice not supported. Please use Chrome.");
       return;
     }
+    if (isListening) return;
     const rec = new SpeechRecognition();
     rec.lang = lang === "english" ? "en-IN" : "hi-IN";
-    rec.continuous = false;
-    rec.interimResults = false;
+    rec.continuous = true;
+    rec.interimResults = true;
     rec.onresult = (e) => {
-      const transcript = e.results[0][0].transcript;
-      setInput(transcript);
-      setIsListening(false);
+      let final = "";
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        if (e.results[i].isFinal) final += e.results[i][0].transcript;
+      }
+      if (final) setInput(prev => {
+        const hasDoc = prev.includes("📎");
+        return hasDoc ? prev + " " + final : final;
+      });
     };
-    rec.onerror = () => setIsListening(false);
-    rec.onend = () => setIsListening(false);
+    rec.onerror = () => { setIsListening(false); };
+    rec.onend = () => { setIsListening(false); };
     recognitionRef.current = rec;
     rec.start();
     setIsListening(true);
   };
 
+  const stopVoiceHold = () => {
+    if (!isListening) return;
+    recognitionRef.current?.stop();
+    setIsListening(false);
+    setTimeout(() => {
+      setInput(prev => {
+        if (prev.trim() && !prev.includes("📎")) {
+          send(prev);
+          return "";
+        }
+        return prev;
+      });
+    }, 400);
+  };
+
+  const startVoice = startVoiceHold;
+
+  const pressRecordRef = useRef(null);
+  const mediaRecorderRef = useRef(null);
+  const audioChunksRef = useRef([]);
+
+  const startPressRecord = useCallback(() => {
+    if (isListening) return;
+    setIsListening(true);
+    setInput("");
+    audioChunksRef.current = [];
+
+    if (navigator.mediaDevices?.getUserMedia) {
+      navigator.mediaDevices.getUserMedia({ audio: true }).then(stream => {
+        const mr = new MediaRecorder(stream);
+        mediaRecorderRef.current = mr;
+        mr.ondataavailable = e => { if (e.data.size > 0) audioChunksRef.current.push(e.data); };
+        mr.onstop = () => {
+          stream.getTracks().forEach(t => t.stop());
+        };
+        mr.start();
+      }).catch(() => {
+        useSpeechRecognition();
+      });
+    } else {
+      useSpeechRecognition();
+    }
+
+    useSpeechRecognition();
+  }, [isListening]);
+
+  const useSpeechRecognition = useCallback(() => {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SR) {
+      setInput(lang === "hindi" ? "Voice support nahi hai is browser mein" : "Voice not supported");
+      setIsListening(false);
+      return;
+    }
+    const rec = new SR();
+    rec.lang = lang === "english" ? "en-IN" : "hi-IN";
+    rec.continuous = true;
+    rec.interimResults = true;
+    pressRecordRef.current = rec;
+    rec.onresult = e => {
+      let interim = "", final = "";
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        if (e.results[i].isFinal) final += e.results[i][0].transcript;
+        else interim += e.results[i][0].transcript;
+      }
+      setInput(final || interim);
+    };
+    rec.onerror = () => setIsListening(false);
+    rec.onend = () => {};
+    rec.start();
+  }, [lang]);
+
+  const stopPressRecord = useCallback(() => {
+    setIsListening(false);
+    if (mediaRecorderRef.current?.state === "recording") {
+      mediaRecorderRef.current.stop();
+    }
+    if (pressRecordRef.current) {
+      pressRecordRef.current.stop();
+      pressRecordRef.current = null;
+    }
+    setTimeout(() => {
+      setInput(prev => {
+        if (prev.trim()) {
+          send(prev.trim());
+          return "";
+        }
+        return prev;
+      });
+    }, 400);
+  }, []);
+
   const send = useCallback(async (text) => {
     const q = text || input.trim();
     if (!q || loading) return;
     setInput("");
+    const docContext = uploadedDoc;
+    setUploadedDoc(null); // clear after sending
     stopSpeech();
 
     const detectedLang = detectLang(q);
@@ -606,7 +714,16 @@ export default function SahayakPremium() {
     setLoading(true);
 
     try {
-      const system = getSystemPrompt(agent.id, detectedLang);
+      const docNote = docContext
+        ? `
+
+IMPORTANT: The user has uploaded a document (${docContext.fileName}). Their question is about this document. ${
+            docContext.imageBase64 
+              ? "The document image has been provided. Analyze it carefully."
+              : docContext.analysisText || ""
+          }`
+        : "";
+      const system = getSystemPrompt(agent.id, detectedLang) + docNote;
       const res = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -624,24 +741,28 @@ export default function SahayakPremium() {
     setLoading(false);
   }, [msgs, input, loading, agent, lang]);
 
-  const handleDocResult = (analysisText, fileName) => {
-    const prefix = fileName 
-      ? (lang === "hindi" ? `📄 **${fileName}** का विश्लेषण:
+  const handleDocResult = (analysisText, fileName, imageBase64, mediaType) => {
+    setUploadedDoc({ analysisText, fileName, imageBase64, mediaType });
+    const hint = lang === "hindi"
+      ? `📎 ${fileName} — अब लिखें आप क्या जानना चाहते हैं इस दस्तावेज़ के बारे में...`
+      : `📎 ${fileName} — Now type what you want to know about this document...`;
+    setInput(hint.slice(0, 120));
+    setMsgs(prev => [...prev, {
+      role: "user",
+      content: lang === "hindi" 
+        ? `📎 **दस्तावेज़ अपलोड:** ${fileName}
 
-` : `📄 **${fileName}** Analysis:
+अपना सवाल लिखें और Send करें ↗️`
+        : `📎 **Document uploaded:** ${fileName}
 
-`)
-      : "";
-    setMsgs(prev => [
-      ...prev,
-      { role: "user", content: lang === "hindi" ? `📎 दस्तावेज़ अपलोड किया: ${fileName || "file"}` : `📎 Uploaded document: ${fileName || "file"}`, timestamp: new Date() },
-      { role: "assistant", content: prefix + analysisText, timestamp: new Date() }
-    ]);
+Type your question and press Send ↗️`,
+      timestamp: new Date(),
+      isDoc: true
+    }]);
   };
 
   const handleLeadSubmit = (name) => {
     if (name) setUserName(name);
-    // Immediately hide lead form
     setShowLead(false);
     const msg = lang === "english"
       ? `Thank you${name ? `, ${name}` : ""}! 🙏 Our expert will contact you on WhatsApp soon. Feel free to continue chatting!`
@@ -649,9 +770,114 @@ export default function SahayakPremium() {
     setMsgs(prev => [...prev, { role: "assistant", content: msg, timestamp: new Date() }]);
   };
 
-  // ═══════════════════════════════════════════════════════════════
-  //  HOME SCREEN
-  // ═══════════════════════════════════════════════════════════════
+  if (screen === "about") return (
+    <div style={{
+      minHeight:"100vh", background:TOKENS.colors.bg, color:TOKENS.colors.text,
+      fontFamily: TOKENS.fonts.primary,
+      display:"flex", flexDirection:"column",
+      backgroundImage:"radial-gradient(ellipse 80% 40% at 50% 0%, rgba(124,58,237,0.12), transparent 60%)"
+    }}>
+      {}
+      <div style={{padding:"12px 16px", display:"flex", alignItems:"center", gap:10,
+        borderBottom:"1px solid rgba(255,255,255,0.05)", background:"rgba(10,10,15,0.8)", backdropFilter:"blur(16px)"}}>
+        <button onClick={() => setScreen("home")} style={{background:"none",border:"none",color:"rgba(255,255,255,0.5)",fontSize:22,cursor:"pointer",padding:0}}>←</button>
+        <div style={{fontWeight:800, fontSize:16}}>About SAHAYAK</div>
+      </div>
+
+      <div style={{flex:1, padding:"30px 20px", maxWidth:540, margin:"0 auto", width:"100%", boxSizing:"border-box"}}>
+        
+        {}
+        <div style={{textAlign:"center", marginBottom:32}}>
+          <img src="/logo.svg?v=3" alt="SAHAYAK" style={{width:100,height:100,borderRadius:25,boxShadow:"0 0 30px rgba(124,58,237,0.5)",marginBottom:16}}/>
+          <div style={{fontSize:28,fontWeight:900,letterSpacing:2,background:"linear-gradient(90deg,#a78bfa,#fff,#7dd3fc)",WebkitBackgroundClip:"text",WebkitTextFillColor:"transparent"}}>SAHAYAK</div>
+          <div style={{fontSize:13,opacity:0.5,marginTop:4}}>आपका AI Financial दोस्त 🇮🇳</div>
+          <div style={{fontSize:11,opacity:0.35,marginTop:2}}>Version 2.0 Premium</div>
+        </div>
+
+        {}
+        <div style={{background:"rgba(124,58,237,0.08)",border:"1px solid rgba(124,58,237,0.2)",borderRadius:20,padding:20,marginBottom:16}}>
+          <div style={{fontSize:12,color:"#a78bfa",fontWeight:700,letterSpacing:1,marginBottom:12}}>👨‍💼 FOUNDER</div>
+          <div style={{display:"flex",alignItems:"center",gap:14}}>
+            <div style={{width:60,height:60,borderRadius:"50%",background:"linear-gradient(135deg,#7c3aed,#4f46e5)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:24,fontWeight:900,flexShrink:0}}>A</div>
+            <div>
+              <div style={{fontSize:18,fontWeight:800}}>Ankit Singh</div>
+              <div style={{fontSize:12,opacity:0.55,marginTop:2}}>Founder & Creator, SAHAYAK</div>
+              <div style={{fontSize:11,opacity:0.4,marginTop:1}}>Balrampur, Uttar Pradesh 🇮🇳</div>
+            </div>
+          </div>
+        </div>
+
+        {}
+        <div style={{background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:16,padding:16,marginBottom:16}}>
+          <div style={{fontSize:12,color:"#a78bfa",fontWeight:700,letterSpacing:1,marginBottom:12}}>📞 CONTACT</div>
+          <a href="mailto:xsuvidha@gmail.com" style={{display:"flex",alignItems:"center",gap:10,textDecoration:"none",color:"#e2e8f0",marginBottom:10}}>
+            <span style={{fontSize:20}}>📧</span>
+            <span style={{fontSize:14}}>xsuvidha@gmail.com</span>
+          </a>
+          <a href="https://wa.me/918115776644" target="_blank" rel="noreferrer" style={{display:"flex",alignItems:"center",gap:10,textDecoration:"none",color:"#e2e8f0",marginBottom:10}}>
+            <span style={{fontSize:20}}>💬</span>
+            <span style={{fontSize:14}}>+91 81157 76644</span>
+          </a>
+          <a href="https://instagram.com/singh.ankit007" target="_blank" rel="noreferrer" style={{display:"flex",alignItems:"center",gap:10,textDecoration:"none",color:"#e2e8f0"}}>
+            <div style={{width:28,height:28,borderRadius:8,background:"linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+              </svg>
+            </div>
+            <span style={{fontSize:14}}>@singh.ankit007</span>
+          </a>
+        </div>
+
+        {}
+        <div style={{background:"rgba(255,255,255,0.03)",border:"1px solid rgba(255,255,255,0.07)",borderRadius:16,padding:16,marginBottom:16}}>
+          <div style={{fontSize:12,color:"#a78bfa",fontWeight:700,letterSpacing:1,marginBottom:12}}>🏆 CERTIFICATIONS</div>
+          {[
+            ["🏛️","VLE-IRDAI","Insurance License — Govt. of India"],
+            ["📊","GST Suvidha Network","Authorized Tax Partner"],
+            ["☀️","MFINS Solar","Channel Partner"],
+            ["🌞","PM Surya Ghar","Authorized Vendor"],
+          ].map(([icon,title,sub],i) => (
+            <div key={i} style={{display:"flex",alignItems:"center",gap:10,marginBottom:i<3?10:0}}>
+              <span style={{fontSize:18,flexShrink:0}}>{icon}</span>
+              <div>
+                <div style={{fontSize:13,fontWeight:700}}>{title}</div>
+                <div style={{fontSize:11,opacity:0.45}}>{sub}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {}
+        <div style={{background:"linear-gradient(135deg,rgba(124,58,237,0.1),rgba(79,70,229,0.05))",border:"1px solid rgba(124,58,237,0.2)",borderRadius:16,padding:16,marginBottom:20}}>
+          <div style={{fontSize:12,color:"#a78bfa",fontWeight:700,letterSpacing:1,marginBottom:8}}>🎯 OUR MISSION</div>
+          <div style={{fontSize:13,lineHeight:1.8,opacity:0.75}}>
+            To make financial guidance accessible to every Indian — in their own language, completely free. No more confusion, no more exploitation. SAHAYAK is your trusted friend for Insurance, Tax, Solar, and Loans.
+          </div>
+        </div>
+
+        {}
+        <a href="https://instagram.com/singh.ankit007" target="_blank" rel="noreferrer" style={{
+          display:"flex", alignItems:"center", justifyContent:"center", gap:12,
+          padding:"14px 20px", borderRadius:16, textDecoration:"none", color:"#fff",
+          background:"linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)",
+          boxShadow:"0 4px 20px rgba(220,39,67,0.3)", marginBottom:20
+        }}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="white">
+            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+          </svg>
+          <div>
+            <div style={{fontWeight:800,fontSize:15}}>Follow on Instagram</div>
+            <div style={{fontSize:12,opacity:0.85}}>@singh.ankit007</div>
+          </div>
+        </a>
+
+        <div style={{textAlign:"center",fontSize:11,opacity:0.3}}>
+          SAHAYAK v2.0 • Made with ❤️ in India 🇮🇳
+        </div>
+      </div>
+    </div>
+  );
+
   if (screen === "home") return (
     <div style={{
       minHeight: "100vh",
@@ -663,7 +889,7 @@ export default function SahayakPremium() {
       position: "relative",
       overflow: "hidden"
     }}>
-      {/* Ambient Background */}
+      {}
       <div style={{
         position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none", overflow: "hidden"
       }}>
@@ -685,7 +911,7 @@ export default function SahayakPremium() {
         }}/>
       </div>
 
-      {/* Header */}
+      {}
       <header style={{
         padding: "16px 20px",
         display: "flex",
@@ -721,14 +947,30 @@ export default function SahayakPremium() {
           </div>
         </div>
 
-        <div style={{
-          display: "flex",
-          background: TOKENS.colors.surface,
-          borderRadius: 10,
-          padding: 3,
-          border: `1px solid ${TOKENS.colors.border}`,
-          backdropFilter: TOKENS.blur.sm
-        }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+
+          {}
+          <button
+            onClick={() => setScreen("about")}
+            title="About SAHAYAK"
+            style={{ width: 36, height: 36, borderRadius: 10, background: "rgba(124,58,237,0.1)", border: "1px solid rgba(124,58,237,0.2)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, color: "#a78bfa", transition: "all 0.2s" }}
+          >ℹ️</button>
+
+          {}
+          <a href="https://instagram.com/singh.ankit007" target="_blank" rel="noreferrer"
+            style={{ width: 36, height: 36, borderRadius: 10, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 16, textDecoration: "none", background: "linear-gradient(135deg,#f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%)", boxShadow: "0 2px 10px rgba(220,39,67,0.35)", transition: "all 0.2s" }}
+            title="@singh.ankit007"
+          >📸</a>
+
+          {}
+          <div style={{
+            display: "flex",
+            background: TOKENS.colors.surface,
+            borderRadius: 10,
+            padding: 3,
+            border: `1px solid ${TOKENS.colors.border}`,
+            backdropFilter: TOKENS.blur.sm
+          }}>
           {["hindi", "english"].map(l => (
             <button
               key={l}
@@ -753,7 +995,7 @@ export default function SahayakPremium() {
         </div>
       </header>
 
-      {/* Hero Section */}
+      {}
       <div style={{
         textAlign: "center",
         padding: "32px 24px 20px",
@@ -796,7 +1038,7 @@ export default function SahayakPremium() {
         }}>{t.sub}</p>
       </div>
 
-      {/* Main Content */}
+      {}
       <div style={{
         flex: 1,
         padding: "8px 16px 24px",
@@ -806,7 +1048,7 @@ export default function SahayakPremium() {
         boxSizing: "border-box",
         position: "relative", zIndex: 10
       }}>
-        {/* Solar Banner */}
+        {}
         <div
           onClick={() => openAgent(agentList.find(a => a.id === "solar"))}
           style={{
@@ -849,7 +1091,7 @@ export default function SahayakPremium() {
           }}>→</div>
         </div>
 
-        {/* Section Title */}
+        {}
         <div style={{
           display: "flex",
           alignItems: "center",
@@ -873,7 +1115,7 @@ export default function SahayakPremium() {
           }}/>
         </div>
 
-        {/* Agent Grid */}
+        {}
         <div style={{
           display: "grid",
           gridTemplateColumns: "repeat(3, 1fr)",
@@ -941,7 +1183,7 @@ export default function SahayakPremium() {
           ))}
         </div>
 
-        {/* WhatsApp CTA */}
+        {}
         <a
           href={WA_BASE}
           target="_blank"
@@ -989,7 +1231,7 @@ export default function SahayakPremium() {
           }}>→</div>
         </a>
 
-        {/* Trust Badge */}
+        {}
         <div style={{
           marginTop: 12,
           padding: "12px 16px",
@@ -1005,8 +1247,12 @@ export default function SahayakPremium() {
         </div>
       </div>
 
-      {/* CSS Animations */}
+      {}
       <style>{`
+        @keyframes voicePulse {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.3); }
+          50% { box-shadow: 0 0 0 8px rgba(239,68,68,0.1); }
+        }
         @keyframes float {
           0%, 100% { transform: translate(0, 0); }
           33% { transform: translate(20px, -20px); }
@@ -1053,9 +1299,6 @@ export default function SahayakPremium() {
     </div>
   );
 
-  // ═══════════════════════════════════════════════════════════════
-  //  CHAT SCREEN
-  // ═══════════════════════════════════════════════════════════════
   const starters = agent.starters;
   return (
     <div style={{
@@ -1068,7 +1311,7 @@ export default function SahayakPremium() {
       position: "relative",
       overflow: "hidden"
     }}>
-      {/* Ambient Background */}
+      {}
       <div style={{
         position: "fixed", inset: 0, zIndex: 0, pointerEvents: "none", overflow: "hidden"
       }}>
@@ -1081,7 +1324,7 @@ export default function SahayakPremium() {
         }}/>
       </div>
 
-      {/* Chat Header */}
+      {}
       <header style={{
         padding: "10px 16px",
         display: "flex",
@@ -1196,7 +1439,7 @@ export default function SahayakPremium() {
         </a>
       </header>
 
-      {/* Starter Pills */}
+      {}
       {msgs.length <= 1 && (
         <div style={{
           padding: "12px 16px 4px",
@@ -1241,7 +1484,7 @@ export default function SahayakPremium() {
         </div>
       )}
 
-      {/* Messages */}
+      {}
       <div
         ref={chatContainerRef}
         style={{
@@ -1300,7 +1543,7 @@ export default function SahayakPremium() {
               )}
 
               <div style={{ maxWidth: "78%", display: "flex", flexDirection: "column", gap: 6 }}>
-                {/* Bubble */}
+                {}
                 <div style={{
                   background: isUser 
                     ? `linear-gradient(135deg, ${agent.color}18, ${agent.color}08)`
@@ -1327,7 +1570,7 @@ export default function SahayakPremium() {
                   </div>
                 </div>
 
-                {/* Action bar for assistant messages */}
+                {}
                 {!isUser && (
                   <div style={{
                     display: "flex", alignItems: "center", gap: 8,
@@ -1389,7 +1632,7 @@ export default function SahayakPremium() {
           );
         })}
 
-        {/* Smart Lead Capture */}
+        {}
         {showLead && (
           <div style={{
             margin: "16px 0", borderRadius: 20,
@@ -1406,7 +1649,7 @@ export default function SahayakPremium() {
             }}/>
 
             <div style={{ position: "relative", zIndex: 1 }}>
-              {/* Header */}
+              {}
               <div style={{
                 display: "flex", alignItems: "center", gap: 10,
                 marginBottom: 14, paddingBottom: 12,
@@ -1428,7 +1671,7 @@ export default function SahayakPremium() {
                 </div>
               </div>
 
-              {/* Trust signal */}
+              {}
               <div style={{
                 display: "flex", alignItems: "center", gap: 6,
                 marginBottom: 14, padding: "8px 12px",
@@ -1442,13 +1685,13 @@ export default function SahayakPremium() {
                 </span>
               </div>
 
-              {/* Form */}
+              {}
               <SmartLeadForm agent={agent} t={t} lang={lang} onSubmit={handleLeadSubmit} onSkip={() => setShowLead(false)} />
             </div>
           </div>
         )}
 
-        {/* Typing Indicator */}
+        {}
         {loading && (
           <div style={{ display: "flex", alignItems: "flex-end", gap: 7, marginBottom: 16 }}>
             <div style={{
@@ -1500,10 +1743,10 @@ export default function SahayakPremium() {
         <div ref={endRef}/>
       </div>
 
-      {/* Solar Floating Calculator */}
+      {}
       {agent.solar && <PremiumSolarPanel lang={lang} onSend={send}/>}
 
-      {/* Input Bar */}
+      {}
       <div style={{
         padding: "10px 16px 14px",
         background: "rgba(5,5,8,0.92)",
@@ -1512,9 +1755,38 @@ export default function SahayakPremium() {
         position: "relative", zIndex: 10
       }}>
         <div style={{ display: "flex", gap: 8, alignItems: "flex-end" }}>
-          {/* Mic Button */}
+          {}
+          <DocUploadBtn
+            lang={lang}
+            agent={agent}
+            onAttach={(file) => {
+              const reader = new FileReader();
+              reader.onload = (e) => {
+                const b64 = e.target.result.split(",")[1];
+                setUploadedDoc({
+                  base64: b64,
+                  mediaType: file.type,
+                  name: file.name,
+                  isImage: file.type.startsWith("image/"),
+                  isPDF: file.type === "application/pdf",
+                });
+                setInput(prev => {
+                  const tag = `📎 [${file.name}] `;
+                  return prev.startsWith("📎") ? prev : tag + (prev || (lang === "hindi" ? "इस दस्तावेज़ के बारे में बताएं" : "Please analyze this document"));
+                });
+              };
+              reader.readAsDataURL(file);
+            }}
+          />
+
+          {}
           <button
-            onClick={startVoice}
+            onMouseDown={startVoiceHold}
+            onMouseUp={stopVoiceHold}
+            onMouseLeave={stopVoiceHold}
+            onTouchStart={(e) => { e.preventDefault(); startVoiceHold(); }}
+            onTouchEnd={(e) => { e.preventDefault(); stopVoiceHold(); }}
+            title={lang === "hindi" ? "दबाकर रखें — बोलें — छोड़ें" : "Hold to speak — Release to send"}
             style={{
               width: 44, height: 44, borderRadius: 14, flexShrink: 0,
               background: isListening
@@ -1525,14 +1797,16 @@ export default function SahayakPremium() {
                 : "2px solid rgba(255,255,255,1)",
               cursor: "pointer", fontSize: 18,
               display: "flex", alignItems: "center", justifyContent: "center",
-              transition: "all 0.2s",
-              animation: isListening ? "pulse-glow 1s infinite" : "none",
+              transition: "all 0.15s",
+              animation: isListening ? "pulse-glow 0.6s infinite" : "none",
+              transform: isListening ? "scale(1.12)" : "scale(1)",
               boxShadow: isListening
-                ? "0 4px 20px rgba(239,68,68,0.5), 0 2px 4px rgba(0,0,0,0.3)"
-                : "0 4px 14px rgba(255,255,255,0.25), 0 2px 6px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,1)"
+                ? "0 0 0 6px rgba(239,68,68,0.25), 0 4px 20px rgba(239,68,68,0.5)"
+                : "0 4px 14px rgba(255,255,255,0.25), 0 2px 6px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,1)",
+              userSelect: "none", WebkitUserSelect: "none",
             }}
           >
-            🎤
+            {isListening ? "🔴" : "🎤"}
           </button>
 
           <textarea
@@ -1543,8 +1817,9 @@ export default function SahayakPremium() {
             rows={1}
             style={{
               flex: 1,
-              background: "rgba(255,245,235,0.92)",
-              border: `1.5px solid ${agent.color}40`,
+              background: isListening ? "rgba(239,68,68,0.08)" : "rgba(255,245,235,0.92)",
+              border: isListening ? "2px solid rgba(239,68,68,0.7)" : `1.5px solid ${agent.color}40`,
+              animation: isListening ? "voicePulse 0.8s ease-in-out infinite" : "none",
               borderRadius: 14,
               padding: "10px 14px",
               color: "#1a1a2e",
@@ -1562,7 +1837,7 @@ export default function SahayakPremium() {
             onBlur={e => { e.target.style.borderColor = `${agent.color}40`; e.target.style.boxShadow = "inset 0 1px 3px rgba(0,0,0,0.08)"; }}
           />
 
-          {/* Send Button */}
+          {}
           <button
             onClick={() => send()}
             disabled={!input.trim() || loading}
@@ -1594,14 +1869,6 @@ export default function SahayakPremium() {
             </svg>
           </button>
 
-          {/* 📎 Document Upload */}
-          <DocUploadBtn
-            agent={agent}
-            lang={lang}
-            t={t}
-            onResult={handleDocResult}
-          />
-
         </div>
         <div style={{ fontSize: 9.5, opacity: 0.18, textAlign: "center", marginTop: 6 }}>
           SAHAYAK • GST Suvidha • VLE-IRDAI • MFINS Solar • 🇮🇳
@@ -1609,6 +1876,10 @@ export default function SahayakPremium() {
       </div>
 
       <style>{`
+        @keyframes voicePulse {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0.3); }
+          50% { box-shadow: 0 0 0 8px rgba(239,68,68,0.1); }
+        }
         @keyframes float {
           0%, 100% { transform: translate(0, 0); }
           33% { transform: translate(20px, -20px); }
@@ -1654,544 +1925,51 @@ export default function SahayakPremium() {
   );
 }
 
-// ── Smart Lead Form Component ──
-
-// ── Document Upload Component ──
-function DocUploadBtn({ agent, lang, t, onResult }) {
+function DocUploadBtn({ lang, agent, onAttach }) {
   const fileRef = useRef(null);
-  const [analyzing, setAnalyzing] = useState(false);
+  const [preview, setPreview] = useState(null);
 
-  const handleFile = async (file) => {
+  const handleFile = (file) => {
     if (!file) return;
-    const maxMB = 10;
-    if (file.size > maxMB * 1024 * 1024) {
-      onResult(lang === "hindi" ? "❌ फ़ाइल बहुत बड़ी है। 10MB से कम होनी चाहिए।" : "❌ File too large. Max 10MB.");
+    if (file.size > 10 * 1024 * 1024) {
+      alert(lang === "hindi" ? "❌ फ़ाइल 10MB से बड़ी है!" : "❌ File too large! Max 10MB.");
       return;
     }
-
-    setAnalyzing(true);
-    const reader = new FileReader();
-
-    reader.onload = async (e) => {
-      try {
-        const base64 = e.target.result.split(",")[1];
-        const mediaType = file.type;
-        const isImage = mediaType.startsWith("image/");
-        const isPDF = mediaType === "application/pdf";
-
-        let analysisText = "";
-
-        if (isImage) {
-          // Send to GROQ vision API
-          const res = await fetch("/api/chat", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              system: `You are SAHAYAK's ${agent?.name || "Financial"} expert. Analyze this document/image carefully. ${
-                lang === "hindi" ? "Respond ENTIRELY in Hindi (Devanagari). Simple language." :
-                lang === "english" ? "Respond in clear English." :
-                "Respond in Hinglish."
-              }
-              
-              ANALYSIS FORMAT:
-              1. Document type identify karo
-              2. Key information extract karo (amounts, dates, names, notice numbers)
-              3. Simple explanation do — kya matlab hai is document ka
-              4. Urgency batao: 🔴 Urgent / 🟡 Important / 🟢 Routine
-              5. Next steps clearly batao (numbered list)
-              
-              Be specific and actionable. Use bullet points.`,
-              messages: [{
-                role: "user",
-                content: [
-                  { type: "image_url", image_url: { url: `data:${mediaType};base64,${base64}` } },
-                  { type: "text", text: lang === "hindi" 
-                    ? "इस दस्तावेज़ का विश्लेषण करें और बताएं इसका क्या मतलब है और क्या करना चाहिए।"
-                    : "Analyze this document and tell me what it means and what action to take." }
-                ]
-              }]
-            })
-          });
-          const data = await res.json();
-          analysisText = data?.content?.[0]?.text || (lang === "hindi" ? "विश्लेषण में समस्या। WhatsApp पर भेजें।" : "Analysis failed. Please send on WhatsApp.");
-        } else if (isPDF) {
-          // PDF - use text extraction approach
-          analysisText = lang === "hindi"
-            ? `📄 **PDF प्राप्त हुआ:** ${file.name}
-
-PDF का विश्लेषण करने के लिए:
-• WhatsApp पर +918115776644 भेजें
-• हमारे विशेषज्ञ 2 मिनट में जवाब देंगे
-
-या PDF की फ़ोटो खींचकर यहाँ upload करें — AI तुरंत पढ़ेगा!`
-            : `📄 **PDF received:** ${file.name}
-
-To analyze this PDF:
-• Send to WhatsApp +918115776644
-• Our expert will respond in 2 minutes
-
-Or take a photo of the PDF and upload here — AI will read it instantly!`;
-        } else {
-          analysisText = lang === "hindi"
-            ? `📎 **फ़ाइल प्राप्त:** ${file.name}
-
-Word/Excel फ़ाइलों के लिए:
-• Screenshot लें और यहाँ upload करें
-• या WhatsApp +918115776644 पर भेजें`
-            : `📎 **File received:** ${file.name}
-
-For Word/Excel files:
-• Take a screenshot and upload here
-• Or send to WhatsApp +918115776644`;
-        }
-
-        onResult(analysisText, file.name);
-      } catch (err) {
-        onResult(lang === "hindi" 
-          ? "❌ विश्लेषण में त्रुटि। WhatsApp पर +918115776644 भेजें।"
-          : "❌ Analysis error. Please send to WhatsApp +918115776644.");
-      }
-      setAnalyzing(false);
-    };
-
-    reader.onerror = () => {
-      setAnalyzing(false);
-      onResult(lang === "hindi" ? "❌ फ़ाइल पढ़ने में त्रुटि।" : "❌ Error reading file.");
-    };
-
-    reader.readAsDataURL(file);
+    setPreview(file.name);
+    onAttach(file);
+    setTimeout(() => setPreview(null), 3000);
   };
-
-  const openFilePicker = () => fileRef.current?.click();
 
   return (
     <>
       <input
         ref={fileRef}
         type="file"
-        accept="image/*,application/pdf,.doc,.docx,.xls,.xlsx"
-        capture={false}
+        accept="image/*,image/jpeg,image/png,image/webp,application/pdf,.doc,.docx,.xls,.xlsx"
         style={{ display: "none" }}
         onChange={e => handleFile(e.target.files?.[0])}
+        onClick={e => e.target.value = ""}
       />
       <button
-        onClick={openFilePicker}
-        disabled={analyzing}
-        title={lang === "hindi" ? "दस्तावेज़ या फ़ोटो अपलोड करें" : "Upload document or photo"}
+        onClick={() => fileRef.current?.click()}
+        title={lang === "hindi" ? "📎 दस्तावेज़ / फ़ोटो अपलोड करें" : "📎 Upload document or photo"}
         style={{
           width: 44, height: 44, borderRadius: 14, flexShrink: 0,
-          background: analyzing
-            ? "linear-gradient(145deg,#7c3aed,#4f46e5)"
-            : "rgba(255,255,255,0.95)",
-          border: analyzing ? "2px solid #7c3aed" : "2px solid rgba(255,255,255,1)",
-          cursor: analyzing ? "not-allowed" : "pointer",
+          background: preview ? "linear-gradient(145deg,#7c3aed,#4f46e5)" : "rgba(255,255,255,0.95)",
+          border: preview ? "2px solid #7c3aed" : "2px solid rgba(255,255,255,1)",
+          cursor: "pointer", fontSize: 20,
           display: "flex", alignItems: "center", justifyContent: "center",
           transition: "all 0.2s",
-          boxShadow: "0 4px 14px rgba(255,255,255,0.2), 0 2px 6px rgba(0,0,0,0.3)",
-          fontSize: analyzing ? 12 : 20,
-          animation: analyzing ? "pulse-glow 1s infinite" : "none",
-          color: analyzing ? "#fff" : "#1a1a2e",
+          boxShadow: preview
+            ? "0 0 0 4px rgba(124,58,237,0.25), 0 4px 14px rgba(124,58,237,0.4)"
+            : "0 4px 14px rgba(255,255,255,0.2), 0 2px 6px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,1)",
+          color: preview ? "#fff" : "#1a1a2e",
+          transform: preview ? "scale(1.05)" : "scale(1)",
         }}
       >
-        {analyzing ? "⏳" : "📎"}
+        {preview ? "✅" : "📎"}
       </button>
     </>
   );
 }
 
-function SmartLeadForm({ agent, t, onSubmit, onSkip }) {
-  const [name, setName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [step, setStep] = useState("form");
-  const ready = phone.length === 10;
-
-  const submit = () => {
-    if (!ready) return;
-    // Open WhatsApp with pre-filled message
-    const agentName = agent?.name || "Financial";
-    const agentHi = agent?.hi || "वित्तीय";
-    const txt = lang === "english"
-      ? `Hello! I am ${name || "a user"}.%0AAgent: ${agentName}%0AMobile: +91${phone}%0AI need help — contacting via SAHAYAK App.`
-      : `नमस्ते! मैं ${name || "उपयोगकर्ता"} हूँ।%0Aविशेषज्ञ: ${agentHi}%0AMobile: +91${phone}%0ASAHAYAK App से संपर्क कर रहा/रही हूँ।`;
-    window.open(`${WA_BASE}?text=${encodeURIComponent(decodeURIComponent(txt))}`, "_blank");
-    setStep("success");
-    onSubmit(name);
-  };
-
-  if (step === "success") {
-    return (
-      <div style={{ textAlign: "center", padding: "8px 0" }}>
-        <div style={{ fontSize: 32, marginBottom: 8 }}>✅</div>
-        <div style={{ fontWeight: 800, fontSize: 15, color: "#10b981", marginBottom: 4 }}>
-          {t.callback.includes("एक्सपर्ट") ? "बिल्कुल सही!" : "Perfect!"}
-        </div>
-        <div style={{ fontSize: 12, color: "rgba(240,240,245,0.45)" }}>
-          {t.callback.includes("एक्सपर्ट") 
-            ? `हमारे ${agent.name} एक्सपर्ट 2 मिनट में आपसे WhatsApp पर जुड़ेंगे`
-            : `Our ${agent.name} expert will connect on WhatsApp in 2 minutes`}
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-      <div style={{ position: "relative" }}>
-        <input
-          placeholder={t.namePlaceholder}
-          value={name}
-          onChange={e => setName(e.target.value)}
-          style={{
-            width: "100%", padding: "12px 14px 12px 40px",
-            borderRadius: 12,
-            border: "1px solid rgba(255,255,255,0.06)",
-            background: "rgba(255,255,255,0.03)",
-            color: "#f0f0f5",
-            fontSize: 14,
-            outline: "none",
-            fontFamily: "inherit",
-            boxSizing: "border-box",
-            transition: "all 0.2s"
-          }}
-          onFocus={e => e.target.style.borderColor = `${agent.color}50`}
-          onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.06)"}
-        />
-        <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", fontSize: 14, opacity: 0.4 }}>👤</span>
-      </div>
-
-      <div style={{ position: "relative" }}>
-        <input
-          placeholder={t.phonePlaceholder}
-          value={phone}
-          onChange={e => setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))}
-          type="tel"
-          style={{
-            width: "100%", padding: "12px 14px 12px 40px",
-            borderRadius: 12,
-            border: `1px solid ${ready ? "rgba(16,185,129,0.5)" : "rgba(255,255,255,0.06)"}`,
-            background: "rgba(255,255,255,0.03)",
-            color: "#f0f0f5",
-            fontSize: 14,
-            outline: "none",
-            fontFamily: "inherit",
-            boxSizing: "border-box",
-            transition: "all 0.2s"
-          }}
-          onFocus={e => e.target.style.borderColor = `${agent.color}50`}
-          onBlur={e => e.target.style.borderColor = ready ? "rgba(16,185,129,0.5)" : "rgba(255,255,255,0.06)"}
-        />
-        <span style={{ position: "absolute", left: 14, top: "50%", transform: "translateY(-50%)", fontSize: 14, opacity: 0.4 }}>📱</span>
-        {ready && (
-          <span style={{
-            position: "absolute", right: 14, top: "50%", transform: "translateY(-50%)",
-            fontSize: 16, color: "#10b981"
-          }}>✓</span>
-        )}
-      </div>
-
-      <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
-        <button
-          onClick={submit}
-          disabled={!ready}
-          style={{
-            flex: 1, padding: "12px 0",
-            borderRadius: 14,
-            border: "none",
-            background: ready ? `linear-gradient(135deg, ${agent.color}, ${agent.color}dd)` : "rgba(255,255,255,0.03)",
-            color: "#fff",
-            fontWeight: 800,
-            fontSize: 13,
-            cursor: ready ? "pointer" : "not-allowed",
-            fontFamily: "inherit",
-            transition: "all 0.2s",
-            boxShadow: ready ? `0 4px 20px ${agent.color}40` : "none",
-            opacity: ready ? 1 : 0.5
-          }}
-          onMouseEnter={e => { if (ready) e.target.style.transform = "translateY(-1px)"; }}
-          onMouseLeave={e => { e.target.style.transform = "translateY(0)"; }}
-        >
-          <span style={{ marginRight: 6 }}>📱</span>
-          {t.sendWA}
-        </button>
-        <button
-          onClick={onSkip}
-          style={{
-            padding: "12px 16px",
-            borderRadius: 14,
-            border: "1px solid rgba(255,255,255,0.06)",
-            background: "transparent",
-            color: "rgba(240,240,245,0.25)",
-            cursor: "pointer",
-            fontSize: 12,
-            fontFamily: "inherit",
-            fontWeight: 600,
-            transition: "all 0.2s"
-          }}
-          onMouseEnter={e => { e.target.style.background = "rgba(255,255,255,0.03)"; e.target.style.color = "rgba(240,240,245,0.45)"; }}
-          onMouseLeave={e => { e.target.style.background = "transparent"; e.target.style.color = "rgba(240,240,245,0.25)"; }}
-        >
-          {t.later}
-        </button>
-      </div>
-    </div>
-  );
-}
-
-// ── Premium Solar Panel ──
-function PremiumSolarPanel({ lang, onSend }) {
-  const t = UI[lang];
-  const [kw, setKw] = useState(2);
-  const [state, setState] = useState("UP");
-  const [type, setType] = useState("residential");
-  const [open, setOpen] = useState(false);
-  const calc = calcSolar(kw, state);
-  const isComm = type === "commercial";
-
-  const submit = () => {
-    const txt = lang === "english"
-      ? `Hello! Interested in ${kw}KW ${isComm ? "commercial" : "residential"} solar.%0AState: ${state}${!isComm ? `%0AEst. Subsidy: ₹${calc.total.toLocaleString("en-IN")}` : ""}%0AFrom SAHAYAK Premium.`
-      : `नमस्ते! मुझे ${kw}KW ${isComm ? "व्यावसायिक" : "घरेलू"} सोलर में रुचि है।%0Aराज्य: ${state}${!isComm ? `%0Aअनुमानित सब्सिडी: ₹${calc.total.toLocaleString("en-IN")}` : ""}%0ASAHAYAK Premium से।`;
-    window.open(`${WA_BASE}?text=${txt}`, "_blank");
-    setOpen(false);
-  };
-
-  return (
-    <>
-      {/* Floating Action Button */}
-      <button
-        onClick={() => setOpen(!open)}
-        style={{
-          position: "fixed", bottom: 90, right: 20, zIndex: 100,
-          width: 56, height: 56, borderRadius: "50%",
-          background: "linear-gradient(135deg, #f59e0b, #d97706)",
-          border: "none", cursor: "pointer", fontSize: 24,
-          boxShadow: "0 4px 24px rgba(245,158,11,0.4), 0 0 0 4px rgba(245,158,11,0.1)",
-          display: "flex", alignItems: "center", justifyContent: "center",
-          transition: "all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
-          animation: open ? "none" : "float 3s ease-in-out infinite"
-        }}
-        onMouseEnter={e => { 
-          e.currentTarget.style.transform = "scale(1.1) rotate(5deg)"; 
-          e.currentTarget.style.boxShadow = "0 8px 32px rgba(245,158,11,0.5), 0 0 0 6px rgba(245,158,11,0.15)"; 
-        }}
-        onMouseLeave={e => { 
-          e.currentTarget.style.transform = "scale(1) rotate(0deg)"; 
-          e.currentTarget.style.boxShadow = "0 4px 24px rgba(245,158,11,0.4), 0 0 0 4px rgba(245,158,11,0.1)"; 
-        }}
-      >
-        🧮
-      </button>
-
-      {/* Bottom Sheet */}
-      {open && (
-        <>
-          <div
-            onClick={() => setOpen(false)}
-            style={{
-              position: "fixed", inset: 0,
-              background: "rgba(0,0,0,0.6)",
-              backdropFilter: TOKENS.blur.md,
-              zIndex: 199,
-              animation: "fadeIn 0.2s"
-            }}
-          />
-          <div style={{
-            position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 200,
-            background: "#0c0c14",
-            borderRadius: "28px 28px 0 0",
-            border: "1px solid rgba(255,255,255,0.06)",
-            borderBottom: "none",
-            padding: "20px 20px 32px",
-            boxShadow: "0 -8px 48px rgba(0,0,0,0.6)",
-            animation: "slideUp 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)",
-            maxHeight: "85vh", overflowY: "auto"
-          }}>
-            {/* Handle */}
-            <div style={{
-              width: 44, height: 4, borderRadius: 2,
-              background: "rgba(255,255,255,0.15)",
-              margin: "0 auto 18px"
-            }}/>
-
-            <div style={{
-              display: "flex", justifyContent: "space-between", alignItems: "center",
-              marginBottom: 18
-            }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                <div style={{
-                  width: 40, height: 40, borderRadius: 12,
-                  background: "rgba(245,158,11,0.15)",
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  fontSize: 20
-                }}>☀️</div>
-                <div>
-                  <div style={{ fontWeight: 800, fontSize: 16, color: "#f59e0b" }}>{t.calcTitle}</div>
-                  <div style={{ fontSize: 11, color: "rgba(240,240,245,0.25)", marginTop: 2 }}>
-                    PM Surya Ghar Subsidy
-                  </div>
-                </div>
-              </div>
-              <button
-                onClick={() => setOpen(false)}
-                style={{
-                  width: 32, height: 32, borderRadius: "50%",
-                  background: "rgba(255,255,255,0.03)",
-                  border: "1px solid rgba(255,255,255,0.06)",
-                  color: "rgba(240,240,245,0.45)",
-                  cursor: "pointer", fontSize: 14,
-                  display: "flex", alignItems: "center", justifyContent: "center",
-                  transition: "all 0.2s"
-                }}
-                onMouseEnter={e => { e.target.style.background = "rgba(255,255,255,0.06)"; e.target.style.color = "#f0f0f5"; }}
-                onMouseLeave={e => { e.target.style.background = "rgba(255,255,255,0.03)"; e.target.style.color = "rgba(240,240,245,0.45)"; }}
-              >
-                ✕
-              </button>
-            </div>
-
-            {/* Controls */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 16 }}>
-              <div>
-                <div style={{ fontSize: 11, color: "rgba(240,240,245,0.25)", marginBottom: 6, fontWeight: 600 }}>{t.capacity}</div>
-                <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
-                  {[1, 2, 3, 4, 5].map(k => (
-                    <button
-                      key={k}
-                      onClick={() => setKw(k)}
-                      style={{
-                        padding: "8px 14px", borderRadius: 10,
-                        border: `1px solid ${kw === k ? "#f59e0b" : "rgba(255,255,255,0.06)"}`,
-                        background: kw === k ? "rgba(245,158,11,0.2)" : "rgba(255,255,255,0.03)",
-                        color: kw === k ? "#f59e0b" : "rgba(240,240,245,0.45)",
-                        fontWeight: 700, fontSize: 13,
-                        cursor: "pointer", fontFamily: "inherit",
-                        transition: "all 0.2s"
-                      }}
-                    >
-                      {k} KW
-                    </button>
-                  ))}
-                </div>
-              </div>
-              <div>
-                <div style={{ fontSize: 11, color: "rgba(240,240,245,0.25)", marginBottom: 6, fontWeight: 600 }}>{t.state}</div>
-                <select
-                  value={state}
-                  onChange={e => setState(e.target.value)}
-                  style={{
-                    width: "100%", padding: "10px 12px",
-                    borderRadius: 12,
-                    border: "1px solid rgba(255,255,255,0.06)",
-                    background: "rgba(255,255,255,0.03)",
-                    color: "#f0f0f5",
-                    fontSize: 13, outline: "none", fontFamily: "inherit",
-                    cursor: "pointer"
-                  }}
-                >
-                  <option value="UP" style={{ background: "#0c0c14" }}>Uttar Pradesh</option>
-                  <option value="OTHER" style={{ background: "#0c0c14" }}>Other State</option>
-                </select>
-              </div>
-            </div>
-
-            {/* Type Toggle */}
-            <div style={{
-              display: "flex", gap: 8, marginBottom: 16,
-              background: "rgba(255,255,255,0.03)",
-              padding: 4, borderRadius: 12,
-              border: "1px solid rgba(255,255,255,0.06)"
-            }}>
-              {["residential", "commercial"].map(tp => (
-                <button
-                  key={tp}
-                  onClick={() => setType(tp)}
-                  style={{
-                    flex: 1, padding: "10px 0",
-                    borderRadius: 10, border: "none",
-                    background: type === tp ? "rgba(245,158,11,0.8)" : "transparent",
-                    color: "#fff", fontWeight: 700,
-                    cursor: "pointer", fontSize: 13,
-                    fontFamily: "inherit",
-                    transition: "all 0.2s"
-                  }}
-                >
-                  {tp === "residential" ? t.home : t.commercial}
-                </button>
-              ))}
-            </div>
-
-            {isComm ? (
-              <div style={{
-                marginBottom: 16, borderRadius: 16,
-                background: "linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%)",
-                border: "1px solid rgba(255,255,255,0.06)",
-                padding: 16, backdropFilter: TOKENS.blur.md
-              }}>
-                <div style={{ fontSize: 12.5, lineHeight: 1.8, color: "rgba(240,240,245,0.45)", whiteSpace: "pre-line" }}>
-                  {t.commercialNote}
-                </div>
-              </div>
-            ) : (
-              <div style={{
-                display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10,
-                marginBottom: 16
-              }}>
-                {[
-                  { l: t.centralSub, v: `₹${calc.central.toLocaleString("en-IN")}`, c: "#60a5fa" },
-                  { l: state === "UP" ? t.stateExtra : "State", v: state === "UP" ? `₹${calc.stateS.toLocaleString("en-IN")}` : "-", c: "#34d399" },
-                  { l: t.totalSub, v: `₹${calc.total.toLocaleString("en-IN")}`, c: "#f59e0b", highlight: true },
-                  { l: t.netCost, v: `₹${calc.net.toLocaleString("en-IN")}`, c: "#f87171" },
-                  { l: t.annualSaving, v: `₹${calc.saving.toLocaleString("en-IN")}`, c: "#4ade80" },
-                  { l: t.payback, v: `${calc.payback} ${t.years}`, c: "#c084fc" },
-                ].map((item, i) => (
-                  <div
-                    key={i}
-                    style={{
-                      background: item.highlight 
-                        ? `linear-gradient(135deg, ${item.c}15, ${item.c}05)`
-                        : "rgba(255,255,255,0.03)",
-                      borderRadius: 14, padding: "12px 14px",
-                      border: `1px solid ${item.highlight ? `${item.c}30` : "rgba(255,255,255,0.06)"}`,
-                      transition: "all 0.3s"
-                    }}
-                  >
-                    <div style={{ fontSize: 10, color: "rgba(240,240,245,0.25)", marginBottom: 4, fontWeight: 600 }}>{item.l}</div>
-                    <div style={{
-                      fontSize: item.highlight ? 20 : 16,
-                      fontWeight: 800, color: item.c,
-                      transition: "all 0.3s"
-                    }}>
-                      {item.v}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            <button
-              onClick={submit}
-              style={{
-                width: "100%", padding: "14px 0",
-                borderRadius: 14,
-                border: "none",
-                background: "linear-gradient(135deg, #f59e0b, #d97706)",
-                color: "#fff",
-                fontWeight: 800,
-                fontSize: 14,
-                cursor: "pointer",
-                fontFamily: "inherit",
-                transition: "all 0.2s",
-                boxShadow: "0 4px 20px rgba(245,158,11,0.4)"
-              }}
-              onMouseEnter={e => { e.target.style.transform = "translateY(-1px)"; e.target.style.boxShadow = "0 6px 24px rgba(245,158,11,0.5)"; }}
-              onMouseLeave={e => { e.target.style.transform = "translateY(0)"; e.target.style.boxShadow = "0 4px 20px rgba(245,158,11,0.4)"; }}
-            >
-              <span style={{ marginRight: 8 }}>📱</span>
-              {t.surveyBtn}
-            </button>
-          </div>
-        </>
-      )}
-    </>
-  );
-}
