@@ -203,6 +203,9 @@ const AGENTS = {
     { id:"solar", icon:"☀️", name:"Solar Rooftop", tag:"Free electricity, govt subsidy", color:"#f97316", glow:"rgba(249,115,22,0.40)", grad:"135deg,#f97316,#c2410c", iconBg:"rgba(249,115,22,0.12)", solar:true,
       starters:["How much subsidy in UP?","Cost of 3KW solar?","Solar on EMI?"],
       description: "Solar Rooftop Expert — Subsidy under PM Surya Ghar scheme" },
+    { id:"solarquote", icon:"🧾", name:"Solar Quotation", tag:"MFINS Partner — Free Quotation", color:"#00b894", glow:"rgba(0,184,148,0.3)", grad:"135deg,#00b894,#00796b", iconBg:"rgba(0,184,148,0.1)", solarQuote:true,
+      starters:["Get free solar quotation","Share your electricity bill","Ongrid vs Hybrid?"],
+      description:"HAANS Solar — MFINS Partner solar quotation" },
   ]
 };
 
@@ -440,7 +443,7 @@ function AmbientOrbs({ agent }) {
         <div key={i} style={{
           position: 'absolute', left: orb.x + "%", top: orb.y + "%",
           width: orb.size, height: orb.size, borderRadius: '50%',
-          background: "radial-gradient(circle, " + orb.color + "18 0%, " + orb.color + "08 40%, transparent 70%)",
+          background: `radial-gradient(circle, ${orb.color}18 0%, ${orb.color}08 40%, transparent 70%)`,
           filter: TOKENS.blur.xxl,
           animation: "orbFloat " + orb.duration + "s " + orb.delay + "s ease-in-out infinite",
           transform: 'translate(-50%, -50%)',
@@ -584,7 +587,7 @@ function SmartLeadForm({ agent, t, lang = "hindi", onSubmit, onSkip }) {
           width: 44, height: 44, borderRadius: 12,
           background: agent?.iconBg || "rgba(139,92,246,0.12)",
           display: "flex", alignItems: "center", justifyContent: "center",
-          fontSize: 22, border: "1px solid " + (agent?.color || "#a855f7") + "30",
+          fontSize: 22, border: `1px solid ${agent?.color || "#a855f7"}30`,
         }}>{agent?.icon || "🎯"}</div>
         <div>
           <div style={{ fontWeight: 800, fontSize: 15, color: agent?.color || "#a855f7" }}>{t?.callback || "Free Callback!"}</div>
@@ -598,12 +601,12 @@ function SmartLeadForm({ agent, t, lang = "hindi", onSubmit, onSkip }) {
           onChange={e => setName(e.target.value)}
           style={{
             width: "100%", padding: "12px 16px", borderRadius: TOKENS.radii.lg,
-            border: "1px solid " + (agent?.color || "#a855f7") + "25",
+            border: `1px solid ${agent?.color || "#a855f7"}25`,
             background: "rgba(255,255,255,0.03)", color: "#fff", fontSize: 14, outline: "none",
             fontFamily: TOKENS.fonts.primary, transition: TOKENS.transitions.fast, boxSizing: "border-box",
           }}
-          onFocus={e => { e.target.style.borderColor = (agent?.color || "#a855f7") + "60"; e.target.style.background = "rgba(255,255,255,0.05)"; }}
-          onBlur={e => { e.target.style.borderColor = (agent?.color || "#a855f7") + "25"; e.target.style.background = "rgba(255,255,255,0.03)"; }}
+          onFocus={e => { e.target.style.borderColor = `${agent?.color || "#a855f7"}60`; e.target.style.background = "rgba(255,255,255,0.05)"; }}
+          onBlur={e => { e.target.style.borderColor = `${agent?.color || "#a855f7"}25`; e.target.style.background = "rgba(255,255,255,0.03)"; }}
         />
         <input
           placeholder={t?.phonePlaceholder || "Mobile number (10 digits)"}
@@ -612,12 +615,12 @@ function SmartLeadForm({ agent, t, lang = "hindi", onSubmit, onSkip }) {
           type="tel"
           style={{
             width: "100%", padding: "12px 16px", borderRadius: TOKENS.radii.lg,
-            border: "1px solid " + (agent?.color || "#a855f7") + "25",
+            border: `1px solid ${agent?.color || "#a855f7"}25`,
             background: "rgba(255,255,255,0.03)", color: "#fff", fontSize: 14, outline: "none",
             fontFamily: TOKENS.fonts.primary, transition: TOKENS.transitions.fast, boxSizing: "border-box",
           }}
-          onFocus={e => { e.target.style.borderColor = (agent?.color || "#a855f7") + "60"; e.target.style.background = "rgba(255,255,255,0.05)"; }}
-          onBlur={e => { e.target.style.borderColor = (agent?.color || "#a855f7") + "25"; e.target.style.background = "rgba(255,255,255,0.03)"; }}
+          onFocus={e => { e.target.style.borderColor = `${agent?.color || "#a855f7"}60`; e.target.style.background = "rgba(255,255,255,0.05)"; }}
+          onBlur={e => { e.target.style.borderColor = `${agent?.color || "#a855f7"}25`; e.target.style.background = "rgba(255,255,255,0.03)"; }}
         />
         <div style={{ display: "flex", gap: 10 }}>
           <PremiumButton onClick={submit} disabled={!ready || isSubmitting} color={agent?.color} style={{ flex: 1 }} icon={isSubmitting ? "⏳" : "📱"}>
@@ -673,7 +676,7 @@ function PremiumSolarPanel({ lang, onSend }) {
             <button key={item.key} onClick={() => setType(item.key)}
               style={{
                 flex: 1, padding: "10px", borderRadius: TOKENS.radii.lg,
-                border: "1px solid " + (type === item.key ? "rgba(245,158,11,0.4)" : "rgba(255,255,255,0.06)"),
+                border: `1px solid ${type === item.key ? 'rgba(245,158,11,0.4)' : 'rgba(255,255,255,0.06)'}`,
                 background: type === item.key ? 'rgba(245,158,11,0.12)' : 'rgba(255,255,255,0.02)',
                 color: type === item.key ? '#f59e0b' : TOKENS.colors.textMuted,
                 fontFamily: TOKENS.fonts.primary, fontSize: 13, fontWeight: 700,
@@ -692,7 +695,7 @@ function PremiumSolarPanel({ lang, onSend }) {
             { label: t.totalSub, value: formatCurrency(result.total), color: "#22c55e" },
             { label: t.netCost, value: formatCurrency(result.net), color: "#f59e0b" },
             { label: t.annualSaving, value: formatCurrency(result.saving), color: "#14b8a6" },
-            { label: t.payback, value: result.payback + " " + t.years, color: "#ef4444" },
+            { label: t.payback, value: `${result.payback} ${t.years}`, color: "#ef4444" },
           ].map((item, i) => (
             <div key={i} style={{ padding: "14px", borderRadius: TOKENS.radii.lg, background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)", textAlign: "center" }}>
               <div style={{ fontSize: 11, opacity: 0.4, marginBottom: 4 }}>{item.label}</div>
@@ -705,7 +708,7 @@ function PremiumSolarPanel({ lang, onSend }) {
             {t.commercialNote}
           </div>
         )}
-        <PremiumButton onClick={() => onSend(t.surveyBtn + " — " + kw + "KW " + (type === "home" ? t.home : t.commercial) + " " + state)} color="#25d366" icon="💬" style={{ width: "100%" }}>
+        <PremiumButton onClick={() => onSend(`${t.surveyBtn} — ${kw}KW ${type === "home" ? t.home : t.commercial} ${state}`)} color="#25d366" icon="💬" style={{ width: "100%" }}>
           {t.surveyBtn}
         </PremiumButton>
       </div>
@@ -766,12 +769,12 @@ function TypingIndicator({ agent, t }) {
   return (
     <div style={{ display: "flex", alignItems: "flex-end", gap: 10, marginBottom: 20 }}>
       <div style={{ position: "relative", width: 32, height: 32, animation: "breathe 2s ease-in-out infinite" }}>
-        <div style={{ position: "absolute", inset: -3, borderRadius: "50%", background: "radial-gradient(circle, " + agent.color + "50 0%, transparent 70%)", filter: TOKENS.blur.sm, animation: "pulse-glow 2s ease-in-out infinite" }} />
+        <div style={{ position: "absolute", inset: -3, borderRadius: "50%", background: `radial-gradient(circle, ${agent.color}50 0%, transparent 70%)`, filter: TOKENS.blur.sm, animation: "pulse-glow 2s ease-in-out infinite" }} />
         <img src={LOGO} alt="SAHAYAK" style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover", border: "2px solid " + agent.color + "50", position: "relative", zIndex: 1 }} />
       </div>
       <div style={{ background: TOKENS.colors.surface, borderRadius: "18px 18px 18px 4px", padding: "11px 15px", display: "flex", gap: 4, border: "1px solid rgba(255,255,255,0.08)", backdropFilter: TOKENS.blur.md }}>
         {[0, 1, 2].map(i => (
-          <div key={i} style={{ width: 6, height: 6, borderRadius: "50%", background: agent.color, animation: "typing-bounce 1.4s " + (i * 0.15) + "s infinite ease-in-out" }} />
+          <div key={i} style={{ width: 6, height: 6, borderRadius: "50%", background: agent.color, animation: `typing-bounce 1.4s ${i * 0.15}s infinite ease-in-out` }} />
         ))}
       </div>
       <span style={{ fontSize: 10, color: TOKENS.colors.textDim, marginLeft: 4 }}>{t.typing}</span>
@@ -782,6 +785,190 @@ function TypingIndicator({ agent, t }) {
 // ═══════════════════════════════════════════════════════════
 // MAIN SAHAYAK PREMIUM APP — World-Class Experience
 // ═══════════════════════════════════════════════════════════
+function PolicyPage({ lang, onBack }) {
+  const isH = lang !== "english";
+  return (
+    <div style={{ minHeight: "100vh", fontFamily: "'Noto Sans Devanagari','Segoe UI',sans-serif", background: "#05050a", color: "#fff", display: "flex", flexDirection: "column" }}>
+      <div style={{ padding: "12px 16px", display: "flex", alignItems: "center", gap: 10, borderBottom: "1px solid rgba(74,222,128,0.12)", background: "rgba(5,5,10,0.95)", position: "sticky", top: 0 }}>
+        <button onClick={onBack} style={{ background: "none", border: "none", color: "rgba(255,255,255,0.5)", fontSize: 22, cursor: "pointer", padding: 0 }}>←</button>
+        <div style={{ fontWeight: 800, fontSize: 16 }}>{isH ? "गोपनीयता नीति & नियम" : "Privacy Policy & Terms"}</div>
+      </div>
+      <div style={{ flex: 1, padding: "20px 16px", maxWidth: 560, margin: "0 auto", width: "100%", boxSizing: "border-box", overflowY: "auto" }}>
+        
+        {/* Company Info */}
+        <div style={{ background: "rgba(74,222,128,0.06)", border: "1px solid rgba(74,222,128,0.2)", borderRadius: 14, padding: 16, marginBottom: 18 }}>
+          <div style={{ fontWeight: 800, fontSize: 14, color: "#4ade80", marginBottom: 10 }}>🏢 {isH ? "कंपनी की जानकारी" : "Company Information"}</div>
+          <div style={{ fontSize: 13, lineHeight: 1.8, opacity: 0.8 }}>
+            <div><strong style={{ color: "#fff" }}>{isH ? "कंपनी का नाम:" : "Company Name:"}</strong> HAANS Solar</div>
+            <div><strong style={{ color: "#fff" }}>GST {isH ? "नंबर:" : "Number:"}</strong> 09DIYPS3881N1ZT</div>
+            <div><strong style={{ color: "#fff" }}>{isH ? "संस्थापक:" : "Founder:"}</strong> Ankit Singh</div>
+            <div><strong style={{ color: "#fff" }}>{isH ? "पता:" : "Address:"}</strong> Nawanagar, Chouhattar Kalan, Balrampur, UP - 271208</div>
+            <div><strong style={{ color: "#fff" }}>{isH ? "ईमेल:" : "Email:"}</strong> xsuvidha@gmail.com</div>
+            <div><strong style={{ color: "#fff" }}>{isH ? "फोन:" : "Phone:"}</strong> +91 8115776644</div>
+          </div>
+        </div>
+
+        {/* Privacy Policy */}
+        <div style={{ background: "rgba(167,139,250,0.06)", border: "1px solid rgba(167,139,250,0.15)", borderRadius: 14, padding: 16, marginBottom: 18 }}>
+          <div style={{ fontWeight: 800, fontSize: 14, color: "#a78bfa", marginBottom: 10 }}>🔒 {isH ? "गोपनीयता नीति" : "Privacy Policy"}</div>
+          <div style={{ fontSize: 12.5, lineHeight: 1.9, opacity: 0.75 }}>
+            {isH ? (
+              <>
+                <p style={{ marginBottom: 8 }}><strong style={{ color: "#a78bfa" }}>डेटा संग्रह:</strong> SAHAYAK केवल वही जानकारी एकत्र करता है जो आप स्वेच्छा से प्रदान करते हैं — जैसे नाम, मोबाइल नंबर और शहर का नाम।</p>
+                <p style={{ marginBottom: 8 }}><strong style={{ color: "#a78bfa" }}>डेटा का उपयोग:</strong> आपकी जानकारी केवल आपसे संपर्क करने और उचित वित्तीय/सोलर सेवाएं प्रदान करने के लिए उपयोग की जाती है।</p>
+                <p style={{ marginBottom: 8 }}><strong style={{ color: "#a78bfa" }}>डेटा साझाकरण:</strong> हम आपकी व्यक्तिगत जानकारी किसी तीसरे पक्ष को नहीं बेचते। केवल सेवा प्रदान करने हेतु HAANS Solar के प्रतिनिधि से साझा की जाती है।</p>
+                <p style={{ marginBottom: 8 }}><strong style={{ color: "#a78bfa" }}>AI चैट:</strong> आपकी बातचीत AI द्वारा प्रोसेस की जाती है। हम चैट इतिहास संग्रहीत नहीं करते।</p>
+                <p><strong style={{ color: "#a78bfa" }}>WhatsApp:</strong> लीड फॉर्म भरने पर आपकी जानकारी WhatsApp के माध्यम से हमारी टीम को भेजी जाती है।</p>
+              </>
+            ) : (
+              <>
+                <p style={{ marginBottom: 8 }}><strong style={{ color: "#a78bfa" }}>Data Collection:</strong> SAHAYAK collects only information you voluntarily provide — name, mobile number, and city.</p>
+                <p style={{ marginBottom: 8 }}><strong style={{ color: "#a78bfa" }}>Data Usage:</strong> Your information is used solely to contact you and provide relevant financial/solar services.</p>
+                <p style={{ marginBottom: 8 }}><strong style={{ color: "#a78bfa" }}>Data Sharing:</strong> We do not sell personal data. It is shared only with HAANS Solar representatives for service delivery.</p>
+                <p style={{ marginBottom: 8 }}><strong style={{ color: "#a78bfa" }}>AI Chat:</strong> Conversations are processed by AI. We do not store chat history.</p>
+                <p><strong style={{ color: "#a78bfa" }}>WhatsApp:</strong> Lead form submissions are sent to our team via WhatsApp.</p>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Terms & Conditions */}
+        <div style={{ background: "rgba(243,156,18,0.06)", border: "1px solid rgba(243,156,18,0.15)", borderRadius: 14, padding: 16, marginBottom: 18 }}>
+          <div style={{ fontWeight: 800, fontSize: 14, color: "#f39c12", marginBottom: 10 }}>📜 {isH ? "नियम और शर्तें" : "Terms & Conditions"}</div>
+          <div style={{ fontSize: 12.5, lineHeight: 1.9, opacity: 0.75 }}>
+            {isH ? (
+              <>
+                <p style={{ marginBottom: 8 }}>• SAHAYAK एक AI-आधारित सूचना सेवा है। यह कानूनी, वित्तीय या बीमा सलाह का विकल्प नहीं है।</p>
+                <p style={{ marginBottom: 8 }}>• SAHAYAK पर प्रदान की गई जानकारी सामान्य मार्गदर्शन के लिए है। किसी भी वित्तीय निर्णय से पहले योग्य विशेषज्ञ से परामर्श लें।</p>
+                <p style={{ marginBottom: 8 }}>• HAANS Solar, Ankit Singh (GST: 09DIYPS3881N1ZT) द्वारा संचालित एकल स्वामित्व है।</p>
+                <p style={{ marginBottom: 8 }}>• VLE-IRDAI लाइसेंस: CSC/VLEINS/UP/2025/452693 | GST Suvidha Network partner | MFINS Solar Channel Partner।</p>
+                <p style={{ marginBottom: 8 }}>• PM Surya Ghar: HAANS Solar एक अधिकृत वेंडर है। सब्सिडी राशि सरकारी नीतियों पर निर्भर है।</p>
+                <p>• सेवा का उपयोग करके आप इन नियमों से सहमत हैं।</p>
+              </>
+            ) : (
+              <>
+                <p style={{ marginBottom: 8 }}>• SAHAYAK is an AI-based information service and does not replace legal, financial, or insurance advice.</p>
+                <p style={{ marginBottom: 8 }}>• Information provided is for general guidance only. Consult a qualified expert before making financial decisions.</p>
+                <p style={{ marginBottom: 8 }}>• HAANS Solar is a sole proprietorship operated by Ankit Singh (GST: 09DIYPS3881N1ZT).</p>
+                <p style={{ marginBottom: 8 }}>• VLE-IRDAI License: CSC/VLEINS/UP/2025/452693 | GST Suvidha Network Partner | MFINS Solar Channel Partner.</p>
+                <p style={{ marginBottom: 8 }}>• PM Surya Ghar: HAANS Solar is an authorized vendor. Subsidy amounts are subject to government policies.</p>
+                <p>• By using this service, you agree to these terms.</p>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Disclaimer */}
+        <div style={{ background: "rgba(231,76,60,0.06)", border: "1px solid rgba(231,76,60,0.15)", borderRadius: 14, padding: 16, marginBottom: 20 }}>
+          <div style={{ fontWeight: 800, fontSize: 13, color: "#f87171", marginBottom: 8 }}>⚠️ {isH ? "अस्वीकरण" : "Disclaimer"}</div>
+          <div style={{ fontSize: 12, lineHeight: 1.8, opacity: 0.7 }}>
+            {isH
+              ? "SAHAYAK AI द्वारा उत्पन्न जानकारी प्रदान करता है जो पूरी तरह सटीक नहीं हो सकती। महत्वपूर्ण निर्णयों के लिए हमेशा अधिकृत विशेषज्ञ से सत्यापित करें।"
+              : "SAHAYAK provides AI-generated information which may not always be accurate. Always verify with authorized experts for important decisions."}
+          </div>
+        </div>
+
+        <div style={{ textAlign: "center", fontSize: 11, opacity: 0.25, marginBottom: 20 }}>
+          {isH ? "अंतिम अपडेट: मई 2026 • HAANS Solar © 2026" : "Last Updated: May 2026 • HAANS Solar © 2026"}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+
+function SolarQuoteForm({ lang, onSubmit, onSkip }) {
+  const isH = lang !== "english";
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+  const [city, setCity] = useState("");
+  const [sysType, setSysType] = useState("ongrid");
+  const [units, setUnits] = useState("");
+  const WA = "https://wa.me/918115776644";
+
+  const ready = name.trim() && phone.length === 10 && city.trim() && units.trim();
+
+  const submit = () => {
+    if (!ready) return;
+    const sysLabel = isH
+      ? (sysType === "ongrid" ? "ऑनग्रिड" : "हाइब्रिड")
+      : (sysType === "ongrid" ? "On-Grid" : "Hybrid");
+    const msg = isH
+      ? `🌞 *HAANS Solar — सोलर कोटेशन अनुरोध*%0A%0A*नाम:* ${name}%0A*मोबाइल:* +91${phone}%0A*शहर:* ${city}%0A*सिस्टम प्रकार:* ${sysLabel}%0A*औसत मासिक खपत:* ${units} यूनिट%0A%0ASAHAYAK App से भेजा गया। कृपया कोटेशन भेजें।`
+      : `🌞 *HAANS Solar — Solar Quotation Request*%0A%0A*Name:* ${name}%0A*Mobile:* +91${phone}%0A*City:* ${city}%0A*System Type:* ${sysLabel}%0A*Avg Monthly Units:* ${units} units%0A%0ASent via SAHAYAK App. Please send quotation.`;
+    window.open(`${WA}?text=${msg}`, "_blank");
+    onSubmit(name);
+  };
+
+  const inputStyle = {
+    width: "100%", padding: "10px 13px", borderRadius: 11,
+    border: "1px solid rgba(0,184,148,0.35)", background: "rgba(0,184,148,0.06)",
+    color: "#fff", fontSize: 13, outline: "none", fontFamily: "inherit",
+    boxSizing: "border-box", marginBottom: 10,
+  };
+
+  return (
+    <div style={{ margin: "6px 0", borderRadius: 18, background: "rgba(0,184,148,0.08)", border: "1px solid rgba(0,184,148,0.3)", padding: 16 }}>
+      <div style={{ fontWeight: 800, fontSize: 14, color: "#00b894", marginBottom: 4 }}>
+        🧾 {isH ? "मुफ्त सोलर कोटेशन पाएं!" : "Get Free Solar Quotation!"}
+      </div>
+      <div style={{ fontSize: 11, opacity: 0.5, marginBottom: 12 }}>
+        {isH ? "HAANS Solar — MFINS Partner • 5 मिनट में WhatsApp पर" : "HAANS Solar — MFINS Partner • On WhatsApp in 5 mins"}
+      </div>
+
+      <input placeholder={isH ? "आपका नाम *" : "Your Name *"}
+        value={name} onChange={e => setName(e.target.value)} style={inputStyle} />
+      <input placeholder={isH ? "मोबाइल नंबर * (10 अंक)" : "Mobile Number * (10 digits)"}
+        value={phone} onChange={e => setPhone(e.target.value.replace(/\D/,"").slice(0,10))}
+        type="tel" style={inputStyle} />
+      <input placeholder={isH ? "शहर का नाम *" : "City Name *"}
+        value={city} onChange={e => setCity(e.target.value)} style={inputStyle} />
+
+      <div style={{ fontSize: 12, opacity: 0.6, marginBottom: 8 }}>
+        {isH ? "सिस्टम प्रकार:" : "System Type:"}
+      </div>
+      <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
+        {[
+          { val: "ongrid", hi: "⚡ ऑनग्रिड", en: "⚡ On-Grid" },
+          { val: "hybrid", hi: "🔋 हाइब्रिड", en: "🔋 Hybrid" },
+        ].map(opt => (
+          <button key={opt.val} onClick={() => setSysType(opt.val)} style={{
+            flex: 1, padding: "9px 0", borderRadius: 10, border: "none", fontFamily: "inherit",
+            background: sysType === opt.val ? "linear-gradient(135deg,#00b894,#00796b)" : "rgba(255,255,255,0.06)",
+            color: "#fff", fontWeight: 700, fontSize: 13, cursor: "pointer",
+            boxShadow: sysType === opt.val ? "0 3px 12px rgba(0,184,148,0.4)" : "none",
+          }}>
+            {isH ? opt.hi : opt.en}
+          </button>
+        ))}
+      </div>
+
+      <input placeholder={isH ? "औसत मासिक बिजली खपत (यूनिट) *  जैसे: 300" : "Avg Monthly Units * e.g. 300"}
+        value={units} onChange={e => setUnits(e.target.value.replace(/\D/,""))}
+        type="tel" style={inputStyle} />
+
+      <div style={{ display: "flex", gap: 8 }}>
+        <button onClick={submit} disabled={!ready} style={{
+          flex: 1, padding: "12px 0", borderRadius: 12, border: "none",
+          background: ready ? "linear-gradient(135deg,#00b894,#00796b)" : "rgba(255,255,255,0.07)",
+          color: "#fff", fontWeight: 800, fontSize: 13, cursor: ready ? "pointer" : "not-allowed",
+          fontFamily: "inherit", boxShadow: ready ? "0 4px 16px rgba(0,184,148,0.4)" : "none",
+        }}>
+          📱 {isH ? "WhatsApp पर कोटेशन मांगें" : "Request Quote on WhatsApp"}
+        </button>
+        <button onClick={onSkip} style={{
+          padding: "12px 14px", borderRadius: 12, border: "1px solid rgba(255,255,255,0.1)",
+          background: "transparent", color: "rgba(255,255,255,0.4)", cursor: "pointer",
+          fontSize: 12, fontFamily: "inherit",
+        }}>
+          {isH ? "बाद में" : "Later"}
+        </button>
+      </div>
+    </div>
+  );
+}
+
+
 export default function SahayakPremium() {
   const [screen, setScreen] = useState("home");
   const [agent, setAgent] = useState(null);
@@ -851,7 +1038,449 @@ export default function SahayakPremium() {
       return;
     }
     window.speechSynthesis.cancel();
-    const cleanText = text.replace(/[*#_]/g, "").replace(/[`]/g, "").trim();\n    const detectedLang = detectLang(cleanText);\n    const voiceLang = detectedLang === "english" ? "english" : "hindi";\n    const utt = new SpeechSynthesisUtterance(cleanText);\n    const targetLang = voiceLang === "english" ? "en-IN" : "hi-IN";\n    utt.lang = targetLang;\n    utt.rate = 0.85;\n    utt.pitch = 0.9;\n    utt.volume = 1;\n    const trySetVoice = () => {\n      const voices = window.speechSynthesis.getVoices();\n      if (voices.length === 0) return false;\n      const priorities = voiceLang === "hindi"\n        ? [\n            v => v.name.includes("Microsoft") && v.name.includes("Swara") && v.name.includes("Online"),\n            v => v.name.includes("Microsoft") && v.name.includes("Madhur"),\n            v => v.name.includes("Google") && v.lang === "hi-IN",\n            v => v.lang === "hi-IN",\n            v => v.lang.startsWith("hi"),\n          ]\n        : [\n            v => v.name.includes("Microsoft") && v.name.includes("Ravi") && v.name.includes("Online"),\n            v => v.name.includes("Microsoft") && v.name.includes("Neural") && v.lang.startsWith("en-IN"),\n            v => v.name.includes("Google") && v.lang === "en-IN",\n            v => v.lang === "en-IN",\n            v => v.lang.startsWith("en") && v.name.includes("Male"),\n            v => v.lang.startsWith("en"),\n          ];\n      for (const priority of priorities) {\n        const match = voices.find(priority);\n        if (match) { utt.voice = match; return true; }\n      }\n      return false;\n    };\n    if (!trySetVoice()) {\n      window.speechSynthesis.onvoiceschanged = () => { trySetVoice(); window.speechSynthesis.onvoiceschanged = null; };\n    }\n    utt.onstart = () => setSpeaking(idx);\n    utt.onend = () => setSpeaking(null);\n    utt.onerror = () => setSpeaking(null);\n    window.speechSynthesis.cancel();\n    window.speechSynthesis.speak(utt);\n  };\n\n  const startVoiceHold = () => {\n    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;\n    if (!SpeechRecognition) { alert(lang === "hindi" ? t.voiceNotSupported : t.voiceNotSupported); return; }\n    if (isListening) return;\n    const rec = new SpeechRecognition();\n    rec.lang = lang === "english" ? "en-IN" : "hi-IN";\n    rec.continuous = true;\n    rec.interimResults = true;\n    rec.onresult = (e) => {\n      let final = "";\n      for (let i = e.resultIndex; i < e.results.length; i++) {\n        if (e.results[i].isFinal) final += e.results[i][0].transcript;\n      }\n      if (final) setInput(prev => { const hasDoc = prev.includes("📎"); return hasDoc ? prev + " " + final : final; });\n    };\n    rec.onerror = () => { setIsListening(false); };\n    rec.onend = () => { setIsListening(false); };\n    recognitionRef.current = rec;\n    rec.start();\n    setIsListening(true);\n  };\n\n  const stopVoiceHold = () => {\n    if (!isListening) return;\n    recognitionRef.current?.stop();\n    setIsListening(false);\n    setTimeout(() => {\n      setInput(prev => { if (prev.trim() && !prev.includes("📎")) { send(prev); return ""; } return prev; });\n    }, 400);\n  };\n\n  const send = useCallback(async (text) => {\n    const q = text || input.trim();\n    if (!q || loading) return;\n    setInput("");\n    const docContext = uploadedDoc;\n    setUploadedDoc(null);\n    stopSpeech();\n    const detectedLang = detectLang(q);\n    const updated = [...msgs, { role: "user", content: q, timestamp: new Date() }];\n    setMsgs(updated);\n    setLoading(true);\n    try {\n      const docNote = docContext ? `\n\nIMPORTANT: The user has uploaded a document (${docContext.fileName}). Their question is about this document. ${docContext.imageBase64 ? "The document image has been provided. Analyze it carefully." : docContext.analysisText || ""}` : "";\n      const system = getSystemPrompt(agent.id, detectedLang) + docNote;\n      const res = await fetch("/api/chat", {\n        method: "POST",\n        headers: { "Content-Type": "application/json" },\n        body: JSON.stringify({ system, messages: updated.map(m => ({ role: m.role, content: m.content })) })\n      });\n      const data = await res.json();\n      const reply = data?.content?.map(c => c.text || "").join("") || (lang === "hindi" ? t.retry : t.retry);\n      setMsgs([...updated, { role: "assistant", content: reply, timestamp: new Date() }]);\n    } catch {\n      setMsgs([...updated, { role: "assistant", content: lang === "hindi" ? t.networkError : t.networkError, timestamp: new Date() }]);\n    }\n    setLoading(false);\n  }, [msgs, input, loading, agent, lang, t, uploadedDoc]);\n\n  const handleDocResult = (analysisText, fileName, imageBase64, mediaType) => {\n    setUploadedDoc({ analysisText, fileName, imageBase64, mediaType });\n    const hint = lang === "hindi" ? `📎 ${fileName} — अब लिखें आप क्या जानना चाहते हैं इस दस्तावेज़ के बारे में...` : `📎 ${fileName} — Now type what you want to know about this document...`;\n    setInput(hint.slice(0, 120));\n    setMsgs(prev => [...prev, {\n      role: "user",\n      content: lang === "hindi" ? `📎 **${t.docUploaded}:** ${fileName}\n\n${t.typeQuestion} ↗️` : `📎 **${t.docUploaded}:** ${fileName}\n\n${t.typeQuestion} ↗️`,\n      timestamp: new Date(), isDoc: true\n    }]);\n  };\n\n  const handleLeadSubmit = (name) => {\n    if (name) setUserName(name);\n    setShowLead(false);\n    const msg = lang === "english"\n      ? `${t.thankYou}${name ? "," + (name ? " " + name : "") : ""}! 🙏 ${t.expertWillContact}. ${t.continueChat}!`\n      : `${t.thankYou}${name ? "," + (name ? " " + name + " जी" : "") : ""}! 🙏 ${t.expertWillContact}। ${t.continueChat}!`;\n    setMsgs(prev => [...prev, { role: "assistant", content: msg, timestamp: new Date() }]);\n  };\n\n  // ═══════════════════════════════════════════════════════════\n  // ABOUT SCREEN — Premium Profile Page\n  // ═══════════════════════════════════════════════════════════\n  if (screen === "about") return (\n    <div style={{ minHeight: "100vh", background: TOKENS.colors.bg, color: TOKENS.colors.text, fontFamily: TOKENS.fonts.primary, display: "flex", flexDirection: "column", position: "relative", overflow: "hidden" }}>\n      <PremiumBackground agent={null} />\n      <AmbientOrbs agent={null} />\n      <div style={{ position: "relative", zIndex: 10, display: "flex", flexDirection: "column", minHeight: "100vh" }}>\n        <header style={{ padding: "16px 20px", display: "flex", alignItems: "center", gap: 12, borderBottom: "1px solid rgba(255,255,255,0.05)", background: "rgba(10,10,15,0.8)", backdropFilter: TOKENS.blur.lg, position: "sticky", top: 0, zIndex: 20 }}>\n          <button onClick={() => setScreen("home")} style={{ background: "none", border: "none", color: "rgba(255,255,255,0.5)", fontSize: 22, cursor: "pointer", padding: "8px", borderRadius: TOKENS.radii.md, transition: TOKENS.transitions.fast }} onMouseEnter={e => e.target.style.background = "rgba(255,255,255,0.06)"} onMouseLeave={e => e.target.style.background = "none"}>←</button>\n          <div style={{ fontWeight: 800, fontSize: 16 }}>{t.about}</div>\n        </header>\n        <div style={{ flex: 1, padding: "30px 20px", maxWidth: 540, margin: "0 auto", width: "100%", boxSizing: "border-box" }}>\n          <div style={{ textAlign: "center", marginBottom: 32 }}>\n            <div style={{ width: 100, height: 100, borderRadius: 25, background: "linear-gradient(135deg, #a855f7, #6366f1)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", boxShadow: "0 0 40px rgba(168,85,247,0.5)", position: "relative", overflow: "hidden" }}>\n              <img src={LOGO} alt="SAHAYAK" style={{ width: 60, height: 60, objectFit: "cover" }} />\n              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, transparent, rgba(255,255,255,0.2))" }} />\n            </div>\n            <div style={{ fontSize: 32, fontWeight: 900, letterSpacing: 2, background: "linear-gradient(90deg, #a78bfa, #fff, #7dd3fc)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>SAHAYAK</div>\n            <div style={{ fontSize: 14, opacity: 0.5, marginTop: 6 }}>{lang === "hindi" ? "आपका AI Financial दोस्त 🇮🇳" : "Your AI Financial Friend 🇮🇳"}</div>\n            <div style={{ fontSize: 12, opacity: 0.3, marginTop: 4 }}>{t.version}</div>\n          </div>\n          <GlassCard style={{ padding: 20, marginBottom: 16 }} glowColor="#a855f7">\n            <div style={{ fontSize: 12, color: "#a78bfa", fontWeight: 700, letterSpacing: 1, marginBottom: 12, textTransform: "uppercase" }}>👨‍💼 {t.founder}</div>\n            <div style={{ display: "flex", alignItems: "center", gap: 14 }}>\n              <div style={{ width: 60, height: 60, borderRadius: "50%", background: "linear-gradient(135deg, #7c3aed, #4f46e5)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, fontWeight: 900, flexShrink: 0, boxShadow: "0 0 20px rgba(124,58,237,0.4)" }}>A</div>\n              <div>\n                <div style={{ fontSize: 18, fontWeight: 800 }}>Ankit Singh</div>\n                <div style={{ fontSize: 12, opacity: 0.55, marginTop: 2 }}>Founder & Creator, SAHAYAK</div>\n                <div style={{ fontSize: 11, opacity: 0.4, marginTop: 1 }}>Balrampur, Uttar Pradesh 🇮🇳</div>\n              </div>\n            </div>\n          </GlassCard>\n          <GlassCard style={{ padding: 16, marginBottom: 16 }}>\n            <div style={{ fontSize: 12, color: "#a78bfa", fontWeight: 700, letterSpacing: 1, marginBottom: 12, textTransform: "uppercase" }}>📞 {t.contact}</div>\n            <a href="mailto:xsuvidha@gmail.com" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", color: "#e2e8f0", marginBottom: 10, padding: "8px 0", borderRadius: TOKENS.radii.md, transition: TOKENS.transitions.fast }} onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.03)"} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>\n              <span style={{ fontSize: 20 }}>📧</span><span style={{ fontSize: 14 }}>xsuvidha@gmail.com</span>\n            </a>\n            <a href="https://wa.me/918115776644" target="_blank" rel="noreferrer" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", color: "#e2e8f0", marginBottom: 10, padding: "8px 0", borderRadius: TOKENS.radii.md, transition: TOKENS.transitions.fast }} onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.03)"} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>\n              <span style={{ fontSize: 20 }}>💬</span><span style={{ fontSize: 14 }}>+91 81157 76644</span>\n            </a>\n            <a href="https://instagram.com/singh.ankit007" target="_blank" rel="noreferrer" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", color: "#e2e8f0", padding: "8px 0", borderRadius: TOKENS.radii.md, transition: TOKENS.transitions.fast }} onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.03)"} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>\n              <div style={{ width: 28, height: 28, borderRadius: 8, background: "linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>\n                <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>\n              </div>\n              <span style={{ fontSize: 14 }}>@singh.ankit007</span>\n            </a>\n          </GlassCard>\n          <GlassCard style={{ padding: 16, marginBottom: 16 }}>\n            <div style={{ fontSize: 12, color: "#a78bfa", fontWeight: 700, letterSpacing: 1, marginBottom: 12, textTransform: "uppercase" }}>🏆 {t.certifications}</div>\n            {[["🏛️","VLE-IRDAI","Insurance License — Govt. of India"],["📊","GST Suvidha Network","Authorized Tax Partner"],["☀️","MFINS Solar","Channel Partner"],["🌞","PM Surya Ghar","Authorized Vendor"]].map(([icon, title, sub], i) => (\n              <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: i < 3 ? 10 : 0, padding: "6px 0" }}>\n                <span style={{ fontSize: 18, flexShrink: 0 }}>{icon}</span>\n                <div><div style={{ fontSize: 13, fontWeight: 700 }}>{title}</div><div style={{ fontSize: 11, opacity: 0.45 }}>{sub}</div></div>\n              </div>\n            ))}\n          </GlassCard>\n          <GlassCard style={{ padding: 16, marginBottom: 20, background: "linear-gradient(135deg,rgba(124,58,237,0.1),rgba(79,70,229,0.05))" }} glowColor="#a855f7">\n            <div style={{ fontSize: 12, color: "#a78bfa", fontWeight: 700, letterSpacing: 1, marginBottom: 8, textTransform: "uppercase" }}>🎯 {t.mission}</div>\n            <div style={{ fontSize: 13, lineHeight: 1.8, opacity: 0.75 }}>\n              {lang === "hindi" ? "हर भारतीय को उनकी अपनी भाषा में, पूरी तरह मुफ्त वित्तीय मार्गदर्शन उपलब्ध कराना। कोई भ्रम नहीं, कोई शोषण नहीं। SAHAYAK आपका भरोसेमंद दोस्त है — बीमा, टैक्स, सोलर और लोन के लिए।" : "To make financial guidance accessible to every Indian — in their own language, completely free. No more confusion, no more exploitation. SAHAYAK is your trusted friend for Insurance, Tax, Solar, and Loans."}\n            </div>\n          </GlassCard>\n          <a href="https://instagram.com/singh.ankit007" target="_blank" rel="noreferrer" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12, padding: "14px 20px", borderRadius: TOKENS.radii.xl, textDecoration: "none", color: "#fff", background: "linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)", boxShadow: "0 4px 20px rgba(220,39,67,0.3)", marginBottom: 20, fontWeight: 800, transition: TOKENS.transitions.fast }} onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 8px 30px rgba(220,39,67,0.4)"; }} onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 4px 20px rgba(220,39,67,0.3)"; }}>\n            <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>\n            <div><div style={{ fontWeight: 800, fontSize: 15 }}>{t.followInstagram}</div><div style={{ fontSize: 12, opacity: 0.85 }}>@singh.ankit007</div></div>\n          </a>\n          <div style={{ textAlign: "center", fontSize: 11, opacity: 0.3 }}>SAHAYAK v3.0 Ultra • {t.madeInIndia}</div>\n        </div>\n      </div>\n    </div>\n  );\n\n  // ═══════════════════════════════════════════════════════════\n  // HOME SCREEN — Cinematic Entrance Experience\n  // ═══════════════════════════════════════════════════════════\n  if (screen === "home") return (\n    <div style={{ minHeight: "100vh", fontFamily: TOKENS.fonts.primary, background: TOKENS.colors.bg, color: TOKENS.colors.text, display: "flex", flexDirection: "column", position: "relative", overflow: "hidden" }}>\n      <PremiumBackground agent={null} />\n      <AmbientOrbs agent={null} />\n\n      {/* Grid Pattern Overlay */}\n      <div style={{ position: "fixed", inset: 0, zIndex: 1, pointerEvents: "none", backgroundImage: `linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px)`, backgroundSize: "60px 60px", maskImage: "radial-gradient(ellipse 80% 60% at 50% 40%, black 30%, transparent 70%)" }} />\n\n      {/* Header */}\n      <header style={{\n        padding: "16px 20px", display: "flex", alignItems: "center", justifyContent: "space-between",\n        position: "relative", zIndex: 10,\n        background: scrollY > 50 ? "rgba(3,3,5,0.85)" : "transparent",\n        backdropFilter: scrollY > 50 ? TOKENS.blur.lg : "none",\n        transition: "all 0.4s cubic-bezier(0.4,0,0.2,1)",\n        borderBottom: scrollY > 50 ? "1px solid " + TOKENS.colors.border : "1px solid transparent",\n      }}>\n        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>\n          <div style={{\n            width: 48, height: 48, borderRadius: 14,\n            background: "linear-gradient(135deg, #a855f7, #6366f1)",\n            display: "flex", alignItems: "center", justifyContent: "center",\n            boxShadow: "0 0 30px rgba(168,85,247,0.5)",\n            position: "relative", overflow: "hidden",\n            animation: isLoaded ? "logoReveal 0.8s cubic-bezier(0.34,1.56,0.64,1)" : "none",\n          }}>\n            <img src={LOGO} alt="SAHAYAK" style={{ width: 32, height: 32, objectFit: "cover" }} />\n            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, transparent, rgba(255,255,255,0.2))" }} />\n          </div>\n          <div style={{ animation: isLoaded ? "fadeSlideRight 0.6s 0.2s both" : "none" }}>\n            <div style={{ fontWeight: 900, fontSize: 22, letterSpacing: 2, background: "linear-gradient(90deg, #a78bfa, #fff 50%, #7dd3fc)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>SAHAYAK</div>\n            <div style={{ fontSize: 10, opacity: 0.35, letterSpacing: 1, marginTop: 2 }}>{t.appSub}</div>\n          </div>\n        </div>\n        <div style={{ display: "flex", alignItems: "center", gap: 8, animation: isLoaded ? "fadeSlideLeft 0.6s 0.3s both" : "none" }}>\n          <button onClick={() => setScreen("about")} title={t.about}\n            style={{ width: 40, height: 40, borderRadius: TOKENS.radii.lg, background: "rgba(124,58,237,0.1)", border: "1px solid rgba(124,58,237,0.2)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, color: "#a78bfa", transition: TOKENS.transitions.fast }}\n            onMouseEnter={e => { e.currentTarget.style.background = "rgba(124,58,237,0.2)"; e.currentTarget.style.transform = "scale(1.1)"; }}\n            onMouseLeave={e => { e.currentTarget.style.background = "rgba(124,58,237,0.1)"; e.currentTarget.style.transform = "scale(1)"; }}\n          >ℹ️</button>\n          <a href="https://instagram.com/singh.ankit007" target="_blank" rel="noreferrer"\n            style={{ width: 40, height: 40, borderRadius: TOKENS.radii.lg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, textDecoration: "none", background: "linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)", boxShadow: "0 2px 10px rgba(220,39,67,0.35)", transition: TOKENS.transitions.fast }}\n            onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.1)"; e.currentTarget.style.boxShadow = "0 4px 16px rgba(220,39,67,0.5)"; }}\n            onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.boxShadow = "0 2px 10px rgba(220,39,67,0.35)"; }}\n          >📸</a>\n          <div style={{ display: "flex", background: TOKENS.colors.surface, borderRadius: TOKENS.radii.lg, padding: 3, border: "1px solid rgba(255,255,255,0.08)", backdropFilter: TOKENS.blur.sm }}>\n            {["hindi", "english"].map((l, i) => (\n              <button key={l} onClick={() => setLang(l)}\n                style={{\n                  padding: "8px 16px", borderRadius: TOKENS.radii.md, border: "none",\n                  background: lang === l ? TOKENS.colors.accent.primary : "transparent",\n                  color: "#fff", fontSize: 12, fontWeight: 700, cursor: "pointer",\n                  fontFamily: "inherit", transition: TOKENS.transitions.fast,\n                  boxShadow: lang === l ? "0 2px 12px rgba(168,85,247,0.5)" : "none",\n                  animation: isLoaded ? "fadeSlideUp 0.5s " + (0.4 + i * 0.1) + "s both" : "none",\n                }}\n              >{l === "hindi" ? "हिंदी" : "EN"}</button>\n            ))}\n          </div>\n        </div>\n      </header>\n\n      {/* Hero Section */}\n      <div style={{ textAlign: "center", padding: "40px 24px 24px", position: "relative", zIndex: 10 }}>\n        <div style={{\n          display: "inline-flex", alignItems: "center", gap: 8,\n          padding: "8px 20px", borderRadius: TOKENS.radii.full,\n          background: "rgba(139,92,246,0.08)", border: "1px solid rgba(139,92,246,0.15)",\n          marginBottom: 24, backdropFilter: TOKENS.blur.sm,\n          animation: isLoaded ? "fadeSlideUp 0.6s 0.5s both" : "none",\n        }}>\n          <span style={{ fontSize: 16 }}>🇮🇳</span>\n          <span style={{ fontSize: 12, color: "#a78bfa", fontWeight: 700, letterSpacing: 1 }}>{t.tagline}</span>\n        </div>\n        <h1 style={{\n          margin: 0, fontSize: 32, fontWeight: 900, lineHeight: 1.2,\n          color: TOKENS.colors.text, letterSpacing: -1,\n          animation: isLoaded ? "fadeSlideUp 0.7s 0.6s both" : "none",\n        }}>\n          {t.headline1}<br/>\n          <span style={{ background: "linear-gradient(90deg, #a78bfa, #7dd3fc)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>{t.headline2}</span>\n        </h1>\n        <p style={{\n          fontSize: 14, opacity: 0.45, marginTop: 16,\n          maxWidth: 340, margin: "16px auto 0", lineHeight: 1.7,\n          animation: isLoaded ? "fadeSlideUp 0.7s 0.7s both" : "none",\n        }}>{t.sub}</p>\n      </div>\n\n      {/* Content */}\n      <div style={{ flex: 1, padding: "8px 16px 32px", maxWidth: 600, margin: "0 auto", width: "100%", boxSizing: "border-box", position: "relative", zIndex: 10 }}>\n        {/* Solar Banner */}\n        <div\n          onClick={() => openAgent(agentList.find(a => a.id === "solar"))}\n          style={{\n            marginBottom: 20, padding: "20px 22px", borderRadius: TOKENS.radii.xxl,\n            background: "linear-gradient(135deg, rgba(245,158,11,0.1), rgba(217,119,6,0.05))",\n            border: "1px solid rgba(245,158,11,0.25)", cursor: "pointer",\n            display: "flex", alignItems: "center", gap: 16,\n            transition: TOKENS.transitions.slow,\n            backdropFilter: TOKENS.blur.md,\n            position: "relative", overflow: "hidden",\n            animation: isLoaded ? "fadeSlideUp 0.8s 0.8s both" : "none",\n          }}\n          onMouseEnter={e => {\n            e.currentTarget.style.background = "linear-gradient(135deg, rgba(245,158,11,0.18), rgba(217,119,6,0.1))";\n            e.currentTarget.style.transform = "translateY(-3px)";\n            e.currentTarget.style.boxShadow = "0 12px 40px rgba(245,158,11,0.25), 0 0 0 1px rgba(245,158,11,0.2)";\n          }}\n          onMouseLeave={e => {\n            e.currentTarget.style.background = "linear-gradient(135deg, rgba(245,158,11,0.1), rgba(217,119,6,0.05))";\n            e.currentTarget.style.transform = "translateY(0)";\n            e.currentTarget.style.boxShadow = "none";\n          }}\n        >\n          <div style={{ position: "absolute", top: -30, right: -30, width: 120, height: 120, borderRadius: "50%", background: "radial-gradient(circle, rgba(245,158,11,0.15), transparent 70%)", filter: TOKENS.blur.lg }} />\n          <div style={{ fontSize: 40, filter: "drop-shadow(0 4px 12px rgba(245,158,11,0.5))", position: "relative", zIndex: 1 }}>☀️</div>\n          <div style={{ flex: 1, position: "relative", zIndex: 1 }}>\n            <div style={{ fontWeight: 800, fontSize: 15, color: "#f59e0b", marginBottom: 4 }}>{t.solarBanner}</div>\n            <div style={{ fontSize: 12, opacity: 0.5, lineHeight: 1.6 }}>{t.solarSub}</div>\n          </div>\n          <div style={{\n            width: 36, height: 36, borderRadius: "50%",\n            background: "rgba(245,158,11,0.2)",\n            display: "flex", alignItems: "center", justifyContent: "center",\n            fontSize: 16, color: "#f59e0b", transition: TOKENS.transitions.fast,\n          }}>→</div>\n        </div>\n\n        {/* Section Title */}\n        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16, animation: isLoaded ? "fadeSlideUp 0.8s 0.9s both" : "none" }}>\n          <div style={{ width: 4, height: 4, borderRadius: "50%", background: TOKENS.colors.accent.primary }} />\n          <p style={{ fontSize: 11, opacity: 0.4, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase" }}>{t.otherExperts}</p>\n          <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, rgba(255,255,255,0.06), transparent)" }} />\n        </div>\n\n        {/* Agent Grid */}\n        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, animation: isLoaded ? "fadeSlideUp 0.9s 1.0s both" : "none" }}>\n          {agentList.filter(a => !a.solar).map((ag, index) => (\n            <button key={ag.id} onClick={() => openAgent(ag)}\n              style={{\n                background: "rgba(255,255,255,0.02)",\n                border: "1px solid " + ag.color + "12",\n                borderRadius: TOKENS.radii.xxl,\n                padding: "20px 12px 16px",\n                cursor: "pointer", textAlign: "center",\n                color: TOKENS.colors.text,\n                fontFamily: "inherit",\n                transition: TOKENS.transitions.spring,\n                backdropFilter: TOKENS.blur.md,\n                position: "relative", overflow: "hidden",\n                animation: isLoaded ? "fadeSlideUp 0.5s " + (1.0 + index * 0.08) + "s both" : "none",\n              }}\n              onMouseEnter={e => {\n                e.currentTarget.style.background = ag.color + "10";\n                e.currentTarget.style.borderColor = ag.color + "40";\n                e.currentTarget.style.transform = "translateY(-4px) scale(1.03)";\n                e.currentTarget.style.boxShadow = "0 16px 40px " + ag.color + "20, 0 4px 12px rgba(0,0,0,0.3)";\n              }}\n              onMouseLeave={e => {\n                e.currentTarget.style.background = "rgba(255,255,255,0.02)";\n                e.currentTarget.style.borderColor = ag.color + "12";\n                e.currentTarget.style.transform = "translateY(0) scale(1)";\n                e.currentTarget.style.boxShadow = "none";\n              }}\n            >\n              <div style={{\n                position: "absolute", top: -20, left: "50%", transform: "translateX(-50%)",\n                width: 60, height: 60, borderRadius: "50%",\n                background: "radial-gradient(circle, " + ag.color + "25 0%, transparent 70%)",\n                filter: TOKENS.blur.md, opacity: 0, transition: "opacity 0.3s",\n              }} className="agent-glow" />\n              <div style={{\n                fontSize: 28, marginBottom: 10, display: "inline-block",\n                transition: "transform 0.3s", filter: "drop-shadow(0 4px 8px " + ag.color + "40)",\n              }} className="agent-icon">{ag.icon}</div>\n              <div style={{ fontWeight: 800, fontSize: 11, color: ag.color, lineHeight: 1.3, marginBottom: 4 }}>{ag.name}</div>\n              <div style={{ fontSize: 9, opacity: 0.35, lineHeight: 1.4 }}>{ag.tag}</div>\n            </button>\n          ))}\n        </div>\n\n        {/* WhatsApp CTA */}\n        <a href={WA_BASE} target="_blank" rel="noreferrer"\n          style={{\n            display: "flex", alignItems: "center", gap: 14,\n            marginTop: 20, padding: "16px 20px",\n            borderRadius: TOKENS.radii.xxl,\n            background: "rgba(37,211,102,0.06)",\n            border: "1px solid rgba(37,211,102,0.15)",\n            textDecoration: "none", color: TOKENS.colors.text,\n            transition: TOKENS.transitions.slow,\n            backdropFilter: TOKENS.blur.md,\n            animation: isLoaded ? "fadeSlideUp 1.0s 1.4s both" : "none",\n          }}\n          onMouseEnter={e => {\n            e.currentTarget.style.background = "rgba(37,211,102,0.12)";\n            e.currentTarget.style.transform = "translateY(-2px)";\n            e.currentTarget.style.boxShadow = "0 12px 32px rgba(37,211,102,0.2)";\n          }}\n          onMouseLeave={e => {\n            e.currentTarget.style.background = "rgba(37,211,102,0.06)";\n            e.currentTarget.style.transform = "translateY(0)";\n            e.currentTarget.style.boxShadow = "none";\n          }}\n        >\n          <div style={{\n            width: 44, height: 44, borderRadius: 14,\n            background: "rgba(37,211,102,0.15)",\n            display: "flex", alignItems: "center", justifyContent: "center",\n            fontSize: 22,\n          }}>💬</div>\n          <div style={{ flex: 1 }}>\n            <div style={{ fontSize: 14, fontWeight: 800, color: "#4ade80" }}>{t.chatOnWA}</div>\n            <div style={{ fontSize: 11, opacity: 0.4, marginTop: 2 }}>+{WA_NUMBER} • {t.free}</div>\n          </div>\n          <div style={{\n            width: 32, height: 32, borderRadius: "50%",\n            background: "rgba(37,211,102,0.2)",\n            display: "flex", alignItems: "center", justifyContent: "center",\n            fontSize: 14, color: "#4ade80",\n          }}>→</div>\n        </a>\n\n        {/* Trust Badge */}\n        <div style={{\n          marginTop: 16, padding: "14px 18px",\n          borderRadius: TOKENS.radii.xl,\n          background: "rgba(139,92,246,0.04)",\n          border: "1px solid rgba(139,92,246,0.1)",\n          textAlign: "center", backdropFilter: TOKENS.blur.sm,\n          animation: isLoaded ? "fadeSlideUp 1.1s 1.5s both" : "none",\n        }}>\n          <span style={{ fontSize: 12, color: "#a78bfa", opacity: 0.7, fontWeight: 600 }}>\n            🔒 {t.certified}\n          </span>\n        </div>\n      </div>\n\n      {/* Global Styles */}\n      <style>{`
+    const cleanText = text.replace(/[*#_]/g, "").replace(/\u0060/g, "").trim();
+    const detectedLang = detectLang(cleanText);
+    const voiceLang = detectedLang === "english" ? "english" : "hindi";
+    const utt = new SpeechSynthesisUtterance(cleanText);
+    const targetLang = voiceLang === "english" ? "en-IN" : "hi-IN";
+    utt.lang = targetLang;
+    utt.rate = 0.85;
+    utt.pitch = 0.9;
+    utt.volume = 1;
+    const trySetVoice = () => {
+      const voices = window.speechSynthesis.getVoices();
+      if (voices.length === 0) return false;
+      const priorities = voiceLang === "hindi"
+        ? [
+            v => v.name.includes("Microsoft") && v.name.includes("Swara") && v.name.includes("Online"),
+            v => v.name.includes("Microsoft") && v.name.includes("Madhur"),
+            v => v.name.includes("Google") && v.lang === "hi-IN",
+            v => v.lang === "hi-IN",
+            v => v.lang.startsWith("hi"),
+          ]
+        : [
+            v => v.name.includes("Microsoft") && v.name.includes("Ravi") && v.name.includes("Online"),
+            v => v.name.includes("Microsoft") && v.name.includes("Neural") && v.lang.startsWith("en-IN"),
+            v => v.name.includes("Google") && v.lang === "en-IN",
+            v => v.lang === "en-IN",
+            v => v.lang.startsWith("en") && v.name.includes("Male"),
+            v => v.lang.startsWith("en"),
+          ];
+      for (const priority of priorities) {
+        const match = voices.find(priority);
+        if (match) { utt.voice = match; return true; }
+      }
+      return false;
+    };
+    if (!trySetVoice()) {
+      window.speechSynthesis.onvoiceschanged = () => { trySetVoice(); window.speechSynthesis.onvoiceschanged = null; };
+    }
+    utt.onstart = () => setSpeaking(idx);
+    utt.onend = () => setSpeaking(null);
+    utt.onerror = () => setSpeaking(null);
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utt);
+  };
+
+  const startVoiceHold = () => {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) { alert(lang === "hindi" ? t.voiceNotSupported : t.voiceNotSupported); return; }
+    if (isListening) return;
+    const rec = new SpeechRecognition();
+    rec.lang = lang === "english" ? "en-IN" : "hi-IN";
+    rec.continuous = true;
+    rec.interimResults = true;
+    rec.onresult = (e) => {
+      let final = "";
+      for (let i = e.resultIndex; i < e.results.length; i++) {
+        if (e.results[i].isFinal) final += e.results[i][0].transcript;
+      }
+      if (final) setInput(prev => { const hasDoc = prev.includes("📎"); return hasDoc ? prev + " " + final : final; });
+    };
+    rec.onerror = () => { setIsListening(false); };
+    rec.onend = () => { setIsListening(false); };
+    recognitionRef.current = rec;
+    rec.start();
+    setIsListening(true);
+  };
+
+  const stopVoiceHold = () => {
+    if (!isListening) return;
+    recognitionRef.current?.stop();
+    setIsListening(false);
+    setTimeout(() => {
+      setInput(prev => { if (prev.trim() && !prev.includes("📎")) { send(prev); return ""; } return prev; });
+    }, 400);
+  };
+
+  const send = useCallback(async (text) => {
+    const q = text || input.trim();
+    if (!q || loading) return;
+    setInput("");
+    const docContext = uploadedDoc;
+    setUploadedDoc(null);
+    stopSpeech();
+    const detectedLang = detectLang(q);
+    const updated = [...msgs, { role: "user", content: q, timestamp: new Date() }];
+    setMsgs(updated);
+    setLoading(true);
+    try {
+      const docNote = docContext ? `\n\nIMPORTANT: The user has uploaded a document (${docContext.fileName}). Their question is about this document. ${docContext.imageBase64 ? "The document image has been provided. Analyze it carefully." : docContext.analysisText || ""}` : "";
+      const system = getSystemPrompt(agent.id, detectedLang) + docNote;
+      const res = await fetch("/api/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ system, messages: updated.map(m => ({ role: m.role, content: m.content })) })
+      });
+      const data = await res.json();
+      const reply = data?.content?.map(c => c.text || "").join("") || (lang === "hindi" ? t.retry : t.retry);
+      setMsgs([...updated, { role: "assistant", content: reply, timestamp: new Date() }]);
+    } catch {
+      setMsgs([...updated, { role: "assistant", content: lang === "hindi" ? t.networkError : t.networkError, timestamp: new Date() }]);
+    }
+    setLoading(false);
+  }, [msgs, input, loading, agent, lang, t, uploadedDoc]);
+
+  const handleDocResult = (analysisText, fileName, imageBase64, mediaType) => {
+    setUploadedDoc({ analysisText, fileName, imageBase64, mediaType });
+    const hint = lang === "hindi" ? `📎 ${fileName} — अब लिखें आप क्या जानना चाहते हैं इस दस्तावेज़ के बारे में...` : `📎 ${fileName} — Now type what you want to know about this document...`;
+    setInput(hint.slice(0, 120));
+    setMsgs(prev => [...prev, {
+      role: "user",
+      content: lang === "hindi" ? `📎 **${t.docUploaded}:** ${fileName}\n\n${t.typeQuestion} ↗️` : `📎 **${t.docUploaded}:** ${fileName}\n\n${t.typeQuestion} ↗️`,
+      timestamp: new Date(), isDoc: true
+    }]);
+  };
+
+  const handleLeadSubmit = (name) => {
+    if (name) setUserName(name);
+    setShowLead(false);
+    const msg = lang === "english"
+      ? `${t.thankYou}${name ? `, ${name}` : ""}! 🙏 ${t.expertWillContact}. ${t.continueChat}!`
+      : `${t.thankYou}${name ? `, ${name} जी` : ""}! 🙏 ${t.expertWillContact}। ${t.continueChat}!`;
+    setMsgs(prev => [...prev, { role: "assistant", content: msg, timestamp: new Date() }]);
+  };
+
+  // ═══════════════════════════════════════════════════════════
+  // ABOUT SCREEN — Premium Profile Page
+  // ═══════════════════════════════════════════════════════════
+  if (screen === "policy") return (
+    <PolicyPage lang={lang} onBack={() => setScreen("home")} />
+  );
+
+  if (screen === "about") return (
+    <div style={{ minHeight: "100vh", background: TOKENS.colors.bg, color: TOKENS.colors.text, fontFamily: TOKENS.fonts.primary, display: "flex", flexDirection: "column", position: "relative", overflow: "hidden" }}>
+      <PremiumBackground agent={null} />
+      <AmbientOrbs agent={null} />
+      <div style={{ position: "relative", zIndex: 10, display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+        <header style={{ padding: "16px 20px", display: "flex", alignItems: "center", gap: 12, borderBottom: "1px solid rgba(255,255,255,0.05)", background: "rgba(10,10,15,0.8)", backdropFilter: TOKENS.blur.lg, position: "sticky", top: 0, zIndex: 20 }}>
+          <button onClick={() => setScreen("home")} style={{ background: "none", border: "none", color: "rgba(255,255,255,0.5)", fontSize: 22, cursor: "pointer", padding: "8px", borderRadius: TOKENS.radii.md, transition: TOKENS.transitions.fast }} onMouseEnter={e => e.target.style.background = "rgba(255,255,255,0.06)"} onMouseLeave={e => e.target.style.background = "none"}>←</button>
+          <div style={{ fontWeight: 800, fontSize: 16 }}>{t.about}</div>
+        </header>
+        <div style={{ flex: 1, padding: "30px 20px", maxWidth: 540, margin: "0 auto", width: "100%", boxSizing: "border-box" }}>
+          <div style={{ textAlign: "center", marginBottom: 32 }}>
+            <div style={{ width: 100, height: 100, borderRadius: 25, background: "linear-gradient(135deg, #a855f7, #6366f1)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", boxShadow: "0 0 40px rgba(168,85,247,0.5)", position: "relative", overflow: "hidden" }}>
+              <img src={LOGO} alt="SAHAYAK" style={{ width: 60, height: 60, objectFit: "cover" }} />
+              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, transparent, rgba(255,255,255,0.2))" }} />
+            </div>
+            <div style={{ fontSize: 32, fontWeight: 900, letterSpacing: 2, background: "linear-gradient(90deg, #a78bfa, #fff, #7dd3fc)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>SAHAYAK</div>
+            <div style={{ fontSize: 14, opacity: 0.5, marginTop: 6 }}>{lang === "hindi" ? "आपका AI Financial दोस्त 🇮🇳" : "Your AI Financial Friend 🇮🇳"}</div>
+            <div style={{ fontSize: 12, opacity: 0.3, marginTop: 4 }}>{t.version}</div>
+          </div>
+          <GlassCard style={{ padding: 20, marginBottom: 16 }} glowColor="#a855f7">
+            <div style={{ fontSize: 12, color: "#a78bfa", fontWeight: 700, letterSpacing: 1, marginBottom: 12, textTransform: "uppercase" }}>👨‍💼 {t.founder}</div>
+            <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+              <div style={{ width: 60, height: 60, borderRadius: "50%", background: "linear-gradient(135deg, #7c3aed, #4f46e5)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, fontWeight: 900, flexShrink: 0, boxShadow: "0 0 20px rgba(124,58,237,0.4)" }}>A</div>
+              <div>
+                <div style={{ fontSize: 18, fontWeight: 800 }}>Ankit Singh</div>
+                <div style={{ fontSize: 12, opacity: 0.55, marginTop: 2 }}>Founder & Creator, SAHAYAK</div>
+                <div style={{ fontSize: 11, opacity: 0.4, marginTop: 1 }}>Balrampur, Uttar Pradesh 🇮🇳</div>
+              </div>
+            </div>
+          </GlassCard>
+          <GlassCard style={{ padding: 16, marginBottom: 16 }}>
+            <div style={{ fontSize: 12, color: "#a78bfa", fontWeight: 700, letterSpacing: 1, marginBottom: 12, textTransform: "uppercase" }}>📞 {t.contact}</div>
+            <a href="mailto:xsuvidha@gmail.com" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", color: "#e2e8f0", marginBottom: 10, padding: "8px 0", borderRadius: TOKENS.radii.md, transition: TOKENS.transitions.fast }} onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.03)"} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+              <span style={{ fontSize: 20 }}>📧</span><span style={{ fontSize: 14 }}>xsuvidha@gmail.com</span>
+            </a>
+            <a href="https://wa.me/918115776644" target="_blank" rel="noreferrer" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", color: "#e2e8f0", marginBottom: 10, padding: "8px 0", borderRadius: TOKENS.radii.md, transition: TOKENS.transitions.fast }} onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.03)"} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+              <span style={{ fontSize: 20 }}>💬</span><span style={{ fontSize: 14 }}>+91 81157 76644</span>
+            </a>
+          <button onClick={() => setScreen("policy")} title="Privacy Policy & Terms"
+            style={{ width: 40, height: 40, borderRadius: TOKENS.radii.lg, background: "rgba(74,222,128,0.08)", border: "1px solid rgba(74,222,128,0.2)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 17, color: "#4ade80", transition: TOKENS.transitions.fast }}
+            onMouseEnter={e => { e.currentTarget.style.background = "rgba(74,222,128,0.18)"; e.currentTarget.style.transform = "scale(1.1)"; }}
+            onMouseLeave={e => { e.currentTarget.style.background = "rgba(74,222,128,0.08)"; e.currentTarget.style.transform = "scale(1)"; }}
+          >📋</button>
+          </GlassCard>
+          <GlassCard style={{ padding: 16, marginBottom: 16 }}>
+            <div style={{ fontSize: 12, color: "#a78bfa", fontWeight: 700, letterSpacing: 1, marginBottom: 12, textTransform: "uppercase" }}>🏆 {t.certifications}</div>
+            {[["🏛️","VLE-IRDAI","Insurance License — Govt. of India"],["📊","GST Suvidha Network","Authorized Tax Partner"],["☀️","MFINS Solar","Channel Partner"],["🌞","PM Surya Ghar","Authorized Vendor"]].map(([icon, title, sub], i) => (
+              <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: i < 3 ? 10 : 0, padding: "6px 0" }}>
+                <span style={{ fontSize: 18, flexShrink: 0 }}>{icon}</span>
+                <div><div style={{ fontSize: 13, fontWeight: 700 }}>{title}</div><div style={{ fontSize: 11, opacity: 0.45 }}>{sub}</div></div>
+              </div>
+            ))}
+          </GlassCard>
+          <GlassCard style={{ padding: 16, marginBottom: 20, background: "linear-gradient(135deg,rgba(124,58,237,0.1),rgba(79,70,229,0.05))" }} glowColor="#a855f7">
+            <div style={{ fontSize: 12, color: "#a78bfa", fontWeight: 700, letterSpacing: 1, marginBottom: 8, textTransform: "uppercase" }}>🎯 {t.mission}</div>
+            <div style={{ fontSize: 13, lineHeight: 1.8, opacity: 0.75 }}>
+              {lang === "hindi" ? "हर भारतीय को उनकी अपनी भाषा में, पूरी तरह मुफ्त वित्तीय मार्गदर्शन उपलब्ध कराना। कोई भ्रम नहीं, कोई शोषण नहीं। SAHAYAK आपका भरोसेमंद दोस्त है — बीमा, टैक्स, सोलर और लोन के लिए।" : "To make financial guidance accessible to every Indian — in their own language, completely free. No more confusion, no more exploitation. SAHAYAK is your trusted friend for Insurance, Tax, Solar, and Loans."}
+            </div>
+          </GlassCard>
+          <a href="https://instagram.com/singh.ankit007" target="_blank" rel="noreferrer" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12, padding: "14px 20px", borderRadius: TOKENS.radii.xl, textDecoration: "none", color: "#fff", background: "linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)", boxShadow: "0 4px 20px rgba(220,39,67,0.3)", marginBottom: 20, fontWeight: 800, transition: TOKENS.transitions.fast }} onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 8px 30px rgba(220,39,67,0.4)"; }} onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 4px 20px rgba(220,39,67,0.3)"; }}>
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            <div><div style={{ fontWeight: 800, fontSize: 15 }}>{t.followInstagram}</div><div style={{ fontSize: 12, opacity: 0.85 }}>@singh.ankit007</div></div>
+          </a>
+          <div style={{ textAlign: "center", fontSize: 11, opacity: 0.3 }}>SAHAYAK v3.0 Ultra • {t.madeInIndia}</div>
+        </div>
+      </div>
+    </div>
+  );
+
+  // ═══════════════════════════════════════════════════════════
+  // HOME SCREEN — Cinematic Entrance Experience
+  // ═══════════════════════════════════════════════════════════
+  if (screen === "home") return (
+    <div style={{ minHeight: "100vh", fontFamily: TOKENS.fonts.primary, background: TOKENS.colors.bg, color: TOKENS.colors.text, display: "flex", flexDirection: "column", position: "relative", overflow: "hidden" }}>
+      <PremiumBackground agent={null} />
+      <AmbientOrbs agent={null} />
+
+      {/* Grid Pattern Overlay */}
+      <div style={{ position: "fixed", inset: 0, zIndex: 1, pointerEvents: "none", backgroundImage: `linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px)`, backgroundSize: "60px 60px", maskImage: "radial-gradient(ellipse 80% 60% at 50% 40%, black 30%, transparent 70%)" }} />
+
+      {/* Header */}
+      <header style={{
+        padding: "16px 20px", display: "flex", alignItems: "center", justifyContent: "space-between",
+        position: "relative", zIndex: 10,
+        background: scrollY > 50 ? "rgba(3,3,5,0.85)" : "transparent",
+        backdropFilter: scrollY > 50 ? TOKENS.blur.lg : "none",
+        transition: "all 0.4s cubic-bezier(0.4,0,0.2,1)",
+        borderBottom: scrollY > 50 ? "1px solid rgba(255,255,255,0.08)" : "1px solid transparent",
+      }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+          <div style={{
+            width: 48, height: 48, borderRadius: 14,
+            background: "linear-gradient(135deg, #a855f7, #6366f1)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            boxShadow: "0 0 30px rgba(168,85,247,0.5)",
+            position: "relative", overflow: "hidden",
+            animation: isLoaded ? "logoReveal 0.8s cubic-bezier(0.34,1.56,0.64,1)" : "none",
+          }}>
+            <img src={LOGO} alt="SAHAYAK" style={{ width: 32, height: 32, objectFit: "cover" }} />
+            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, transparent, rgba(255,255,255,0.2))" }} />
+          </div>
+          <div style={{ animation: isLoaded ? "fadeSlideRight 0.6s 0.2s both" : "none" }}>
+            <div style={{ fontWeight: 900, fontSize: 22, letterSpacing: 2, background: "linear-gradient(90deg, #a78bfa, #fff 50%, #7dd3fc)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>SAHAYAK</div>
+            <div style={{ fontSize: 10, opacity: 0.35, letterSpacing: 1, marginTop: 2 }}>{t.appSub}</div>
+          </div>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, animation: isLoaded ? "fadeSlideLeft 0.6s 0.3s both" : "none" }}>
+          <button onClick={() => setScreen("about")} title={t.about}
+            style={{ width: 40, height: 40, borderRadius: TOKENS.radii.lg, background: "rgba(124,58,237,0.1)", border: "1px solid rgba(124,58,237,0.2)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, color: "#a78bfa", transition: TOKENS.transitions.fast }}
+            onMouseEnter={e => { e.currentTarget.style.background = "rgba(124,58,237,0.2)"; e.currentTarget.style.transform = "scale(1.1)"; }}
+            onMouseLeave={e => { e.currentTarget.style.background = "rgba(124,58,237,0.1)"; e.currentTarget.style.transform = "scale(1)"; }}
+          >ℹ️</button>
+          <a href="https://instagram.com/singh.ankit007" target="_blank" rel="noreferrer"
+            style={{ width: 40, height: 40, borderRadius: TOKENS.radii.lg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, textDecoration: "none", background: "linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)", boxShadow: "0 2px 10px rgba(220,39,67,0.35)", transition: TOKENS.transitions.fast }}
+            onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.1)"; e.currentTarget.style.boxShadow = "0 4px 16px rgba(220,39,67,0.5)"; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.boxShadow = "0 2px 10px rgba(220,39,67,0.35)"; }}
+          >📸</a>
+          <div style={{ display: "flex", background: TOKENS.colors.surface, borderRadius: TOKENS.radii.lg, padding: 3, border: "1px solid rgba(255,255,255,0.08)", backdropFilter: TOKENS.blur.sm }}>
+            {["hindi", "english"].map((l, i) => (
+              <button key={l} onClick={() => setLang(l)}
+                style={{
+                  padding: "8px 16px", borderRadius: TOKENS.radii.md, border: "none",
+                  background: lang === l ? TOKENS.colors.accent.primary : "transparent",
+                  color: "#fff", fontSize: 12, fontWeight: 700, cursor: "pointer",
+                  fontFamily: "inherit", transition: TOKENS.transitions.fast,
+                  boxShadow: lang === l ? "0 2px 12px rgba(168,85,247,0.5)" : "none",
+                  animation: isLoaded ? `fadeSlideUp 0.5s ${0.4 + i * 0.1}s both` : "none",
+                }}
+              >{l === "hindi" ? "हिंदी" : "EN"}</button>
+            ))}
+          </div>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <div style={{ textAlign: "center", padding: "40px 24px 24px", position: "relative", zIndex: 10 }}>
+        <div style={{
+          display: "inline-flex", alignItems: "center", gap: 8,
+          padding: "8px 20px", borderRadius: TOKENS.radii.full,
+          background: "rgba(139,92,246,0.08)", border: "1px solid rgba(139,92,246,0.15)",
+          marginBottom: 24, backdropFilter: TOKENS.blur.sm,
+          animation: isLoaded ? "fadeSlideUp 0.6s 0.5s both" : "none",
+        }}>
+          <span style={{ fontSize: 16 }}>🇮🇳</span>
+          <span style={{ fontSize: 12, color: "#a78bfa", fontWeight: 700, letterSpacing: 1 }}>{t.tagline}</span>
+        </div>
+        <h1 style={{
+          margin: 0, fontSize: 32, fontWeight: 900, lineHeight: 1.2,
+          color: TOKENS.colors.text, letterSpacing: -1,
+          animation: isLoaded ? "fadeSlideUp 0.7s 0.6s both" : "none",
+        }}>
+          {t.headline1}<br/>
+          <span style={{ background: "linear-gradient(90deg, #a78bfa, #7dd3fc)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>{t.headline2}</span>
+        </h1>
+        <p style={{
+          fontSize: 14, opacity: 0.45, marginTop: 16,
+          maxWidth: 340, margin: "16px auto 0", lineHeight: 1.7,
+          animation: isLoaded ? "fadeSlideUp 0.7s 0.7s both" : "none",
+        }}>{t.sub}</p>
+      </div>
+
+      {/* Content */}
+      <div style={{ flex: 1, padding: "8px 16px 32px", maxWidth: 600, margin: "0 auto", width: "100%", boxSizing: "border-box", position: "relative", zIndex: 10 }}>
+        {/* Solar Banner */}
+        <div
+          onClick={() => openAgent(agentList.find(a => a.id === "solar"))}
+          style={{
+            marginBottom: 20, padding: "20px 22px", borderRadius: TOKENS.radii.xxl,
+            background: "linear-gradient(135deg, rgba(245,158,11,0.1), rgba(217,119,6,0.05))",
+            border: "1px solid rgba(245,158,11,0.25)", cursor: "pointer",
+            display: "flex", alignItems: "center", gap: 16,
+            transition: TOKENS.transitions.slow,
+            backdropFilter: TOKENS.blur.md,
+            position: "relative", overflow: "hidden",
+            animation: isLoaded ? "fadeSlideUp 0.8s 0.8s both" : "none",
+          }}
+          onMouseEnter={e => {
+            e.currentTarget.style.background = "linear-gradient(135deg, rgba(245,158,11,0.18), rgba(217,119,6,0.1))";
+            e.currentTarget.style.transform = "translateY(-3px)";
+            e.currentTarget.style.boxShadow = "0 12px 40px rgba(245,158,11,0.25), 0 0 0 1px rgba(245,158,11,0.2)";
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.background = "linear-gradient(135deg, rgba(245,158,11,0.1), rgba(217,119,6,0.05))";
+            e.currentTarget.style.transform = "translateY(0)";
+            e.currentTarget.style.boxShadow = "none";
+          }}
+        >
+          <div style={{ position: "absolute", top: -30, right: -30, width: 120, height: 120, borderRadius: "50%", background: "radial-gradient(circle, rgba(245,158,11,0.15), transparent 70%)", filter: TOKENS.blur.lg }} />
+          <div style={{ fontSize: 40, filter: "drop-shadow(0 4px 12px rgba(245,158,11,0.5))", position: "relative", zIndex: 1 }}>☀️</div>
+          <div style={{ flex: 1, position: "relative", zIndex: 1 }}>
+            <div style={{ fontWeight: 800, fontSize: 15, color: "#f59e0b", marginBottom: 4 }}>{t.solarBanner}</div>
+            <div style={{ fontSize: 12, opacity: 0.5, lineHeight: 1.6 }}>{t.solarSub}</div>
+          </div>
+          <div style={{
+            width: 36, height: 36, borderRadius: "50%",
+            background: "rgba(245,158,11,0.2)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            fontSize: 16, color: "#f59e0b", transition: TOKENS.transitions.fast,
+          }}>→</div>
+        </div>
+
+        {/* Section Title */}
+        <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16, animation: isLoaded ? "fadeSlideUp 0.8s 0.9s both" : "none" }}>
+          <div style={{ width: 4, height: 4, borderRadius: "50%", background: TOKENS.colors.accent.primary }} />
+          <p style={{ fontSize: 11, opacity: 0.4, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase" }}>{t.otherExperts}</p>
+          <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, rgba(255,255,255,0.06), transparent)" }} />
+        </div>
+
+        {/* Agent Grid */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12, animation: isLoaded ? "fadeSlideUp 0.9s 1.0s both" : "none" }}>
+          {agentList.filter(a => !a.solar).map((ag, index) => (
+            <button key={ag.id} onClick={() => openAgent(ag)}
+              style={{
+                background: "rgba(255,255,255,0.02)",
+                border: `1px solid ${ag.color}12`,
+                borderRadius: TOKENS.radii.xxl,
+                padding: "20px 12px 16px",
+                cursor: "pointer", textAlign: "center",
+                color: TOKENS.colors.text,
+                fontFamily: "inherit",
+                transition: TOKENS.transitions.spring,
+                backdropFilter: TOKENS.blur.md,
+                position: "relative", overflow: "hidden",
+                animation: isLoaded ? `fadeSlideUp 0.5s ${1.0 + index * 0.08}s both` : "none",
+              }}
+              onMouseEnter={e => {
+                e.currentTarget.style.background = `${ag.color}10`;
+                e.currentTarget.style.borderColor = `${ag.color}40`;
+                e.currentTarget.style.transform = "translateY(-4px) scale(1.03)";
+                e.currentTarget.style.boxShadow = `0 16px 40px ${ag.color}20, 0 4px 12px rgba(0,0,0,0.3)`;
+              }}
+              onMouseLeave={e => {
+                e.currentTarget.style.background = "rgba(255,255,255,0.02)";
+                e.currentTarget.style.borderColor = `${ag.color}12`;
+                e.currentTarget.style.transform = "translateY(0) scale(1)";
+                e.currentTarget.style.boxShadow = "none";
+              }}
+            >
+              <div style={{
+                position: "absolute", top: -20, left: "50%", transform: "translateX(-50%)",
+                width: 60, height: 60, borderRadius: "50%",
+                background: `radial-gradient(circle, ${ag.color}25 0%, transparent 70%)`,
+                filter: TOKENS.blur.md, opacity: 0, transition: "opacity 0.3s",
+              }} className="agent-glow" />
+              <div style={{
+                fontSize: 28, marginBottom: 10, display: "inline-block",
+                transition: "transform 0.3s", filter: `drop-shadow(0 4px 8px ${ag.color}40)`,
+              }} className="agent-icon">{ag.icon}</div>
+              <div style={{ fontWeight: 800, fontSize: 11, color: ag.color, lineHeight: 1.3, marginBottom: 4 }}>{ag.name}</div>
+              <div style={{ fontSize: 9, opacity: 0.35, lineHeight: 1.4 }}>{ag.tag}</div>
+            </button>
+          ))}
+        </div>
+
+        {/* WhatsApp CTA */}
+        <a href={WA_BASE} target="_blank" rel="noreferrer"
+          style={{
+            display: "flex", alignItems: "center", gap: 14,
+            marginTop: 20, padding: "16px 20px",
+            borderRadius: TOKENS.radii.xxl,
+            background: "rgba(37,211,102,0.06)",
+            border: "1px solid rgba(37,211,102,0.15)",
+            textDecoration: "none", color: TOKENS.colors.text,
+            transition: TOKENS.transitions.slow,
+            backdropFilter: TOKENS.blur.md,
+            animation: isLoaded ? "fadeSlideUp 1.0s 1.4s both" : "none",
+          }}
+          onMouseEnter={e => {
+            e.currentTarget.style.background = "rgba(37,211,102,0.12)";
+            e.currentTarget.style.transform = "translateY(-2px)";
+            e.currentTarget.style.boxShadow = "0 12px 32px rgba(37,211,102,0.2)";
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.background = "rgba(37,211,102,0.06)";
+            e.currentTarget.style.transform = "translateY(0)";
+            e.currentTarget.style.boxShadow = "none";
+          }}
+        >
+          <div style={{
+            width: 44, height: 44, borderRadius: 14,
+            background: "rgba(37,211,102,0.15)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            fontSize: 22,
+          }}>💬</div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 14, fontWeight: 800, color: "#4ade80" }}>{t.chatOnWA}</div>
+            <div style={{ fontSize: 11, opacity: 0.4, marginTop: 2 }}>+{WA_NUMBER} • {t.free}</div>
+          </div>
+          <div style={{
+            width: 32, height: 32, borderRadius: "50%",
+            background: "rgba(37,211,102,0.2)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+            fontSize: 14, color: "#4ade80",
+          }}>→</div>
+        </a>
+
+        {/* Trust Badge */}
+        <div style={{
+          marginTop: 16, padding: "14px 18px",
+          borderRadius: TOKENS.radii.xl,
+          background: "rgba(139,92,246,0.04)",
+          border: "1px solid rgba(139,92,246,0.1)",
+          textAlign: "center", backdropFilter: TOKENS.blur.sm,
+          animation: isLoaded ? "fadeSlideUp 1.1s 1.5s both" : "none",
+        }}>
+          <span style={{ fontSize: 12, color: "#a78bfa", opacity: 0.7, fontWeight: 600 }}>
+            🔒 {t.certified}
+          </span>
+        </div>
+      </div>
+
+      {/* Global Styles */}
+      <style>{`
         @keyframes orbFloat {
           0%, 100% { transform: translate(-50%, -50%) translate(0, 0); }
           33% { transform: translate(-50%, -50%) translate(30px, -20px); }
@@ -919,7 +1548,64 @@ export default function SahayakPremium() {
           box-shadow: 0 0 20px rgba(245,158,11,0.5);
           cursor: pointer; border: 2px solid rgba(255,255,255,0.3);
         }
-      `}</style>\n    </div>\n  );\n\n  // ═══════════════════════════════════════════════════════════\n  // CHAT SCREEN — Premium Conversation Experience\n  // ═══════════════════════════════════════════════════════════\n  const starters = agent.starters;\n  return (\n    <div style={{ minHeight: "100vh", fontFamily: TOKENS.fonts.primary, background: TOKENS.colors.bg, color: TOKENS.colors.text, display: "flex", flexDirection: "column", position: "relative", overflow: "hidden" }}>\n      <PremiumBackground agent={agent} />\n      <AmbientOrbs agent={agent} />\n\n      {/* Chat Header */}\n      <header style={{\n        padding: "12px 16px", display: "flex", alignItems: "center", gap: 14,\n        background: "rgba(3,3,5,0.88)", backdropFilter: TOKENS.blur.xl,\n        borderBottom: "1px solid rgba(255,255,255,0.08)",\n        position: "sticky", top: 0, zIndex: 20,\n      }}>\n        <button onClick={() => { setScreen("home"); stopSpeech(); }}\n          style={{\n            background: "none", border: "none", color: TOKENS.colors.textMuted,\n            fontSize: 22, cursor: "pointer", padding: "6px 10px",\n            borderRadius: TOKENS.radii.md, transition: TOKENS.transitions.fast,\n          }}\n          onMouseEnter={e => { e.target.style.background = TOKENS.colors.surface; e.target.style.color = TOKENS.colors.text; }}\n          onMouseLeave={e => { e.target.style.background = "none"; e.target.style.color = TOKENS.colors.textMuted; }}\n        >←</button>\n\n        <div style={{ position: "relative", width: 44, height: 44, animation: speaking !== null ? "breathe 2s ease-in-out infinite" : "none" }}>\n          <div style={{\n            position: "absolute", inset: -4, borderRadius: "50%",\n            background: "radial-gradient(circle, " + agent.color + "50 0%, transparent 70%)",\n            filter: TOKENS.blur.sm, opacity: speaking !== null ? 1 : 0.4,\n            transition: "opacity 0.5s", animation: speaking !== null ? "pulse-glow 2s ease-in-out infinite" : "none",\n          }} />\n          <img src={LOGO} alt="SAHAYAK" style={{\n            width: 44, height: 44, borderRadius: 12, objectFit: "cover",\n            border: "2px solid " + agent.color + "70", position: "relative", zIndex: 1,\n          }} />\n          <div style={{\n            position: "absolute", bottom: 0, right: 0, width: 12, height: 12,\n            borderRadius: "50%", background: TOKENS.colors.success,\n            border: "2px solid " + TOKENS.colors.bg, zIndex: 2,\n            boxShadow: "0 0 10px " + TOKENS.colors.success,\n          }} />\n        </div>\n\n        <div style={{ flex: 1 }}>\n          <div style={{ fontWeight: 800, fontSize: 15, color: TOKENS.colors.text }}>{agent.name} {t.expert}</div>\n          <div style={{ fontSize: 11, color: TOKENS.colors.success, display: "flex", alignItems: "center", gap: 6, fontWeight: 600 }}>\n            <span style={{ width: 6, height: 6, borderRadius: "50%", background: TOKENS.colors.success, display: "inline-block", boxShadow: "0 0 8px " + TOKENS.colors.success }} />\n            {t.online}\n          </div>\n        </div>\n\n        <a href={`${WA_BASE}?text=${lang === "english" ? "Hello! Need help with " + agent.name + "." : "नमस्ते! " + agent.name + " के बारे में बात करनी है।"}}
+      `}</style>
+    </div>
+  );
+
+  // ═══════════════════════════════════════════════════════════
+  // CHAT SCREEN — Premium Conversation Experience
+  // ═══════════════════════════════════════════════════════════
+  const starters = agent.starters;
+  return (
+    <div style={{ minHeight: "100vh", fontFamily: TOKENS.fonts.primary, background: TOKENS.colors.bg, color: TOKENS.colors.text, display: "flex", flexDirection: "column", position: "relative", overflow: "hidden" }}>
+      <PremiumBackground agent={agent} />
+      <AmbientOrbs agent={agent} />
+
+      {/* Chat Header */}
+      <header style={{
+        padding: "12px 16px", display: "flex", alignItems: "center", gap: 14,
+        background: "rgba(3,3,5,0.88)", backdropFilter: TOKENS.blur.xl,
+        borderBottom: "1px solid rgba(255,255,255,0.08)",
+        position: "sticky", top: 0, zIndex: 20,
+      }}>
+        <button onClick={() => { setScreen("home"); stopSpeech(); }}
+          style={{
+            background: "none", border: "none", color: TOKENS.colors.textMuted,
+            fontSize: 22, cursor: "pointer", padding: "6px 10px",
+            borderRadius: TOKENS.radii.md, transition: TOKENS.transitions.fast,
+          }}
+          onMouseEnter={e => { e.target.style.background = TOKENS.colors.surface; e.target.style.color = TOKENS.colors.text; }}
+          onMouseLeave={e => { e.target.style.background = "none"; e.target.style.color = TOKENS.colors.textMuted; }}
+        >←</button>
+
+        <div style={{ position: "relative", width: 44, height: 44, animation: speaking !== null ? "breathe 2s ease-in-out infinite" : "none" }}>
+          <div style={{
+            position: "absolute", inset: -4, borderRadius: "50%",
+            background: `radial-gradient(circle, ${agent.color}50 0%, transparent 70%)`,
+            filter: TOKENS.blur.sm, opacity: speaking !== null ? 1 : 0.4,
+            transition: "opacity 0.5s", animation: speaking !== null ? "pulse-glow 2s ease-in-out infinite" : "none",
+          }} />
+          <img src={LOGO} alt="SAHAYAK" style={{
+            width: 44, height: 44, borderRadius: 12, objectFit: "cover",
+            border: `2px solid ${agent.color}70`, position: "relative", zIndex: 1,
+          }} />
+          <div style={{
+            position: "absolute", bottom: 0, right: 0, width: 12, height: 12,
+            borderRadius: "50%", background: TOKENS.colors.success,
+            border: `2px solid ${TOKENS.colors.bg}`, zIndex: 2,
+            boxShadow: `0 0 10px ${TOKENS.colors.success}`,
+          }} />
+        </div>
+
+        <div style={{ flex: 1 }}>
+          <div style={{ fontWeight: 800, fontSize: 15, color: TOKENS.colors.text }}>{agent.name} {t.expert}</div>
+          <div style={{ fontSize: 11, color: TOKENS.colors.success, display: "flex", alignItems: "center", gap: 6, fontWeight: 600 }}>
+            <span style={{ width: 6, height: 6, borderRadius: "50%", background: TOKENS.colors.success, display: "inline-block", boxShadow: `0 0 8px ${TOKENS.colors.success}` }} />
+            {t.online}
+          </div>
+        </div>
+
+        <a href={`${WA_BASE}?text=${lang === "english" ? `Hello! Need help with ${agent.name}.` : `नमस्ते! ${agent.name} के बारे में बात करनी है।`}`}
           target="_blank" rel="noreferrer"
           style={{
             background: "linear-gradient(135deg, #25d366, #128c7e)", borderRadius: TOKENS.radii.lg,
@@ -947,14 +1633,14 @@ export default function SahayakPremium() {
                 color: TOKENS.colors.textMuted, cursor: "pointer", fontSize: 13,
                 fontFamily: "inherit", transition: TOKENS.transitions.fast,
                 backdropFilter: TOKENS.blur.sm, fontWeight: 500,
-                animation: "fadeSlideUp 0.4s " + (i * 0.1) + "s both",
+                animation: `fadeSlideUp 0.4s ${i * 0.1}s both`,
               }}
               onMouseEnter={e => {
                 e.currentTarget.style.background = agent.color + "18";
                 e.currentTarget.style.borderColor = agent.color + "40";
                 e.currentTarget.style.color = TOKENS.colors.text;
                 e.currentTarget.style.transform = "translateY(-2px)";
-                e.currentTarget.style.boxShadow = "0 4px 16px " + agent.color + "20";
+                e.currentTarget.style.boxShadow = `0 4px 16px ${agent.color}20`;
               }}
               onMouseLeave={e => {
                 e.currentTarget.style.background = agent.color + "08";
@@ -980,7 +1666,7 @@ export default function SahayakPremium() {
             <div key={i} style={{
               display: "flex", justifyContent: isUser ? "flex-end" : "flex-start",
               alignItems: "flex-end", gap: 12, marginBottom: 18,
-              animation: "messageSlide 0.4s cubic-bezier(0.34,1.56,0.64,1)",
+              animation: `messageSlide 0.4s cubic-bezier(0.34,1.56,0.64,1)`,
             }}>
               {!isUser && (
                 <div style={{ flexShrink: 0, marginBottom: 4 }}>
@@ -990,7 +1676,7 @@ export default function SahayakPremium() {
                   }}>
                     <div style={{
                       position: "absolute", inset: -3, borderRadius: "50%",
-                      background: "radial-gradient(circle, " + agent.color + "50 0%, transparent 70%)",
+                      background: `radial-gradient(circle, ${agent.color}50 0%, transparent 70%)`,
                       filter: TOKENS.blur.sm,
                       opacity: speaking === i ? 1 : 0.4,
                       transition: "opacity 0.5s",
@@ -998,7 +1684,7 @@ export default function SahayakPremium() {
                     }} />
                     <img src={LOGO} alt="SAHAYAK" style={{
                       width: 36, height: 36, borderRadius: 10, objectFit: "cover",
-                      border: "2px solid " + agent.color + "60", position: "relative", zIndex: 1,
+                      border: `2px solid ${agent.color}60`, position: "relative", zIndex: 1,
                     }} />
                   </div>
                 </div>
@@ -1008,22 +1694,22 @@ export default function SahayakPremium() {
                 {/* Message Bubble */}
                 <div style={{
                   background: isUser
-                    ? "linear-gradient(135deg, " + agent.color + "15, " + agent.color + "05)"
+                    ? `linear-gradient(135deg, ${agent.color}15, ${agent.color}05)`
                     : TOKENS.colors.surface,
-                  border: "1px solid " + (isUser ? agent.color + "35" : TOKENS.colors.border),
+                  border: `1px solid ${isUser ? `${agent.color}35` : TOKENS.colors.border}`,
                   borderRadius: isUser ? "20px 20px 4px 20px" : "20px 20px 20px 4px",
                   padding: "16px 20px",
                   backdropFilter: TOKENS.blur.lg,
                   WebkitBackdropFilter: TOKENS.blur.lg,
                   boxShadow: isUser
-                    ? "0 4px 24px " + agent.color + "15, 0 2px 8px rgba(0,0,0,0.2)"
+                    ? `0 4px 24px ${agent.color}15, 0 2px 8px rgba(0,0,0,0.2)`
                     : "0 4px 24px rgba(0,0,0,0.4)",
                   position: "relative", overflow: "hidden",
                 }}>
                   <div style={{
                     position: "absolute", inset: 0,
                     background: isUser
-                      ? "linear-gradient(135deg, " + agent.color + "04, transparent)"
+                      ? `linear-gradient(135deg, ${agent.color}04, transparent)`
                       : "linear-gradient(180deg, rgba(255,255,255,0.02) 0%, transparent 50%)",
                     pointerEvents: "none", borderRadius: "inherit",
                   }} />
@@ -1037,7 +1723,7 @@ export default function SahayakPremium() {
                       style={{
                         display: "flex", alignItems: "center", gap: 8,
                         padding: "8px 14px 8px 10px", borderRadius: TOKENS.radii.full,
-                        border: "2px solid " + (speaking === i ? agent.color : "rgba(255,255,255,0.08)"),
+                        border: `2px solid ${speaking === i ? agent.color : "rgba(255,255,255,0.08)"}`,
                         background: speaking === i
                           ? "linear-gradient(135deg, " + agent.color + "90, " + agent.color + "60)"
                           : "rgba(255,255,255,0.03)",
@@ -1205,7 +1891,7 @@ export default function SahayakPremium() {
               transition: TOKENS.transitions.fast,
               boxShadow: "inset 0 1px 3px rgba(0,0,0,0.06)",
             }}
-            onFocus={e => { e.target.style.borderColor = agent.color; e.target.style.boxShadow = "0 0 0 3px " + agent.color + "15, inset 0 1px 3px rgba(0,0,0,0.06)"; }}
+            onFocus={e => { e.target.style.borderColor = agent.color; e.target.style.boxShadow = `0 0 0 3px ${agent.color}15, inset 0 1px 3px rgba(0,0,0,0.06)`; }}
             onBlur={e => { e.target.style.borderColor = agent.color + "30"; e.target.style.boxShadow = "inset 0 1px 3px rgba(0,0,0,0.06)"; }}
           />
 
