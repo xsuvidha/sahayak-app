@@ -180,6 +180,9 @@ const AGENTS = {
     { id:"solar", icon:"☀️", name:"सोलर रूफटॉप", tag:"मुफ्त बिजली, सरकारी सब्सिडी", color:"#f97316", glow:"rgba(249,115,22,0.40)", grad:"135deg,#f97316,#c2410c", iconBg:"rgba(249,115,22,0.12)", solar:true,
       starters:["UP में कितनी सब्सिडी मिलेगी?","3KW सोलर का खर्च?","EMI पर सोलर मिलेगा?"],
       description: "सोलर रूफटॉप विशेषज्ञ — PM सूर्य घर योजना के तहत सब्सिडी" },
+    { id:"solarquote", icon:"🧾", name:"सोलर कोटेशन", tag:"MFINS Partner — मुफ्त कोटेशन पाएं", color:"#00b894", glow:"rgba(0,184,148,0.3)", grad:"135deg,#00b894,#00796b", iconBg:"rgba(0,184,148,0.1)", solarQuote:true,
+      starters:["मुफ्त कोटेशन चाहिए","अपना बिजली बिल बताएं","Ongrid vs Hybrid?"],
+      description:"HAANS Solar — MFINS Partner से सोलर कोटेशन" },
   ],
   english: [
     { id:"life", icon:"🛡️", name:"Life Insurance", tag:"Secure your family's future", color:"#ef4444", glow:"rgba(239,68,68,0.35)", grad:"135deg,#ef4444,#991b1b", iconBg:"rgba(239,68,68,0.12)",
@@ -441,11 +444,11 @@ function AmbientOrbs({ agent }) {
     <div style={{ position: 'fixed', inset: 0, zIndex: 0, pointerEvents: 'none', overflow: 'hidden' }}>
       {orbs.map((orb, i) => (
         <div key={i} style={{
-          position: 'absolute', left: orb.x + "%", top: orb.y + "%",
+          position: 'absolute', left: orb.x+"%", top: orb.y+"%",
           width: orb.size, height: orb.size, borderRadius: '50%',
-          background: `radial-gradient(circle, ${orb.color}18 0%, ${orb.color}08 40%, transparent 70%)`,
+          background: "radial-gradient(circle, "+orb.color+"18 0%, "+orb.color+"08 40%, transparent 70%)",
           filter: TOKENS.blur.xxl,
-          animation: "orbFloat " + orb.duration + "s " + orb.delay + "s ease-in-out infinite",
+          animation: "orbFloat "+orb.duration+"s "+orb.delay+"s ease-in-out infinite",
           transform: 'translate(-50%, -50%)',
         }} />
       ))}
@@ -465,7 +468,7 @@ function GlassCard({ children, style = {}, hoverEffect = true, glowColor = null 
       style={{
         position: 'relative',
         background: isHovered ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.025)',
-        border: "1px solid " + (isHovered ? "rgba(255,255,255,0.12)" : "rgba(255,255,255,0.04)"),
+        border: "1px solid "+(isHovered?"rgba(255,255,255,0.12)":"rgba(255,255,255,0.04)"),
         borderRadius: TOKENS.radii.xl,
         backdropFilter: TOKENS.blur.lg,
         WebkitBackdropFilter: TOKENS.blur.lg,
@@ -477,7 +480,7 @@ function GlassCard({ children, style = {}, hoverEffect = true, glowColor = null 
       {glowColor && isHovered && (
         <div style={{
           position: 'absolute', inset: -1, borderRadius: TOKENS.radii.xl + 1,
-          background: "radial-gradient(circle at 50% 0%, " + glowColor + "30, transparent 70%)",
+          background: "radial-gradient(circle at 50% 0%, "+glowColor+"30, transparent 70%)",
           pointerEvents: 'none', zIndex: 0,
         }} />
       )}
@@ -495,15 +498,15 @@ function PremiumButton({ children, onClick, variant = 'primary', color = TOKENS.
 
   const variants = {
     primary: {
-      background: disabled ? 'rgba(255,255,255,0.05)' : "linear-gradient(135deg, " + color + ", " + color + "dd)",
+      background: disabled ? 'rgba(255,255,255,0.05)' : "linear-gradient(135deg, "+color+", "+color+"dd)",
       color: '#fff',
-      border: "1px solid " + (disabled ? "rgba(255,255,255,0.05)" : color + "60"),
-      boxShadow: isHovered && !disabled ? "0 8px 32px " + color + "40, 0 0 0 1px " + color + "30" : 'none',
+      border: "1px solid "+(disabled?"rgba(255,255,255,0.05)":color+"60"),
+      boxShadow: isHovered && !disabled ? "0 8px 32px "+color+"40, 0 0 0 1px "+color+"30" : 'none',
     },
     secondary: {
       background: isHovered ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.03)',
       color: TOKENS.colors.text,
-      border: "1px solid " + (isHovered ? "rgba(255,255,255,0.15)" : "rgba(255,255,255,0.06)"),
+      border: "1px solid "+(isHovered?"rgba(255,255,255,0.15)":"rgba(255,255,255,0.06)"),
       boxShadow: 'none',
     },
     ghost: {
@@ -770,7 +773,7 @@ function TypingIndicator({ agent, t }) {
     <div style={{ display: "flex", alignItems: "flex-end", gap: 10, marginBottom: 20 }}>
       <div style={{ position: "relative", width: 32, height: 32, animation: "breathe 2s ease-in-out infinite" }}>
         <div style={{ position: "absolute", inset: -3, borderRadius: "50%", background: `radial-gradient(circle, ${agent.color}50 0%, transparent 70%)`, filter: TOKENS.blur.sm, animation: "pulse-glow 2s ease-in-out infinite" }} />
-        <img src={LOGO} alt="SAHAYAK" style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover", border: "2px solid " + agent.color + "50", position: "relative", zIndex: 1 }} />
+        <img src={LOGO} alt="SAHAYAK" style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover", border: "2px solid "+agent.color+"50", position: "relative", zIndex: 1 }} />
       </div>
       <div style={{ background: TOKENS.colors.surface, borderRadius: "18px 18px 18px 4px", padding: "11px 15px", display: "flex", gap: 4, border: "1px solid rgba(255,255,255,0.08)", backdropFilter: TOKENS.blur.md }}>
         {[0, 1, 2].map(i => (
@@ -787,187 +790,132 @@ function TypingIndicator({ agent, t }) {
 // ═══════════════════════════════════════════════════════════
 function PolicyPage({ lang, onBack }) {
   const isH = lang !== "english";
+  const s = (hi, en) => isH ? hi : en;
   return (
-    <div style={{ minHeight: "100vh", fontFamily: "'Noto Sans Devanagari','Segoe UI',sans-serif", background: "#05050a", color: "#fff", display: "flex", flexDirection: "column" }}>
-      <div style={{ padding: "12px 16px", display: "flex", alignItems: "center", gap: 10, borderBottom: "1px solid rgba(74,222,128,0.12)", background: "rgba(5,5,10,0.95)", position: "sticky", top: 0 }}>
-        <button onClick={onBack} style={{ background: "none", border: "none", color: "rgba(255,255,255,0.5)", fontSize: 22, cursor: "pointer", padding: 0 }}>←</button>
-        <div style={{ fontWeight: 800, fontSize: 16 }}>{isH ? "गोपनीयता नीति & नियम" : "Privacy Policy & Terms"}</div>
+    <div style={{ minHeight:"100vh", fontFamily:"'Noto Sans Devanagari','Segoe UI',sans-serif", background:"#05050a", color:"#fff", display:"flex", flexDirection:"column" }}>
+      <div style={{ padding:"12px 16px", display:"flex", alignItems:"center", gap:10, borderBottom:"1px solid rgba(74,222,128,0.12)", background:"rgba(5,5,10,0.95)", position:"sticky", top:0, zIndex:10 }}>
+        <button onClick={onBack} style={{ background:"none", border:"none", color:"rgba(255,255,255,0.5)", fontSize:22, cursor:"pointer", padding:0 }}>{"<"}</button>
+        <div style={{ fontWeight:800, fontSize:16 }}>{"📋 "+s("नीति एवं प्रमाण-पत्र","Policy & Certificates")}</div>
       </div>
-      <div style={{ flex: 1, padding: "20px 16px", maxWidth: 560, margin: "0 auto", width: "100%", boxSizing: "border-box", overflowY: "auto" }}>
-        
-        {/* Company Info */}
-        <div style={{ background: "rgba(74,222,128,0.06)", border: "1px solid rgba(74,222,128,0.2)", borderRadius: 14, padding: 16, marginBottom: 18 }}>
-          <div style={{ fontWeight: 800, fontSize: 14, color: "#4ade80", marginBottom: 10 }}>🏢 {isH ? "कंपनी की जानकारी" : "Company Information"}</div>
-          <div style={{ fontSize: 13, lineHeight: 1.8, opacity: 0.8 }}>
-            <div><strong style={{ color: "#fff" }}>{isH ? "कंपनी का नाम:" : "Company Name:"}</strong> HAANS Solar</div>
-            <div><strong style={{ color: "#fff" }}>GST {isH ? "नंबर:" : "Number:"}</strong> 09DIYPS3881N1ZT</div>
-            <div><strong style={{ color: "#fff" }}>{isH ? "संस्थापक:" : "Founder:"}</strong> Ankit Singh</div>
-            <div><strong style={{ color: "#fff" }}>{isH ? "पता:" : "Address:"}</strong> Nawanagar, Chouhattar Kalan, Balrampur, UP - 271208</div>
-            <div><strong style={{ color: "#fff" }}>{isH ? "ईमेल:" : "Email:"}</strong> xsuvidha@gmail.com</div>
-            <div><strong style={{ color: "#fff" }}>{isH ? "फोन:" : "Phone:"}</strong> +91 8115776644</div>
-          </div>
-        </div>
-
-        {/* Privacy Policy */}
-        <div style={{ background: "rgba(167,139,250,0.06)", border: "1px solid rgba(167,139,250,0.15)", borderRadius: 14, padding: 16, marginBottom: 18 }}>
-          <div style={{ fontWeight: 800, fontSize: 14, color: "#a78bfa", marginBottom: 10 }}>🔒 {isH ? "गोपनीयता नीति" : "Privacy Policy"}</div>
-          <div style={{ fontSize: 12.5, lineHeight: 1.9, opacity: 0.75 }}>
-            {isH ? (
-              <>
-                <p style={{ marginBottom: 8 }}><strong style={{ color: "#a78bfa" }}>डेटा संग्रह:</strong> SAHAYAK केवल वही जानकारी एकत्र करता है जो आप स्वेच्छा से प्रदान करते हैं — जैसे नाम, मोबाइल नंबर और शहर का नाम।</p>
-                <p style={{ marginBottom: 8 }}><strong style={{ color: "#a78bfa" }}>डेटा का उपयोग:</strong> आपकी जानकारी केवल आपसे संपर्क करने और उचित वित्तीय/सोलर सेवाएं प्रदान करने के लिए उपयोग की जाती है।</p>
-                <p style={{ marginBottom: 8 }}><strong style={{ color: "#a78bfa" }}>डेटा साझाकरण:</strong> हम आपकी व्यक्तिगत जानकारी किसी तीसरे पक्ष को नहीं बेचते। केवल सेवा प्रदान करने हेतु HAANS Solar के प्रतिनिधि से साझा की जाती है।</p>
-                <p style={{ marginBottom: 8 }}><strong style={{ color: "#a78bfa" }}>AI चैट:</strong> आपकी बातचीत AI द्वारा प्रोसेस की जाती है। हम चैट इतिहास संग्रहीत नहीं करते।</p>
-                <p><strong style={{ color: "#a78bfa" }}>WhatsApp:</strong> लीड फॉर्म भरने पर आपकी जानकारी WhatsApp के माध्यम से हमारी टीम को भेजी जाती है।</p>
-              </>
-            ) : (
-              <>
-                <p style={{ marginBottom: 8 }}><strong style={{ color: "#a78bfa" }}>Data Collection:</strong> SAHAYAK collects only information you voluntarily provide — name, mobile number, and city.</p>
-                <p style={{ marginBottom: 8 }}><strong style={{ color: "#a78bfa" }}>Data Usage:</strong> Your information is used solely to contact you and provide relevant financial/solar services.</p>
-                <p style={{ marginBottom: 8 }}><strong style={{ color: "#a78bfa" }}>Data Sharing:</strong> We do not sell personal data. It is shared only with HAANS Solar representatives for service delivery.</p>
-                <p style={{ marginBottom: 8 }}><strong style={{ color: "#a78bfa" }}>AI Chat:</strong> Conversations are processed by AI. We do not store chat history.</p>
-                <p><strong style={{ color: "#a78bfa" }}>WhatsApp:</strong> Lead form submissions are sent to our team via WhatsApp.</p>
-              </>
-            )}
-          </div>
-        </div>
-
-        {/* Terms & Conditions */}
-        <div style={{ background: "rgba(243,156,18,0.06)", border: "1px solid rgba(243,156,18,0.15)", borderRadius: 14, padding: 16, marginBottom: 18 }}>
-          <div style={{ fontWeight: 800, fontSize: 14, color: "#f39c12", marginBottom: 10 }}>📜 {isH ? "नियम और शर्तें" : "Terms & Conditions"}</div>
-          <div style={{ fontSize: 12.5, lineHeight: 1.9, opacity: 0.75 }}>
-            {isH ? (
-              <>
-                <p style={{ marginBottom: 8 }}>• SAHAYAK एक AI-आधारित सूचना सेवा है। यह कानूनी, वित्तीय या बीमा सलाह का विकल्प नहीं है।</p>
-                <p style={{ marginBottom: 8 }}>• SAHAYAK पर प्रदान की गई जानकारी सामान्य मार्गदर्शन के लिए है। किसी भी वित्तीय निर्णय से पहले योग्य विशेषज्ञ से परामर्श लें।</p>
-                <p style={{ marginBottom: 8 }}>• HAANS Solar, Ankit Singh (GST: 09DIYPS3881N1ZT) द्वारा संचालित एकल स्वामित्व है।</p>
-                <p style={{ marginBottom: 8 }}>• VLE-IRDAI लाइसेंस: CSC/VLEINS/UP/2025/452693 | GST Suvidha Network partner | MFINS Solar Channel Partner।</p>
-                <p style={{ marginBottom: 8 }}>• PM Surya Ghar: HAANS Solar एक अधिकृत वेंडर है। सब्सिडी राशि सरकारी नीतियों पर निर्भर है।</p>
-                <p>• सेवा का उपयोग करके आप इन नियमों से सहमत हैं।</p>
-              </>
-            ) : (
-              <>
-                <p style={{ marginBottom: 8 }}>• SAHAYAK is an AI-based information service and does not replace legal, financial, or insurance advice.</p>
-                <p style={{ marginBottom: 8 }}>• Information provided is for general guidance only. Consult a qualified expert before making financial decisions.</p>
-                <p style={{ marginBottom: 8 }}>• HAANS Solar is a sole proprietorship operated by Ankit Singh (GST: 09DIYPS3881N1ZT).</p>
-                <p style={{ marginBottom: 8 }}>• VLE-IRDAI License: CSC/VLEINS/UP/2025/452693 | GST Suvidha Network Partner | MFINS Solar Channel Partner.</p>
-                <p style={{ marginBottom: 8 }}>• PM Surya Ghar: HAANS Solar is an authorized vendor. Subsidy amounts are subject to government policies.</p>
-                <p>• By using this service, you agree to these terms.</p>
-              </>
-            )}
-          </div>
-        </div>
-
-        {/* Disclaimer */}
-        <div style={{ background: "rgba(231,76,60,0.06)", border: "1px solid rgba(231,76,60,0.15)", borderRadius: 14, padding: 16, marginBottom: 20 }}>
-          <div style={{ fontWeight: 800, fontSize: 13, color: "#f87171", marginBottom: 8 }}>⚠️ {isH ? "अस्वीकरण" : "Disclaimer"}</div>
-          <div style={{ fontSize: 12, lineHeight: 1.8, opacity: 0.7 }}>
-            {isH
-              ? "SAHAYAK AI द्वारा उत्पन्न जानकारी प्रदान करता है जो पूरी तरह सटीक नहीं हो सकती। महत्वपूर्ण निर्णयों के लिए हमेशा अधिकृत विशेषज्ञ से सत्यापित करें।"
-              : "SAHAYAK provides AI-generated information which may not always be accurate. Always verify with authorized experts for important decisions."}
-          </div>
-        </div>
-
-        <div style={{ textAlign: "center", fontSize: 11, opacity: 0.25, marginBottom: 20 }}>
-          {isH ? "अंतिम अपडेट: मई 2026 • HAANS Solar © 2026" : "Last Updated: May 2026 • HAANS Solar © 2026"}
+      <div style={{ flex:1, padding:"20px 16px", maxWidth:560, margin:"0 auto", width:"100%", boxSizing:"border-box", overflowY:"auto" }}>
+        <Section color="#4ade80" title={"🏢 "+s("कंपनी जानकारी","Company Info")}>
+          <Row label={s("कंपनी:","Company:")} val="HAANS Solar" />
+          <Row label={s("संस्थापक:","Founder:")} val="Ankit Singh" />
+          <Row label="GST:" val="09DIYPS3881N1ZT" />
+          <Row label="PAN:" val="DIYPS3881N" />
+          <Row label={s("पता:","Address:")} val="Nawanagar, Chouhattar Kalan, Balrampur UP 271208" />
+          <Row label="Email:" val="xsuvidha@gmail.com" />
+          <Row label={s("सोलर:","Solar:")} val="haans.solars@gmail.com" />
+          <Row label={s("फोन:","Phone:")} val="+91 8115776644" />
+        </Section>
+        <Section color="#60a5fa" title={"🛡️ VLE-IRDAI "+s("बीमा प्रमाण-पत्र","Insurance Certificate")}>
+          <Row label="ID:" val="CSC/VLEINS/UP/2025/452693" />
+          <Row label={s("नाम:","Name:")} val="Ankit Singh" />
+          <Row label="CSC ID:" val="324617760019" />
+          <Row label={s("जारी:","Issued:")} val="13 October 2025" />
+          <Row label={s("द्वारा:","By:")} val="CSC e-Governance Services India Ltd." />
+          <Badge color="#93c5fd">{s("✅ IRDAI अधिकृत बीमा एजेंट","✅ IRDAI Authorized Insurance Agent")}</Badge>
+        </Section>
+        <Section color="#f39c12" title={"☀️ MFINS Solar "+s("चैनल पार्टनर","Channel Partner")}>
+          <Row label={s("साझेदार:","Partner:")} val="MFINS Services Private Limited" />
+          <Row label={s("मान्यता:","As:")} val="Solar Channel Partner" />
+          <Row label={s("जारी:","Issued:")} val="26 August 2025" />
+          <Badge color="#fbbf24">{s("✅ MFINS द्वारा आधिकारिक Solar Channel Partner","✅ Official Solar Channel Partner by MFINS")}</Badge>
+        </Section>
+        <Section color="#fb923c" title={"📊 GST Suvidha Kendra "+s("फ्रेंचाइज़ी","Franchise")}>
+          <Row label={s("लाइसेंस:","License:")} val="GSTSK/2024/REGISTRATION/20240039824" />
+          <Row label={s("जारी:","Issued:")} val="03 October 2024" />
+          <Row label={s("वैध तक:","Valid Till:")} val="03 October 2049" />
+          <Row label={s("द्वारा:","By:")} val="Prologic Web Solutions Pvt. Ltd." />
+          <Badge color="#fdba74">{s("✅ GST Suvidha Kendra Franchisee — 2049 तक","✅ GST Suvidha Kendra Franchisee — Till 2049")}</Badge>
+        </Section>
+        <Section color="#a78bfa" title={"🔒 "+s("गोपनीयता नीति","Privacy Policy")}>
+          <p style={{fontSize:12,lineHeight:1.9,opacity:0.75}}>
+            {"• "+s("SAHAYAK केवल आपकी दी गई जानकारी एकत्र करता है।","SAHAYAK collects only information you provide.")}<br/>
+            {"• "+s("डेटा तीसरे पक्ष को नहीं बेचा जाता।","Data is never sold to third parties.")}<br/>
+            {"• "+s("AI चैट इतिहास संग्रहीत नहीं होता।","AI chat history is not stored.")}<br/>
+            {"• "+s("WhatsApp लीड HAANS Solar टीम को जाती है।","WhatsApp leads go to HAANS Solar team only.")}
+          </p>
+        </Section>
+        <Section color="#f87171" title={"📜 "+s("नियम एवं अस्वीकरण","Terms & Disclaimer")}>
+          <p style={{fontSize:12,lineHeight:1.9,opacity:0.75}}>
+            {"• "+s("SAHAYAK AI सूचना सेवा है — कानूनी सलाह नहीं।","SAHAYAK is AI info service — not legal advice.")}<br/>
+            {"• "+s("सब्सिडी सरकारी नीतियों पर निर्भर है।","Subsidy depends on government policies.")}<br/>
+            {"• "+s("सेवा उपयोग = इन नियमों से सहमति।","Using this service means agreement to these terms.")}
+          </p>
+        </Section>
+        <div style={{textAlign:"center",fontSize:10,opacity:0.2,marginBottom:20}}>
+          {"HAANS Solar 2026 • GST: 09DIYPS3881N1ZT"}
         </div>
       </div>
     </div>
   );
 }
-
+function Section({ color, title, children }) {
+  return (
+    <div style={{ background:color+"0f", border:"1px solid "+color+"30", borderRadius:14, padding:14, marginBottom:12 }}>
+      <div style={{ fontWeight:800, fontSize:13, color:color, marginBottom:8 }}>{title}</div>
+      {children}
+    </div>
+  );
+}
+function Row({ label, val }) {
+  return (
+    <div style={{ fontSize:12.5, lineHeight:1.9, opacity:0.82 }}>
+      <strong style={{color:"#fff"}}>{label}</strong>{" "+val}
+    </div>
+  );
+}
+function Badge({ color, children }) {
+  return (
+    <div style={{ marginTop:6, padding:"5px 10px", borderRadius:8, background:color+"18", fontSize:11, color:color }}>
+      {children}
+    </div>
+  );
+}
 
 function SolarQuoteForm({ lang, onSubmit, onSkip }) {
   const isH = lang !== "english";
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [city, setCity] = useState("");
-  const [sysType, setSysType] = useState("ongrid");
+  const [sys, setSys] = useState("ongrid");
   const [units, setUnits] = useState("");
-  const WA = "https://wa.me/918115776644";
-
-  const ready = name.trim() && phone.length === 10 && city.trim() && units.trim();
-
+  const ready = name.trim() && phone.length===10 && city.trim() && units.trim();
   const submit = () => {
     if (!ready) return;
-    const sysLabel = isH
-      ? (sysType === "ongrid" ? "ऑनग्रिड" : "हाइब्रिड")
-      : (sysType === "ongrid" ? "On-Grid" : "Hybrid");
-    const msg = isH
-      ? `🌞 *HAANS Solar — सोलर कोटेशन अनुरोध*%0A%0A*नाम:* ${name}%0A*मोबाइल:* +91${phone}%0A*शहर:* ${city}%0A*सिस्टम प्रकार:* ${sysLabel}%0A*औसत मासिक खपत:* ${units} यूनिट%0A%0ASAHAYAK App से भेजा गया। कृपया कोटेशन भेजें।`
-      : `🌞 *HAANS Solar — Solar Quotation Request*%0A%0A*Name:* ${name}%0A*Mobile:* +91${phone}%0A*City:* ${city}%0A*System Type:* ${sysLabel}%0A*Avg Monthly Units:* ${units} units%0A%0ASent via SAHAYAK App. Please send quotation.`;
-    window.open(`${WA}?text=${msg}`, "_blank");
+    const sl = isH ? (sys==="ongrid"?"ऑनग्रिड":"हाइब्रिड") : (sys==="ongrid"?"On-Grid":"Hybrid");
+    const msg = "Solar Quotation Request%0AName: "+name+"%0AMobile: +91"+phone+"%0ACity: "+city+"%0ASystem: "+sl+"%0AUnits: "+units+"%0AFrom SAHAYAK App";
+    window.open("https://wa.me/918115776644?text="+msg, "_blank");
     onSubmit(name);
   };
-
-  const inputStyle = {
-    width: "100%", padding: "10px 13px", borderRadius: 11,
-    border: "1px solid rgba(0,184,148,0.35)", background: "rgba(0,184,148,0.06)",
-    color: "#fff", fontSize: 13, outline: "none", fontFamily: "inherit",
-    boxSizing: "border-box", marginBottom: 10,
-  };
-
+  const inp = { width:"100%", padding:"10px 13px", borderRadius:11, border:"1px solid rgba(0,184,148,0.35)", background:"rgba(0,184,148,0.06)", color:"#fff", fontSize:13, outline:"none", fontFamily:"inherit", boxSizing:"border-box", marginBottom:10 };
   return (
-    <div style={{ margin: "6px 0", borderRadius: 18, background: "rgba(0,184,148,0.08)", border: "1px solid rgba(0,184,148,0.3)", padding: 16 }}>
-      <div style={{ fontWeight: 800, fontSize: 14, color: "#00b894", marginBottom: 4 }}>
-        🧾 {isH ? "मुफ्त सोलर कोटेशन पाएं!" : "Get Free Solar Quotation!"}
-      </div>
-      <div style={{ fontSize: 11, opacity: 0.5, marginBottom: 12 }}>
-        {isH ? "HAANS Solar — MFINS Partner • 5 मिनट में WhatsApp पर" : "HAANS Solar — MFINS Partner • On WhatsApp in 5 mins"}
-      </div>
-
-      <input placeholder={isH ? "आपका नाम *" : "Your Name *"}
-        value={name} onChange={e => setName(e.target.value)} style={inputStyle} />
-      <input placeholder={isH ? "मोबाइल नंबर * (10 अंक)" : "Mobile Number * (10 digits)"}
-        value={phone} onChange={e => setPhone(e.target.value.replace(/\D/,"").slice(0,10))}
-        type="tel" style={inputStyle} />
-      <input placeholder={isH ? "शहर का नाम *" : "City Name *"}
-        value={city} onChange={e => setCity(e.target.value)} style={inputStyle} />
-
-      <div style={{ fontSize: 12, opacity: 0.6, marginBottom: 8 }}>
-        {isH ? "सिस्टम प्रकार:" : "System Type:"}
-      </div>
-      <div style={{ display: "flex", gap: 8, marginBottom: 10 }}>
-        {[
-          { val: "ongrid", hi: "⚡ ऑनग्रिड", en: "⚡ On-Grid" },
-          { val: "hybrid", hi: "🔋 हाइब्रिड", en: "🔋 Hybrid" },
-        ].map(opt => (
-          <button key={opt.val} onClick={() => setSysType(opt.val)} style={{
-            flex: 1, padding: "9px 0", borderRadius: 10, border: "none", fontFamily: "inherit",
-            background: sysType === opt.val ? "linear-gradient(135deg,#00b894,#00796b)" : "rgba(255,255,255,0.06)",
-            color: "#fff", fontWeight: 700, fontSize: 13, cursor: "pointer",
-            boxShadow: sysType === opt.val ? "0 3px 12px rgba(0,184,148,0.4)" : "none",
-          }}>
-            {isH ? opt.hi : opt.en}
+    <div style={{ margin:"6px 0", borderRadius:18, background:"rgba(0,184,148,0.08)", border:"1px solid rgba(0,184,148,0.3)", padding:16 }}>
+      <div style={{ fontWeight:800, fontSize:14, color:"#00b894", marginBottom:4 }}>{"🧾 "+(isH?"मुफ्त सोलर कोटेशन!":"Free Solar Quotation!")}</div>
+      <div style={{ fontSize:11, opacity:0.5, marginBottom:12 }}>{"HAANS Solar — MFINS Partner"}</div>
+      <input placeholder={isH?"आपका नाम *":"Your Name *"} value={name} onChange={e=>setName(e.target.value)} style={inp}/>
+      <input placeholder={isH?"मोबाइल * (10 अंक)":"Mobile * (10 digits)"} value={phone} onChange={e=>setPhone(e.target.value.replace(/\D/,"").slice(0,10))} type="tel" style={inp}/>
+      <input placeholder={isH?"शहर *":"City *"} value={city} onChange={e=>setCity(e.target.value)} style={inp}/>
+      <div style={{ display:"flex", gap:8, marginBottom:10 }}>
+        {[{v:"ongrid",hi:"⚡ ऑनग्रिड",en:"⚡ On-Grid"},{v:"hybrid",hi:"🔋 हाइब्रिड",en:"🔋 Hybrid"}].map(o=>(
+          <button key={o.v} onClick={()=>setSys(o.v)} style={{ flex:1, padding:"9px 0", borderRadius:10, border:"none", fontFamily:"inherit", background:sys===o.v?"linear-gradient(135deg,#00b894,#00796b)":"rgba(255,255,255,0.06)", color:"#fff", fontWeight:700, fontSize:13, cursor:"pointer" }}>
+            {isH?o.hi:o.en}
           </button>
         ))}
       </div>
-
-      <input placeholder={isH ? "औसत मासिक बिजली खपत (यूनिट) *  जैसे: 300" : "Avg Monthly Units * e.g. 300"}
-        value={units} onChange={e => setUnits(e.target.value.replace(/\D/,""))}
-        type="tel" style={inputStyle} />
-
-      <div style={{ display: "flex", gap: 8 }}>
-        <button onClick={submit} disabled={!ready} style={{
-          flex: 1, padding: "12px 0", borderRadius: 12, border: "none",
-          background: ready ? "linear-gradient(135deg,#00b894,#00796b)" : "rgba(255,255,255,0.07)",
-          color: "#fff", fontWeight: 800, fontSize: 13, cursor: ready ? "pointer" : "not-allowed",
-          fontFamily: "inherit", boxShadow: ready ? "0 4px 16px rgba(0,184,148,0.4)" : "none",
-        }}>
-          📱 {isH ? "WhatsApp पर कोटेशन मांगें" : "Request Quote on WhatsApp"}
+      <input placeholder={isH?"मासिक खपत (यूनिट) * जैसे: 300":"Monthly Units * e.g. 300"} value={units} onChange={e=>setUnits(e.target.value.replace(/\D/,""))} type="tel" style={inp}/>
+      <div style={{ display:"flex", gap:8 }}>
+        <button onClick={submit} disabled={!ready} style={{ flex:1, padding:"12px 0", borderRadius:12, border:"none", background:ready?"linear-gradient(135deg,#00b894,#00796b)":"rgba(255,255,255,0.07)", color:"#fff", fontWeight:800, fontSize:13, cursor:ready?"pointer":"not-allowed", fontFamily:"inherit" }}>
+          {"📱 "+(isH?"WhatsApp पर कोटेशन मांगें":"Request Quote on WhatsApp")}
         </button>
-        <button onClick={onSkip} style={{
-          padding: "12px 14px", borderRadius: 12, border: "1px solid rgba(255,255,255,0.1)",
-          background: "transparent", color: "rgba(255,255,255,0.4)", cursor: "pointer",
-          fontSize: 12, fontFamily: "inherit",
-        }}>
-          {isH ? "बाद में" : "Later"}
+        <button onClick={onSkip} style={{ padding:"12px 14px", borderRadius:12, border:"1px solid rgba(255,255,255,0.1)", background:"transparent", color:"rgba(255,255,255,0.4)", cursor:"pointer", fontSize:12, fontFamily:"inherit" }}>
+          {isH?"बाद में":"Later"}
         </button>
       </div>
     </div>
   );
 }
-
 
 export default function SahayakPremium() {
   const [screen, setScreen] = useState("home");
@@ -977,6 +925,7 @@ export default function SahayakPremium() {
   const [loading, setLoading] = useState(false);
   const [showLead, setShowLead] = useState(false);
   const [lang, setLang] = useState("hindi");
+  const isH = lang !== "english";
   const [speaking, setSpeaking] = useState(null);
   const [uploadedDoc, setUploadedDoc] = useState(null);
   const [isListening, setIsListening] = useState(false);
@@ -1206,10 +1155,10 @@ export default function SahayakPremium() {
             <a href="https://wa.me/918115776644" target="_blank" rel="noreferrer" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", color: "#e2e8f0", marginBottom: 10, padding: "8px 0", borderRadius: TOKENS.radii.md, transition: TOKENS.transitions.fast }} onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.03)"} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
               <span style={{ fontSize: 20 }}>💬</span><span style={{ fontSize: 14 }}>+91 81157 76644</span>
             </a>
-          <button onClick={() => setScreen("policy")} title="Privacy Policy & Terms"
-            style={{ width: 40, height: 40, borderRadius: TOKENS.radii.lg, background: "rgba(74,222,128,0.08)", border: "1px solid rgba(74,222,128,0.2)", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 17, color: "#4ade80", transition: TOKENS.transitions.fast }}
-            onMouseEnter={e => { e.currentTarget.style.background = "rgba(74,222,128,0.18)"; e.currentTarget.style.transform = "scale(1.1)"; }}
-            onMouseLeave={e => { e.currentTarget.style.background = "rgba(74,222,128,0.08)"; e.currentTarget.style.transform = "scale(1)"; }}
+          <button onClick={() => setScreen("policy")} title="Privacy & Terms"
+            style={{ width:40, height:40, borderRadius:TOKENS.radii.lg, background:"rgba(74,222,128,0.08)", border:"1px solid rgba(74,222,128,0.2)", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", fontSize:17, color:"#4ade80", transition:TOKENS.transitions.fast }}
+            onMouseEnter={e => { e.currentTarget.style.background="rgba(74,222,128,0.18)"; }}
+            onMouseLeave={e => { e.currentTarget.style.background="rgba(74,222,128,0.08)"; }}
           >📋</button>
           </GlassCard>
           <GlassCard style={{ padding: 16, marginBottom: 16 }}>
@@ -1227,9 +1176,9 @@ export default function SahayakPremium() {
               {lang === "hindi" ? "हर भारतीय को उनकी अपनी भाषा में, पूरी तरह मुफ्त वित्तीय मार्गदर्शन उपलब्ध कराना। कोई भ्रम नहीं, कोई शोषण नहीं। SAHAYAK आपका भरोसेमंद दोस्त है — बीमा, टैक्स, सोलर और लोन के लिए।" : "To make financial guidance accessible to every Indian — in their own language, completely free. No more confusion, no more exploitation. SAHAYAK is your trusted friend for Insurance, Tax, Solar, and Loans."}
             </div>
           </GlassCard>
-          <a href="https://instagram.com/singh.ankit007" target="_blank" rel="noreferrer" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12, padding: "14px 20px", borderRadius: TOKENS.radii.xl, textDecoration: "none", color: "#fff", background: "linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)", boxShadow: "0 4px 20px rgba(220,39,67,0.3)", marginBottom: 20, fontWeight: 800, transition: TOKENS.transitions.fast }} onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 8px 30px rgba(220,39,67,0.4)"; }} onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 4px 20px rgba(220,39,67,0.3)"; }}>
+          <a href="https://instagram.com/singh.ankit07" target="_blank" rel="noreferrer" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12, padding: "14px 20px", borderRadius: TOKENS.radii.xl, textDecoration: "none", color: "#fff", background: "linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)", boxShadow: "0 4px 20px rgba(220,39,67,0.3)", marginBottom: 20, fontWeight: 800, transition: TOKENS.transitions.fast }} onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 8px 30px rgba(220,39,67,0.4)"; }} onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 4px 20px rgba(220,39,67,0.3)"; }}>
             <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-            <div><div style={{ fontWeight: 800, fontSize: 15 }}>{t.followInstagram}</div><div style={{ fontSize: 12, opacity: 0.85 }}>@singh.ankit007</div></div>
+            <div><div style={{ fontWeight: 800, fontSize: 15 }}>{t.followInstagram}</div><div style={{ fontSize: 12, opacity: 0.85 }}>@singh.ankit07</div></div>
           </a>
           <div style={{ textAlign: "center", fontSize: 11, opacity: 0.3 }}>SAHAYAK v3.0 Ultra • {t.madeInIndia}</div>
         </div>
@@ -1280,7 +1229,7 @@ export default function SahayakPremium() {
             onMouseEnter={e => { e.currentTarget.style.background = "rgba(124,58,237,0.2)"; e.currentTarget.style.transform = "scale(1.1)"; }}
             onMouseLeave={e => { e.currentTarget.style.background = "rgba(124,58,237,0.1)"; e.currentTarget.style.transform = "scale(1)"; }}
           >ℹ️</button>
-          <a href="https://instagram.com/singh.ankit007" target="_blank" rel="noreferrer"
+          <a href="https://instagram.com/singh.ankit07" target="_blank" rel="noreferrer"
             style={{ width: 40, height: 40, borderRadius: TOKENS.radii.lg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, textDecoration: "none", background: "linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)", boxShadow: "0 2px 10px rgba(220,39,67,0.35)", transition: TOKENS.transitions.fast }}
             onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.1)"; e.currentTarget.style.boxShadow = "0 4px 16px rgba(220,39,67,0.5)"; }}
             onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.boxShadow = "0 2px 10px rgba(220,39,67,0.35)"; }}
@@ -1382,7 +1331,7 @@ export default function SahayakPremium() {
             <button key={ag.id} onClick={() => openAgent(ag)}
               style={{
                 background: "rgba(255,255,255,0.02)",
-                border: `1px solid ${ag.color}12`,
+                border: "1px solid "+ag.color+"12",
                 borderRadius: TOKENS.radii.xxl,
                 padding: "20px 12px 16px",
                 cursor: "pointer", textAlign: "center",
@@ -1395,13 +1344,13 @@ export default function SahayakPremium() {
               }}
               onMouseEnter={e => {
                 e.currentTarget.style.background = `${ag.color}10`;
-                e.currentTarget.style.borderColor = `${ag.color}40`;
+                e.currentTarget.style.borderColor = ag.color+"40";
                 e.currentTarget.style.transform = "translateY(-4px) scale(1.03)";
                 e.currentTarget.style.boxShadow = `0 16px 40px ${ag.color}20, 0 4px 12px rgba(0,0,0,0.3)`;
               }}
               onMouseLeave={e => {
                 e.currentTarget.style.background = "rgba(255,255,255,0.02)";
-                e.currentTarget.style.borderColor = `${ag.color}12`;
+                e.currentTarget.style.borderColor = ag.color+"12";
                 e.currentTarget.style.transform = "translateY(0) scale(1)";
                 e.currentTarget.style.boxShadow = "none";
               }}
@@ -1628,7 +1577,7 @@ export default function SahayakPremium() {
           {starters.map((q, i) => (
             <button key={i} onClick={() => send(q)}
               style={{
-                background: agent.color + "08", border: "1px solid " + agent.color + "15",
+                background: agent.color+"08", border: "1px solid "+agent.color+"15",
                 borderRadius: TOKENS.radii.full, padding: "10px 18px",
                 color: TOKENS.colors.textMuted, cursor: "pointer", fontSize: 13,
                 fontFamily: "inherit", transition: TOKENS.transitions.fast,
@@ -1636,15 +1585,15 @@ export default function SahayakPremium() {
                 animation: `fadeSlideUp 0.4s ${i * 0.1}s both`,
               }}
               onMouseEnter={e => {
-                e.currentTarget.style.background = agent.color + "18";
-                e.currentTarget.style.borderColor = agent.color + "40";
+                e.currentTarget.style.background = agent.color+"18";
+                e.currentTarget.style.borderColor = agent.color+"40";
                 e.currentTarget.style.color = TOKENS.colors.text;
                 e.currentTarget.style.transform = "translateY(-2px)";
                 e.currentTarget.style.boxShadow = `0 4px 16px ${agent.color}20`;
               }}
               onMouseLeave={e => {
-                e.currentTarget.style.background = agent.color + "08";
-                e.currentTarget.style.borderColor = agent.color + "15";
+                e.currentTarget.style.background = agent.color+"08";
+                e.currentTarget.style.borderColor = agent.color+"15";
                 e.currentTarget.style.color = TOKENS.colors.textMuted;
                 e.currentTarget.style.transform = "translateY(0)";
                 e.currentTarget.style.boxShadow = "none";
@@ -1725,7 +1674,7 @@ export default function SahayakPremium() {
                         padding: "8px 14px 8px 10px", borderRadius: TOKENS.radii.full,
                         border: `2px solid ${speaking === i ? agent.color : "rgba(255,255,255,0.08)"}`,
                         background: speaking === i
-                          ? "linear-gradient(135deg, " + agent.color + "90, " + agent.color + "60)"
+                          ? "linear-gradient(135deg, "+agent.color+"90, "+agent.color+"60)"
                           : "rgba(255,255,255,0.03)",
                         color: speaking === i ? "#fff" : TOKENS.colors.textMuted,
                         fontSize: 12, fontWeight: 700, fontFamily: "inherit",
@@ -1734,8 +1683,8 @@ export default function SahayakPremium() {
                       }}
                       onMouseEnter={e => {
                         if (speaking !== i) {
-                          e.target.style.background = agent.color + "10";
-                          e.target.style.borderColor = agent.color + "25";
+                          e.target.style.background = agent.color+"10";
+                          e.target.style.borderColor = agent.color+"25";
                         }
                       }}
                       onMouseLeave={e => {
@@ -1747,7 +1696,7 @@ export default function SahayakPremium() {
                     >
                       <span style={{
                         width: 22, height: 22, borderRadius: "50%",
-                        background: speaking === i ? agent.color + "50" : agent.color + "15",
+                        background: speaking === i ? agent.color+"50" : agent.color+"15",
                         display: "flex", alignItems: "center", justifyContent: "center",
                         fontSize: 10,
                       }}>{speaking === i ? "⏸" : "▶"}</span>
@@ -1764,18 +1713,21 @@ export default function SahayakPremium() {
         })}
 
         {/* Lead Form */}
+        {agent && agent.solarQuote && (
+          <SolarQuoteForm lang={lang} onSubmit={(n)=>{setMsgs(p=>[...p,{role:"assistant",content:isH?"धन्यवाद "+n+"! 🌞 कोटेशन HAANS Solar को भेजा।":"Thanks "+n+"! 🌞 Quote sent to HAANS Solar."}]);}} onSkip={()=>{}}/>
+        )}
         {showLead && (
           <div style={{
             margin: "20px 0", borderRadius: TOKENS.radii.xxl,
             background: "linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%)",
-            border: "1px solid " + agent.color + "18",
+            border: "1px solid "+agent.color+"18",
             padding: 20, backdropFilter: TOKENS.blur.lg,
             position: "relative", overflow: "hidden",
             animation: "messageSlide 0.6s cubic-bezier(0.34,1.56,0.64,1)",
           }}>
             <div style={{
               position: "absolute", inset: -1, borderRadius: TOKENS.radii.xxl + 1,
-              background: "linear-gradient(135deg, " + agent.color + "15, transparent 50%)",
+              background: "linear-gradient(135deg, "+agent.color+"15, transparent 50%)",
               pointerEvents: "none", zIndex: 0,
             }} />
             <div style={{ position: "relative", zIndex: 1 }}>
@@ -1788,7 +1740,7 @@ export default function SahayakPremium() {
                   width: 44, height: 44, borderRadius: 12,
                   background: agent.iconBg,
                   display: "flex", alignItems: "center", justifyContent: "center",
-                  fontSize: 22, border: "1px solid " + agent.color + "25",
+                  fontSize: 22, border: "1px solid "+agent.color+"25",
                 }}>{agent.icon}</div>
                 <div>
                   <div style={{ fontWeight: 800, fontSize: 15, color: agent.color }}>{t.callback}</div>
@@ -1833,7 +1785,7 @@ export default function SahayakPremium() {
               const b64 = e.target.result.split(",")[1];
               setUploadedDoc({ base64: b64, mediaType: file.type, name: file.name, isImage: file.type.startsWith("image/"), isPDF: file.type === "application/pdf" });
               setInput(prev => {
-                const tag = "📎 [" + file.name + "] ";
+                const tag = "📎 ["+file.name+"] ";
                 return prev.startsWith("📎") ? prev : tag + (prev || (lang === "hindi" ? "इस दस्तावेज़ के बारे में बताएं" : "Please analyze this document"));
               });
             };
@@ -1876,7 +1828,7 @@ export default function SahayakPremium() {
             style={{
               flex: 1,
               background: isListening ? "rgba(239,68,68,0.06)" : "rgba(255,245,235,0.95)",
-              border: isListening ? "2px solid rgba(239,68,68,0.6)" : "1.5px solid " + agent.color + "30",
+              border: isListening ? "2px solid rgba(239,68,68,0.6)" : "1.5px solid "+agent.color+"30",
               animation: isListening ? "voicePulse 0.8s ease-in-out infinite" : "none",
               borderRadius: TOKENS.radii.lg,
               padding: "12px 16px",
@@ -1892,7 +1844,7 @@ export default function SahayakPremium() {
               boxShadow: "inset 0 1px 3px rgba(0,0,0,0.06)",
             }}
             onFocus={e => { e.target.style.borderColor = agent.color; e.target.style.boxShadow = `0 0 0 3px ${agent.color}15, inset 0 1px 3px rgba(0,0,0,0.06)`; }}
-            onBlur={e => { e.target.style.borderColor = agent.color + "30"; e.target.style.boxShadow = "inset 0 1px 3px rgba(0,0,0,0.06)"; }}
+            onBlur={e => { e.target.style.borderColor = agent.color+"30"; e.target.style.boxShadow = "inset 0 1px 3px rgba(0,0,0,0.06)"; }}
           />
 
           <button onClick={() => send()}
