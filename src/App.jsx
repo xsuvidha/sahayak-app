@@ -1229,11 +1229,6 @@ export default function SahayakPremium() {
             onMouseEnter={e => { e.currentTarget.style.background = "rgba(124,58,237,0.2)"; e.currentTarget.style.transform = "scale(1.1)"; }}
             onMouseLeave={e => { e.currentTarget.style.background = "rgba(124,58,237,0.1)"; e.currentTarget.style.transform = "scale(1)"; }}
           >ℹ️</button>
-          <a href="https://instagram.com/singh.ankit07" target="_blank" rel="noreferrer"
-            style={{ width: 40, height: 40, borderRadius: TOKENS.radii.lg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, textDecoration: "none", background: "linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)", boxShadow: "0 2px 10px rgba(220,39,67,0.35)", transition: TOKENS.transitions.fast }}
-            onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.1)"; e.currentTarget.style.boxShadow = "0 4px 16px rgba(220,39,67,0.5)"; }}
-            onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.boxShadow = "0 2px 10px rgba(220,39,67,0.35)"; }}
-          >📸</a>
           <div style={{ display: "flex", background: TOKENS.colors.surface, borderRadius: TOKENS.radii.lg, padding: 3, border: "1px solid rgba(255,255,255,0.08)", backdropFilter: TOKENS.blur.sm }}>
             {["hindi", "english"].map((l, i) => (
               <button key={l} onClick={() => setLang(l)}
@@ -1425,6 +1420,9 @@ export default function SahayakPremium() {
           <span style={{ fontSize: 12, color: "#a78bfa", opacity: 0.7, fontWeight: 600 }}>
             🔒 {t.certified}
           </span>
+          <div style={{ marginTop: 10, fontSize: 11, opacity: 0.35, letterSpacing: 0.5 }}>
+            {"Powered by HAANS SOLAR®  •  GST: 09DIYPS3881N1ZT"}
+          </div>
         </div>
       </div>
 
