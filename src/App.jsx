@@ -919,10 +919,10 @@ function SolarQuoteForm({ lang, onSubmit, onSkip }) {
       <input placeholder={isH?"जैसे: 500 sq.ft":"e.g. 500 sq.ft"} value={roof} onChange={e=>setRoof(e.target.value)} style={{...inp,border:"1px solid rgba(0,184,148,0.15)"}}/>
 
       <div style={{background:"rgba(0,184,148,0.06)",border:"1px solid rgba(0,184,148,0.15)",borderRadius:12,padding:"10px 14px",marginBottom:16,fontSize:12,lineHeight:1.9,opacity:0.85}}>
-        {"✅ HAANS Solar® — MFINS Certified Partner
-☀️ PM Surya Ghar Authorized Vendor
-⚡ UP में ₹1,08,000 तक सब्सिडी
-📞 24 घंटे में कोटेशन"}
+        <div>{"✅ HAANS Solar® — MFINS Certified Partner"}</div>
+        <div>{"☀️ PM Surya Ghar Authorized Vendor"}</div>
+        <div>{"⚡ UP में ₹1,08,000 तक सब्सिडी"}</div>
+        <div>{"📞 24 घंटे में कोटेशन"}</div>
       </div>
 
       <button onClick={submit} disabled={!ready} style={{width:"100%",padding:"14px 0",borderRadius:14,border:"none",background:ready?"linear-gradient(135deg,#00b894,#00796b)":"rgba(255,255,255,0.07)",color:"#fff",fontWeight:800,fontSize:15,cursor:ready?"pointer":"not-allowed",fontFamily:"inherit",boxShadow:ready?"0 6px 24px rgba(0,184,148,0.5)":"none",transition:"all 0.2s"}}>
@@ -932,6 +932,246 @@ function SolarQuoteForm({ lang, onSubmit, onSkip }) {
     </div>
   );
 }
+
+// ════════════════════════════════════════════════════════
+// BlogScreen — AI Blog with Image + SAHAYAK Watermark
+// ════════════════════════════════════════════════════════
+
+// Image component with SAHAYAK watermark overlay
+function BlogImage({ src, alt, style }) {
+  const [loaded, setLoaded] = React.useState(false);
+  const [error, setError] = React.useState(false);
+
+  if (!src || error) {
+    // Fallback gradient placeholder
+    return (
+      <div style={{
+        ...style,
+        background: "linear-gradient(135deg,#1a1a2e,#0a0a1a)",
+        display: "flex", alignItems: "center", justifyContent: "center",
+        position: "relative", overflow: "hidden",
+        borderRadius: style?.borderRadius || 14,
+      }}>
+        <div style={{ fontSize: 48, opacity: 0.3 }}>✍️</div>
+        {/* Watermark */}
+        <div style={{
+          position: "absolute", bottom: 10, right: 12,
+          fontWeight: 900, fontSize: 13, letterSpacing: 2,
+          color: "rgba(255,255,255,0.4)",
+          textShadow: "0 1px 4px rgba(0,0,0,0.8)",
+          fontFamily: "'Poppins','Segoe UI',sans-serif",
+        }}>SAHAYAK</div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{
+      ...style, position: "relative", overflow: "hidden",
+      borderRadius: style?.borderRadius || 14,
+      background: "#0a0a1a",
+    }}>
+      {!loaded && (
+        <div style={{
+          position: "absolute", inset: 0,
+          background: "linear-gradient(90deg,#1a1a2e 25%,#252540 50%,#1a1a2e 75%)",
+          animation: "shimmer 1.5s infinite",
+        }}/>
+      )}
+      <img
+        src={src} alt={alt || "SAHAYAK Blog"}
+        onLoad={() => setLoaded(true)}
+        onError={() => setError(true)}
+        style={{
+          width: "100%", height: "100%",
+          objectFit: "cover", display: "block",
+          opacity: loaded ? 1 : 0,
+          transition: "opacity 0.4s ease",
+        }}
+      />
+      {/* SAHAYAK Watermark */}
+      <div style={{
+        position: "absolute", bottom: 0, left: 0, right: 0,
+        background: "linear-gradient(transparent, rgba(0,0,0,0.72))",
+        padding: "20px 14px 10px",
+        display: "flex", justifyContent: "flex-end",
+      }}>
+        <div style={{
+          fontWeight: 900, fontSize: 13, letterSpacing: 2.5,
+          color: "rgba(255,255,255,0.85)",
+          textShadow: "0 1px 6px rgba(0,0,0,0.9)",
+          fontFamily: "'Poppins','Segoe UI',sans-serif",
+          background: "rgba(124,58,237,0.4)",
+          backdropFilter: "blur(4px)",
+          padding: "3px 10px", borderRadius: 20,
+          border: "1px solid rgba(167,139,250,0.3)",
+        }}>SAHAYAK</div>
+      </div>
+    </div>
+  );
+}
+
+function BlogScreen({ lang, onBack }) {
+  const isH = lang !== "english";
+  const [posts, setPosts] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+  const [selected, setSelected] = React.useState(null);
+
+  React.useEffect(() => {
+    fetch("/api/blog")
+      .then(r => r.json())
+      .then(data => { setPosts(data.posts || []); setLoading(false); })
+      .catch(() => setLoading(false));
+  }, []);
+
+  // ── Single post view ──
+  if (selected) return (
+    <div style={{ minHeight:"100vh", background:"#05050a", color:"#fff", fontFamily:"'Noto Sans Devanagari','Segoe UI',sans-serif", display:"flex", flexDirection:"column" }}>
+      <div style={{ padding:"12px 16px", display:"flex", alignItems:"center", gap:10, background:"rgba(5,5,10,0.97)", borderBottom:"1px solid rgba(243,156,18,0.12)", position:"sticky", top:0, zIndex:10, backdropFilter:"blur(16px)" }}>
+        <button onClick={()=>setSelected(null)} style={{ background:"none", border:"none", color:"rgba(255,255,255,0.5)", fontSize:22, cursor:"pointer", padding:0 }}>{"<"}</button>
+        <div style={{ flex:1, fontWeight:700, fontSize:13, opacity:0.7 }}>{selected.category}</div>
+        <div style={{ fontSize:11, opacity:0.35 }}>{selected.reading_time}</div>
+      </div>
+
+      <div style={{ flex:1, overflowY:"auto" }}>
+        {/* Blog Hero Image */}
+        <BlogImage
+          src={selected.image_url}
+          alt={selected.image_alt}
+          style={{ width:"100%", height: 220 }}
+        />
+
+        <div style={{ padding:"20px 16px", maxWidth:620, margin:"0 auto", boxSizing:"border-box" }}>
+          {/* Category + Date */}
+          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:12 }}>
+            <div style={{ fontSize:11, color:"#f39c12", fontWeight:700, textTransform:"uppercase", letterSpacing:1 }}>{selected.category}</div>
+            <div style={{ fontSize:11, opacity:0.35 }}>{selected.date}</div>
+          </div>
+
+          {/* Title */}
+          <h1 style={{ fontSize:23, fontWeight:900, lineHeight:1.4, marginBottom:14, color:"#fff" }}>{selected.title}</h1>
+
+          {/* Gold divider */}
+          <div style={{ height:3, width:50, background:"linear-gradient(90deg,#f39c12,#e67e22)", borderRadius:2, marginBottom:18 }}/>
+
+          {/* Key Takeaway box */}
+          {selected.key_takeaway && (
+            <div style={{ background:"rgba(243,156,18,0.08)", border:"1px solid rgba(243,156,18,0.2)", borderRadius:12, padding:"12px 14px", marginBottom:20, display:"flex", gap:10, alignItems:"flex-start" }}>
+              <div style={{ fontSize:18, flexShrink:0 }}>💡</div>
+              <div style={{ fontSize:13, color:"#fbbf24", lineHeight:1.7, fontStyle:"italic" }}>{selected.key_takeaway}</div>
+            </div>
+          )}
+
+          {/* Tags */}
+          {selected.tags?.length > 0 && (
+            <div style={{ display:"flex", flexWrap:"wrap", gap:6, marginBottom:20 }}>
+              {selected.tags.map((tag,i) => (
+                <span key={i} style={{ fontSize:10, padding:"3px 10px", borderRadius:20, background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.08)", color:"rgba(255,255,255,0.5)" }}>#{tag}</span>
+              ))}
+            </div>
+          )}
+
+          {/* Content */}
+          <div style={{ fontSize:15, lineHeight:2, color:"rgba(255,255,255,0.85)" }}>
+            {(selected.content || "").split("\n").map((para, i) => (
+              para.trim()
+                ? <p key={i} style={{ marginBottom:16 }}>{para}</p>
+                : <div key={i} style={{ height:4 }}/>
+            ))}
+          </div>
+
+          {/* Footer */}
+          <div style={{ marginTop:28, paddingTop:16, borderTop:"1px solid rgba(255,255,255,0.06)", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+            <div style={{ fontSize:11, opacity:0.3 }}>SAHAYAK • HAANS Solar®</div>
+            <div style={{ fontSize:11, opacity:0.3 }}>{selected.date}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+
+  // ── Post list view ──
+  return (
+    <div style={{ minHeight:"100vh", background:"#05050a", color:"#fff", fontFamily:"'Noto Sans Devanagari','Segoe UI',sans-serif", display:"flex", flexDirection:"column" }}>
+      <div style={{ padding:"12px 16px", display:"flex", alignItems:"center", gap:10, background:"rgba(5,5,10,0.97)", borderBottom:"1px solid rgba(243,156,18,0.12)", position:"sticky", top:0, zIndex:10 }}>
+        <button onClick={onBack} style={{ background:"none", border:"none", color:"rgba(255,255,255,0.5)", fontSize:22, cursor:"pointer", padding:0 }}>{"<"}</button>
+        <div style={{ fontWeight:800, fontSize:16 }}>{"✍️ "+(isH?"ब्लॉग":"Blog")}</div>
+      </div>
+
+      <div style={{ flex:1, padding:"14px", maxWidth:620, margin:"0 auto", width:"100%", boxSizing:"border-box" }}>
+        {loading ? (
+          // Skeleton loading
+          <div style={{ display:"flex", flexDirection:"column", gap:16, marginTop:4 }}>
+            {[1,2,3].map(i => (
+              <div key={i} style={{ borderRadius:16, overflow:"hidden", background:"rgba(255,255,255,0.03)" }}>
+                <div style={{ height:160, background:"linear-gradient(90deg,rgba(255,255,255,0.04) 25%,rgba(255,255,255,0.08) 50%,rgba(255,255,255,0.04) 75%)" }}/>
+                <div style={{ padding:14 }}>
+                  <div style={{ height:11, background:"rgba(255,255,255,0.06)", borderRadius:6, width:"40%", marginBottom:10 }}/>
+                  <div style={{ height:14, background:"rgba(255,255,255,0.05)", borderRadius:6, width:"85%", marginBottom:8 }}/>
+                  <div style={{ height:11, background:"rgba(255,255,255,0.04)", borderRadius:6, width:"65%" }}/>
+                </div>
+              </div>
+            ))}
+          </div>
+
+        ) : posts.length === 0 ? (
+          // Coming soon
+          <div style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", minHeight:420, textAlign:"center", padding:"0 20px" }}>
+            <div style={{ fontSize:60, marginBottom:18 }}>✍️</div>
+            <div style={{ fontWeight:900, fontSize:22, color:"#f39c12", marginBottom:12 }}>
+              {isH?"ब्लॉग — जल्द आ रहा है!":"Blog — Coming Soon!"}
+            </div>
+            <div style={{ fontSize:13.5, opacity:0.4, lineHeight:1.9, maxWidth:280 }}>
+              {isH
+                ? "GST, Solar, Insurance, Finance पर जानकारीपूर्ण लेख जल्द मिलेंगे।"
+                : "Informative articles on GST, Solar, Insurance & Finance — coming soon."}
+            </div>
+            <div style={{ marginTop:22, padding:"10px 22px", borderRadius:22, background:"rgba(243,156,18,0.1)", border:"1px solid rgba(243,156,18,0.22)", fontSize:12, color:"#f39c12", fontWeight:700 }}>
+              {"🔔 "+(isH?"जल्द लॉन्च":"Launching Soon")}
+            </div>
+          </div>
+
+        ) : (
+          // Blog post cards
+          <div style={{ display:"flex", flexDirection:"column", gap:16, marginTop:4 }}>
+            {posts.map((post, i) => (
+              <div key={i} onClick={()=>setSelected(post)}
+                style={{ borderRadius:18, overflow:"hidden", background:"rgba(255,255,255,0.025)", border:"1px solid rgba(243,156,18,0.1)", cursor:"pointer", transition:"all 0.2s" }}
+                onMouseEnter={e=>{ e.currentTarget.style.transform="translateY(-2px)"; e.currentTarget.style.borderColor="rgba(243,156,18,0.3)"; }}
+                onMouseLeave={e=>{ e.currentTarget.style.transform=""; e.currentTarget.style.borderColor="rgba(243,156,18,0.1)"; }}>
+
+                {/* Card Image with Watermark */}
+                <BlogImage
+                  src={post.image_url}
+                  alt={post.image_alt}
+                  style={{ width:"100%", height:185 }}
+                />
+
+                {/* Card Content */}
+                <div style={{ padding:"14px 16px" }}>
+                  <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:6 }}>
+                    <div style={{ fontSize:10.5, color:"#f39c12", fontWeight:700, textTransform:"uppercase", letterSpacing:0.8 }}>{post.category}</div>
+                    <div style={{ fontSize:10, opacity:0.35 }}>{post.reading_time} • {post.date}</div>
+                  </div>
+                  <div style={{ fontWeight:800, fontSize:15.5, lineHeight:1.45, marginBottom:8, color:"#fff" }}>{post.title}</div>
+                  <div style={{ fontSize:12.5, opacity:0.5, lineHeight:1.75, marginBottom:10 }}>
+                    {(post.summary || "").slice(0,110)}{"..."}
+                  </div>
+                  <div style={{ fontSize:12, color:"#f39c12", fontWeight:700 }}>
+                    {isH?"पढ़ें →":"Read more →"}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <style>{"@keyframes shimmer { 0%{background-position:-400px 0} 100%{background-position:400px 0} }"}</style>
+    </div>
+  );
+}
+
 
 export default function SahayakPremium() {
   const [screen, setScreen] = useState("home");
@@ -1132,32 +1372,9 @@ export default function SahayakPremium() {
   // ═══════════════════════════════════════════════════════════
   // ABOUT SCREEN — Premium Profile Page
   // ═══════════════════════════════════════════════════════════
-  // ── Blog Screen (Coming Soon) ──
+  // ── Blog Screen ──
   if (screen === "blog") return (
-    <div style={{ minHeight:"100vh", fontFamily:"'Noto Sans Devanagari','Segoe UI',sans-serif", background:"#05050a", color:"#fff", display:"flex", flexDirection:"column" }}>
-      <div style={{ padding:"12px 16px", display:"flex", alignItems:"center", gap:10, background:"rgba(5,5,10,0.95)", borderBottom:"1px solid rgba(243,156,18,0.15)", position:"sticky", top:0, zIndex:10 }}>
-        <button onClick={()=>setScreen("home")} style={{ background:"none", border:"none", color:"rgba(255,255,255,0.5)", fontSize:22, cursor:"pointer", padding:0 }}>{"<"}</button>
-        <div style={{ fontWeight:800, fontSize:16 }}>{"✍️ "+(isH?"AI ब्लॉग":"AI Blog")}</div>
-      </div>
-      <div style={{ flex:1, display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:32, textAlign:"center" }}>
-        <div style={{ fontSize:64, marginBottom:16 }}>✍️</div>
-        <div style={{ fontWeight:800, fontSize:22, color:"#f39c12", marginBottom:12 }}>
-          {isH?"AI Blog — जल्द आ रहा है!":"AI Blog — Coming Soon!"}
-        </div>
-        <div style={{ fontSize:14, opacity:0.5, lineHeight:1.9, maxWidth:320 }}>
-          {isH
-            ? "रोज़ शाम 7 बजे AI-generated blogs —
-GST, Solar, Insurance, Finance
-के बारे में। बिल्कुल मुफ्त।"
-            : "Daily AI-generated blogs at 7PM —
-GST, Solar, Insurance, Finance.
-Completely Free."}
-        </div>
-        <div style={{ marginTop:24, padding:"10px 22px", borderRadius:20, background:"rgba(243,156,18,0.1)", border:"1px solid rgba(243,156,18,0.25)", fontSize:12, color:"#f39c12" }}>
-          {isH?"🔔 जल्द लॉन्च होगा":"🔔 Launching Soon"}
-        </div>
-      </div>
-    </div>
+    <BlogScreen lang={lang} onBack={()=>setScreen("home")} />
   );
 
   if (screen === "policy") return (
@@ -1303,21 +1520,23 @@ Completely Free."}
             onMouseEnter={e=>{ e.currentTarget.style.background="rgba(124,58,237,0.2)"; }}
             onMouseLeave={e=>{ e.currentTarget.style.background="rgba(124,58,237,0.1)"; }}
           >ℹ️ {isH?"जानकारी":"Info"}</button>
-          <a href="https://instagram.com/singh.ankit07" target="_blank" rel="noreferrer"
-            style={{ width: 40, height: 40, borderRadius: TOKENS.radii.lg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, textDecoration: "none", background: "linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)", boxShadow: "0 2px 10px rgba(220,39,67,0.35)", transition: TOKENS.transitions.fast }}
-            onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.1)"; e.currentTarget.style.boxShadow = "0 4px 16px rgba(220,39,67,0.5)"; }}
-            onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.boxShadow = "0 2px 10px rgba(220,39,67,0.35)"; }}
-          >📸</a>
-          <div style={{ display: "flex", background: TOKENS.colors.surface, borderRadius: TOKENS.radii.lg, padding: 3, border: "1px solid rgba(255,255,255,0.08)", backdropFilter: TOKENS.blur.sm }}>
+          <div style={{
+              display: "flex", flexDirection: "column",
+              background: TOKENS.colors.surface,
+              borderRadius: 14, padding: 3,
+              border: "1px solid rgba(255,255,255,0.08)",
+              backdropFilter: TOKENS.blur.sm, gap: 2,
+            }}>
             {["hindi", "english"].map((l, i) => (
               <button key={l} onClick={() => setLang(l)}
                 style={{
-                  padding: "8px 16px", borderRadius: TOKENS.radii.md, border: "none",
+                  padding: "5px 12px", borderRadius: 10, border: "none",
                   background: lang === l ? TOKENS.colors.accent.primary : "transparent",
-                  color: "#fff", fontSize: 12, fontWeight: 700, cursor: "pointer",
+                  color: lang === l ? "#fff" : "rgba(255,255,255,0.45)",
+                  fontSize: 11, fontWeight: 700, cursor: "pointer",
                   fontFamily: "inherit", transition: TOKENS.transitions.fast,
-                  boxShadow: lang === l ? "0 2px 12px rgba(168,85,247,0.5)" : "none",
-                  animation: isLoaded ? `fadeSlideUp 0.5s ${0.4 + i * 0.1}s both` : "none",
+                  boxShadow: lang === l ? "0 2px 10px rgba(168,85,247,0.5)" : "none",
+                  lineHeight: 1.2, whiteSpace: "nowrap",
                 }}
               >{l === "hindi" ? "हिंदी" : "EN"}</button>
             ))}
