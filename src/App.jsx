@@ -999,9 +999,16 @@ export default function SahayakPremium() {
     const style = document.getElementById('sahayak-theme') || document.createElement('style');
     style.id = 'sahayak-theme';
     if (!darkMode) {
-      style.textContent = "body{background:#f0f2f8!important;color:#12002e!important}input,textarea{background:#fff!important;color:#12002e!important}";
+      style.textContent = [
+        "body,#root{background:#f0f2f8!important;color:#12002e!important}",
+        "input,textarea,select{background:#fff!important;color:#12002e!important;border-color:rgba(100,50,200,0.3)!important}",
+        "[data-sahayak-screen]{background:#f0f2f8!important;color:#12002e!important}",
+        ".msg-bubble-ai{background:rgba(0,0,0,0.06)!important;color:#12002e!important}",
+        ".chat-input-area{background:rgba(240,242,248,0.98)!important}",
+        ".glass-card{background:rgba(255,255,255,0.7)!important;border-color:rgba(100,50,200,0.15)!important}",
+      ].join("");
     } else {
-      style.textContent = "body{background:#030305!important;color:#f8f8ff!important}";
+      style.textContent = "body,#root{background:#030305!important;color:#f8f8ff!important}";
     }
     document.head.appendChild(style);
   }, [darkMode]);;
@@ -1210,7 +1217,7 @@ export default function SahayakPremium() {
     </div>
   );
   if (screen === "about") return (
-    <div style={{ minHeight: "100vh", background: TOKENS.colors.bg, color: TOKENS.colors.text, fontFamily: TOKENS.fonts.primary, display: "flex", flexDirection: "column", position: "relative", overflow: "hidden" }}>
+    <div style={{ minHeight: "100vh", background: darkMode ? TOKENS.colors.bg : "#f0f2f8", color: darkMode ? TOKENS.colors.text : "#12002e", fontFamily: TOKENS.fonts.primary, display: "flex", flexDirection: "column", position: "relative", overflow: "hidden" }}>
       <PremiumBackground agent={null} />
       <AmbientOrbs agent={null} />
       <div style={{ position: "relative", zIndex: 10, display: "flex", flexDirection: "column", minHeight: "100vh" }}>
@@ -1281,7 +1288,7 @@ export default function SahayakPremium() {
   // HOME SCREEN — Cinematic Entrance Experience
   // ═══════════════════════════════════════════════════════════
   if (screen === "home") return (
-    <div style={{ minHeight: "100vh", fontFamily: TOKENS.fonts.primary, background: TOKENS.colors.bg, color: TOKENS.colors.text, display: "flex", flexDirection: "column", position: "relative", overflow: "hidden" }}>
+    <div data-theme={darkMode?"dark":"light"} style={{ minHeight: "100vh", fontFamily: TOKENS.fonts.primary, background: darkMode ? "#030305" : "#f0f2f8", color: darkMode ? "#f8f8ff" : "#12002e", display: "flex", flexDirection: "column", transition: "background 0.3s, color 0.3s", position: "relative", overflow: "hidden" }}>
       <PremiumBackground agent={null} />
       <AmbientOrbs agent={null} />
 
@@ -1315,17 +1322,17 @@ export default function SahayakPremium() {
           </div>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 8, animation: isLoaded ? "fadeSlideLeft 0.6s 0.3s both" : "none" }}>
-          <button onClick={() => setScreen("blog")} title="Blog" style={{height:34,padding:"0 10px",borderRadius:20,background:"rgba(243,156,18,0.1)",border:"1px solid rgba(243,156,18,0.25)",cursor:"pointer",display:"flex",alignItems:"center",gap:4,color:"#f39c12",fontWeight:700,fontSize:12,fontFamily:"inherit"}}>✍️ {isH?"ब्लॉग":"Blog"}</button>
-          <button onClick={() => setScreen("about")} title="Info"
-            style={{ height:34, padding:"0 12px", borderRadius:20, background:"rgba(124,58,237,0.1)", border:"1px solid rgba(124,58,237,0.2)", cursor:"pointer", display:"flex", alignItems:"center", gap:5, color:"#a78bfa", fontWeight:700, fontSize:12, fontFamily:"inherit", transition:TOKENS.transitions.fast }}
-            onMouseEnter={e=>{ e.currentTarget.style.background="rgba(124,58,237,0.2)"; }}
-            onMouseLeave={e=>{ e.currentTarget.style.background="rgba(124,58,237,0.1)"; }}
-          >ℹ️ {isH?"जानकारी":"Info"}</button>
+          <button onClick={() => setScreen("blog")} title={isH?"ब्लॉग":"Blog"}
+            style={{width:34,height:34,borderRadius:9,border:"1px solid rgba(243,156,18,0.25)",background:"rgba(243,156,18,0.1)",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16}}
+          >✍️</button>
+          <button onClick={() => setScreen("about")} title={isH?"जानकारी":"Info"}
+            style={{width:34,height:34,borderRadius:9,border:"1px solid rgba(124,58,237,0.2)",background:"rgba(124,58,237,0.1)",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,color:"#a78bfa"}}
+          >ℹ️</button>
           <button onClick={() => setScreen("policy")} title="Policy"
-            style={{ height:34, padding:"0 10px", borderRadius:20, background:"rgba(74,222,128,0.08)", border:"1px solid rgba(74,222,128,0.2)", cursor:"pointer", display:"flex", alignItems:"center", gap:4, color:"#4ade80", fontWeight:700, fontSize:12, fontFamily:"inherit" }}
+            style={{width:34,height:34,borderRadius:9,border:"1px solid rgba(74,222,128,0.2)",background:"rgba(74,222,128,0.08)",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",fontSize:15}}
           >📋</button>
-          <button onClick={() => setDarkMode(d => !d)} title={darkMode ? "Light Mode" : "Dark Mode"}
-            style={{ width:34, height:34, borderRadius:9, border:"1px solid rgba(124,58,237,0.22)", background: darkMode ? "rgba(255,200,50,0.1)" : "rgba(100,100,255,0.12)", cursor:"pointer", fontSize:17, display:"flex", alignItems:"center", justifyContent:"center", transition:"all 0.3s" }}
+          <button onClick={() => setDarkMode(d => !d)} title={darkMode?"Light Mode":"Dark Mode"}
+            style={{width:34,height:34,borderRadius:9,border:"1px solid rgba(124,58,237,0.22)",background:darkMode?"rgba(255,200,50,0.1)":"rgba(100,100,255,0.12)",cursor:"pointer",fontSize:16,display:"flex",alignItems:"center",justifyContent:"center",transition:"all 0.25s"}}
           >{darkMode ? "🌙" : "☀️"}</button>
           <div style={{ display: "flex", flexDirection: "column", background: TOKENS.colors.surface, borderRadius: 14, padding: 3, border: "1px solid rgba(124,58,237,0.15)", backdropFilter: TOKENS.blur.sm, gap: 2 }}>
             {["hindi", "english"].map((l, i) => (
@@ -1600,14 +1607,14 @@ export default function SahayakPremium() {
   // ═══════════════════════════════════════════════════════════
   const starters = agent.starters;
   return (
-    <div style={{ minHeight: "100vh", fontFamily: TOKENS.fonts.primary, background: TOKENS.colors.bg, color: TOKENS.colors.text, display: "flex", flexDirection: "column", position: "relative", overflow: "hidden" }}>
+    <div style={{ minHeight: "100vh", fontFamily: TOKENS.fonts.primary, background: darkMode ? "#030305" : "#f0f2f8", color: darkMode ? "#f8f8ff" : "#12002e", display: "flex", flexDirection: "column", transition: "background 0.3s, color 0.3s", position: "relative", overflow: "hidden" }}>
       <PremiumBackground agent={agent} />
       <AmbientOrbs agent={agent} />
 
       {/* Chat Header */}
       <header style={{
         padding: "12px 16px", display: "flex", alignItems: "center", gap: 14,
-        background: "rgba(3,3,5,0.88)", backdropFilter: TOKENS.blur.xl,
+        background: darkMode ? "rgba(3,3,5,0.88)" : "rgba(240,242,248,0.95)", backdropFilter: TOKENS.blur.xl,
         borderBottom: "1px solid rgba(124,58,237,0.15)",
         position: "sticky", top: 0, zIndex: 20,
       }}>
@@ -1865,7 +1872,7 @@ export default function SahayakPremium() {
       {/* Input Area */}
       <div style={{
         padding: "12px 16px 16px",
-        background: "rgba(3,3,5,0.95)",
+        background: darkMode ? "rgba(3,3,5,0.95)" : "rgba(240,242,248,0.98)",
         backdropFilter: TOKENS.blur.xl,
         borderTop: "1px solid rgba(124,58,237,0.15)",
         position: "relative", zIndex: 20,
@@ -1924,7 +1931,7 @@ export default function SahayakPremium() {
               animation: isListening ? "voicePulse 0.8s ease-in-out infinite" : "none",
               borderRadius: TOKENS.radii.lg,
               padding: "12px 16px",
-              color: "#1a1a2e",
+              color: darkMode ? "#1a1a2e" : "#12002e",
               fontSize: 14,
               resize: "none",
               outline: "none",
