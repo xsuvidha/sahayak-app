@@ -340,7 +340,7 @@ function renderText(text) {
       );
     }
     if (line === "---" || line === "———") {
-      return <div key={i} style={{ height: 1, background: "linear-gradient(90deg, transparent, rgba(255,255,255,0.08), transparent)", margin: "12px 0" }}/>;
+      return <div key={i} style={{ height: 1, background: "linear-gradient(90deg, transparent, rgba(124,58,237,0.1), transparent)", margin: "12px 0" }}/>;
     }
     if (!line.trim()) return <div key={i} style={{ height: 8 }}/>;
     return (
@@ -504,7 +504,7 @@ function PremiumButton({ children, onClick, variant = 'primary', color = TOKENS.
       boxShadow: isHovered && !disabled ? "0 8px 32px "+color+"40, 0 0 0 1px "+color+"30" : 'none',
     },
     secondary: {
-      background: isHovered ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.03)',
+      background: isHovered ? 'rgba(124,58,237,0.1)' : 'rgba(255,255,255,0.03)',
       color: TOKENS.colors.text,
       border: "1px solid "+(isHovered?"rgba(255,255,255,0.15)":"rgba(255,255,255,0.06)"),
       boxShadow: 'none',
@@ -776,7 +776,7 @@ function TypingIndicator({ agent, t }) {
         <div style={{ position: "absolute", inset: -3, borderRadius: "50%", background: `radial-gradient(circle, ${agent.color}50 0%, transparent 70%)`, filter: TOKENS.blur.sm, animation: "pulse-glow 2s ease-in-out infinite" }} />
         <img src={LOGO} alt="SAHAYAK" style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover", border: "2px solid "+agent.color+"50", position: "relative", zIndex: 1 }} />
       </div>
-      <div style={{ background: TOKENS.colors.surface, borderRadius: "18px 18px 18px 4px", padding: "11px 15px", display: "flex", gap: 4, border: "1px solid rgba(255,255,255,0.08)", backdropFilter: TOKENS.blur.md }}>
+      <div style={{ background: TOKENS.colors.surface, borderRadius: "18px 18px 18px 4px", padding: "11px 15px", display: "flex", gap: 4, border: "1px solid rgba(124,58,237,0.1)", backdropFilter: TOKENS.blur.md }}>
         {[0, 1, 2].map(i => (
           <div key={i} style={{ width: 6, height: 6, borderRadius: "50%", background: agent.color, animation: `typing-bounce 1.4s ${i * 0.15}s infinite ease-in-out` }} />
         ))}
@@ -939,8 +939,8 @@ function SolarQuoteForm({ lang, onSubmit, onSkip }) {
 
 // Image component with SAHAYAK watermark overlay
 function BlogImage({ src, alt, style }) {
-  const [loaded, setLoaded] = React.useState(false);
-  const [error, setError] = React.useState(false);
+  const [loaded, setLoaded] = useState(false);
+  const [error, setError] = useState(false);
 
   if (!src || error) {
     // Fallback gradient placeholder
@@ -1013,11 +1013,11 @@ function BlogImage({ src, alt, style }) {
 
 function BlogScreen({ lang, onBack }) {
   const isH = lang !== "english";
-  const [posts, setPosts] = React.useState([]);
-  const [loading, setLoading] = React.useState(true);
-  const [selected, setSelected] = React.useState(null);
+  const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [selected, setSelected] = useState(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetch("/api/blog")
       .then(r => r.json())
       .then(data => { setPosts(data.posts || []); setLoading(false); })
@@ -1066,7 +1066,7 @@ function BlogScreen({ lang, onBack }) {
           {selected.tags?.length > 0 && (
             <div style={{ display:"flex", flexWrap:"wrap", gap:6, marginBottom:20 }}>
               {selected.tags.map((tag,i) => (
-                <span key={i} style={{ fontSize:10, padding:"3px 10px", borderRadius:20, background:"rgba(255,255,255,0.05)", border:"1px solid rgba(255,255,255,0.08)", color:"rgba(255,255,255,0.5)" }}>#{tag}</span>
+                <span key={i} style={{ fontSize:10, padding:"3px 10px", borderRadius:20, background:"rgba(255,255,255,0.05)", border:"1px solid rgba(124,58,237,0.1)", color:"rgba(255,255,255,0.5)" }}>#{tag}</span>
               ))}
             </div>
           )}
@@ -1104,7 +1104,7 @@ function BlogScreen({ lang, onBack }) {
           <div style={{ display:"flex", flexDirection:"column", gap:16, marginTop:4 }}>
             {[1,2,3].map(i => (
               <div key={i} style={{ borderRadius:16, overflow:"hidden", background:"rgba(255,255,255,0.03)" }}>
-                <div style={{ height:160, background:"linear-gradient(90deg,rgba(255,255,255,0.04) 25%,rgba(255,255,255,0.08) 50%,rgba(255,255,255,0.04) 75%)" }}/>
+                <div style={{ height:160, background:"linear-gradient(90deg,rgba(255,255,255,0.04) 25%,rgba(124,58,237,0.1) 50%,rgba(255,255,255,0.04) 75%)" }}/>
                 <div style={{ padding:14 }}>
                   <div style={{ height:11, background:"rgba(255,255,255,0.06)", borderRadius:6, width:"40%", marginBottom:10 }}/>
                   <div style={{ height:14, background:"rgba(255,255,255,0.05)", borderRadius:6, width:"85%", marginBottom:8 }}/>
@@ -1490,7 +1490,7 @@ export default function SahayakPremium() {
         background: scrollY > 50 ? "rgba(3,3,5,0.85)" : "transparent",
         backdropFilter: scrollY > 50 ? TOKENS.blur.lg : "none",
         transition: "all 0.4s cubic-bezier(0.4,0,0.2,1)",
-        borderBottom: scrollY > 50 ? "1px solid rgba(255,255,255,0.08)" : "1px solid transparent",
+        borderBottom: scrollY > 50 ? "1px solid rgba(124,58,237,0.1)" : "1px solid transparent",
       }}>
         <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
           <div style={{
@@ -1524,7 +1524,7 @@ export default function SahayakPremium() {
               display: "flex", flexDirection: "column",
               background: TOKENS.colors.surface,
               borderRadius: 14, padding: 3,
-              border: "1px solid rgba(255,255,255,0.08)",
+              border: "1px solid rgba(124,58,237,0.1)",
               backdropFilter: TOKENS.blur.sm, gap: 2,
             }}>
             {["hindi", "english"].map((l, i) => (
@@ -1808,7 +1808,7 @@ export default function SahayakPremium() {
       <header style={{
         padding: "12px 16px", display: "flex", alignItems: "center", gap: 14,
         background: "rgba(3,3,5,0.88)", backdropFilter: TOKENS.blur.xl,
-        borderBottom: "1px solid rgba(255,255,255,0.08)",
+        borderBottom: "1px solid rgba(124,58,237,0.1)",
         position: "sticky", top: 0, zIndex: 20,
       }}>
         <button onClick={() => { setScreen("home"); stopSpeech(); }}
@@ -1966,7 +1966,7 @@ export default function SahayakPremium() {
                       style={{
                         display: "flex", alignItems: "center", gap: 8,
                         padding: "8px 14px 8px 10px", borderRadius: TOKENS.radii.full,
-                        border: `2px solid ${speaking === i ? agent.color : "rgba(255,255,255,0.08)"}`,
+                        border: `2px solid ${speaking === i ? agent.color : "rgba(124,58,237,0.1)"}`,
                         background: speaking === i
                           ? "linear-gradient(135deg, "+agent.color+"90, "+agent.color+"60)"
                           : "rgba(255,255,255,0.03)",
@@ -1984,7 +1984,7 @@ export default function SahayakPremium() {
                       onMouseLeave={e => {
                         if (speaking !== i) {
                           e.target.style.background = "rgba(255,255,255,0.03)";
-                          e.target.style.borderColor = "rgba(255,255,255,0.08)";
+                          e.target.style.borderColor = "rgba(124,58,237,0.1)";
                         }
                       }}
                     >
@@ -2026,7 +2026,7 @@ export default function SahayakPremium() {
               <div style={{
                 display: "flex", alignItems: "center", gap: 12,
                 marginBottom: 16, paddingBottom: 14,
-                borderBottom: "1px solid rgba(255,255,255,0.08)",
+                borderBottom: "1px solid rgba(124,58,237,0.1)",
               }}>
                 <div style={{
                   width: 44, height: 44, borderRadius: 12,
@@ -2061,7 +2061,7 @@ export default function SahayakPremium() {
 
       {/* Solar Calculator */}
       {agent.solar && (() => {
-        const [showCalc, setShowCalc_] = React.useState(false);
+        const [showCalc, setShowCalc_] = useState(false);
         return (
           <>
             {/* 🧮 Floating Calculator Bubble */}
@@ -2105,7 +2105,7 @@ export default function SahayakPremium() {
         padding: "12px 16px 16px",
         background: "rgba(3,3,5,0.95)",
         backdropFilter: TOKENS.blur.xl,
-        borderTop: "1px solid rgba(255,255,255,0.08)",
+        borderTop: "1px solid rgba(124,58,237,0.1)",
         position: "relative", zIndex: 20,
       }}>
         <div style={{ display: "flex", gap: 10, alignItems: "flex-end" }}>
@@ -2186,7 +2186,7 @@ export default function SahayakPremium() {
                 : "linear-gradient(145deg,#1e293b,#0f172a)",
               border: input.trim() && !loading
                 ? "1px solid rgba(99,102,241,0.5)"
-                : "1px solid rgba(255,255,255,0.08)",
+                : "1px solid rgba(124,58,237,0.1)",
               cursor: input.trim() && !loading ? "pointer" : "not-allowed",
               color: "#fff",
               display: "flex", alignItems: "center", justifyContent: "center",
