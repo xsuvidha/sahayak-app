@@ -1,5 +1,10 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 
+// ── Global dark mode state (updated by main component) ──
+let _darkMode = true;
+const isDark = () => _darkMode;
+
+
 const LOGO = "/logo.svg?v=3";
 const WA_NUMBER = "918115776644";
 const WA_BASE = `https://wa.me/${WA_NUMBER}`;
@@ -285,13 +290,13 @@ function formatInline(text) {
 
     switch (first.type) {
       case "bold":
-        parts.push(<strong key={key++} style={{ color: TOKENS.colors.text, fontWeight: 800, letterSpacing: "-0.01em" }}>{first.inner}</strong>);
+        parts.push(<strong key={key++} style={{ color: isDark() ? "#f8f8ff" : "#1a0800", fontWeight: 800, letterSpacing: "-0.01em" }}>{first.inner}</strong>);
         break;
       case "underline":
         parts.push(<span key={key++} style={{ textDecoration: "underline", textDecorationColor: "#a78bfa", textUnderlineOffset: 3, textDecorationThickness: 2 }}>{first.inner}</span>);
         break;
       case "highlight":
-        parts.push(<mark key={key++} style={{ background: "rgba(167,139,250,0.20)", color: TOKENS.colors.text, borderRadius: 6, padding: "2px 6px", fontWeight: 600 }}>{first.inner}</mark>);
+        parts.push(<mark key={key++} style={{ background: "rgba(167,139,250,0.20)", color: isDark() ? "#f8f8ff" : "#1a0800", borderRadius: 6, padding: "2px 6px", fontWeight: 600 }}>{first.inner}</mark>);
         break;
       case "code":
         parts.push(<code key={key++} style={{ background: "rgba(255,255,255,0.06)", color: "#c4b5fd", padding: "2px 8px", borderRadius: 6, fontSize: "0.88em", fontFamily: TOKENS.fonts.mono, border: "1px solid rgba(255,255,255,0.06)" }}>{first.inner}</code>);
@@ -315,7 +320,7 @@ function renderText(text) {
       return (
         <div key={i} style={{ display: "flex", gap: 12, margin: "6px 0", alignItems: "flex-start" }}>
           <span style={{ color: "#a78bfa", flexShrink: 0, fontSize: 18, lineHeight: 1.6, textShadow: "0 0 12px rgba(167,139,250,0.6)", marginTop: 2 }}>◆</span>
-          <span style={{ lineHeight: 1.7, color: TOKENS.colors.textMuted, flex: 1, fontSize: 14 }}>{formatInline(content)}</span>
+          <span style={{ lineHeight: 1.7, color: isDark() ? TOKENS.colors.textMuted : "rgba(26,8,0,0.6)", flex: 1, fontSize: 14 }}>{formatInline(content)}</span>
         </div>
       );
     }
@@ -325,14 +330,14 @@ function renderText(text) {
       return (
         <div key={i} style={{ display: "flex", gap: 12, margin: "6px 0", alignItems: "flex-start" }}>
           <span style={{ color: "#a78bfa", flexShrink: 0, fontWeight: 900, fontSize: 14, lineHeight: 1.7, minWidth: 24, textAlign: "center", background: "rgba(167,139,250,0.15)", borderRadius: 6, padding: "2px 6px" }}>{num}</span>
-          <span style={{ lineHeight: 1.7, color: TOKENS.colors.textMuted, flex: 1, fontSize: 14 }}>{formatInline(rest)}</span>
+          <span style={{ lineHeight: 1.7, color: isDark() ? TOKENS.colors.textMuted : "rgba(26,8,0,0.6)", flex: 1, fontSize: 14 }}>{formatInline(rest)}</span>
         </div>
       );
     }
     if (line.startsWith("## ") || line.startsWith("# ")) {
       const txt = line.replace(/^#+\s/, "");
       return (
-        <p key={i} style={{ margin: "14px 0 8px", lineHeight: 1.4, color: TOKENS.colors.text, fontWeight: 800, fontSize: 16, borderBottom: "1px solid rgba(167,139,250,0.15)", paddingBottom: 6, letterSpacing: "-0.01em" }}>{formatInline(txt)}</p>
+        <p key={i} style={{ margin: "14px 0 8px", lineHeight: 1.4, color: isDark() ? "#f8f8ff" : "#1a0800", fontWeight: 800, fontSize: 16, borderBottom: "1px solid rgba(167,139,250,0.15)", paddingBottom: 6, letterSpacing: "-0.01em" }}>{formatInline(txt)}</p>
       );
     }
     if (line === "---" || line === "———") {
@@ -340,7 +345,7 @@ function renderText(text) {
     }
     if (!line.trim()) return <div key={i} style={{ height: 8 }}/>;
     return (
-      <p key={i} style={{ margin: "5px 0", lineHeight: 1.75, color: TOKENS.colors.textMuted, fontSize: 14 }}>{formatInline(line)}</p>
+      <p key={i} style={{ margin: "5px 0", lineHeight: 1.75, color: isDark() ? TOKENS.colors.textMuted : "rgba(26,8,0,0.6)", fontSize: 14 }}>{formatInline(line)}</p>
     );
   });
 }
@@ -496,17 +501,17 @@ function PremiumButton({ children, onClick, variant = 'primary', color = TOKENS.
     primary: {
       background: disabled ? 'rgba(255,255,255,0.05)' : "linear-gradient(135deg, "+color+", "+color+"dd)",
       color: '#fff',
-      border: "1px solid "+(disabled?"rgba(255,255,255,0.05)":color+"60"),
+      border: "1px solid "+(disabled?isDark() ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.06)":color+"60"),
       boxShadow: isHovered && !disabled ? "0 8px 32px "+color+"40, 0 0 0 1px "+color+"30" : 'none',
     },
     secondary: {
       background: isHovered ? 'rgba(255,255,255,0.08)' : 'rgba(255,255,255,0.03)',
-      color: TOKENS.colors.text,
+      color: isDark() ? "#f8f8ff" : "#1a0800",
       border: "1px solid "+(isHovered?"rgba(255,255,255,0.15)":"rgba(255,255,255,0.06)"),
       boxShadow: 'none',
     },
     ghost: {
-      background: 'transparent', color: TOKENS.colors.textMuted,
+      background: 'transparent', color: isDark() ? TOKENS.colors.textMuted : "rgba(26,8,0,0.6)",
       border: '1px solid transparent', boxShadow: 'none',
     },
   };
@@ -602,10 +607,10 @@ function SmartLeadForm({ agent, t, lang = "hindi", onSubmit, onSkip }) {
           style={{
             width: "100%", padding: "12px 16px", borderRadius: TOKENS.radii.lg,
             border: `1px solid ${agent?.color || "#a855f7"}25`,
-            background: "rgba(255,255,255,0.03)", color: "#fff", fontSize: 14, outline: "none",
+            background: isDark() ? "rgba(255,255,255,0.03)" : "rgba(255,255,255,0.75)", color: "#fff", fontSize: 14, outline: "none",
             fontFamily: TOKENS.fonts.primary, transition: TOKENS.transitions.fast, boxSizing: "border-box",
           }}
-          onFocus={e => { e.target.style.borderColor = `${agent?.color || "#a855f7"}60`; e.target.style.background = "rgba(255,255,255,0.05)"; }}
+          onFocus={e => { e.target.style.borderColor = `${agent?.color || "#a855f7"}60`; e.target.style.background = isDark() ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.06)"; }}
           onBlur={e => { e.target.style.borderColor = `${agent?.color || "#a855f7"}25`; e.target.style.background = "rgba(255,255,255,0.03)"; }}
         />
         <input
@@ -616,10 +621,10 @@ function SmartLeadForm({ agent, t, lang = "hindi", onSubmit, onSkip }) {
           style={{
             width: "100%", padding: "12px 16px", borderRadius: TOKENS.radii.lg,
             border: `1px solid ${agent?.color || "#a855f7"}25`,
-            background: "rgba(255,255,255,0.03)", color: "#fff", fontSize: 14, outline: "none",
+            background: isDark() ? "rgba(255,255,255,0.03)" : "rgba(255,255,255,0.75)", color: "#fff", fontSize: 14, outline: "none",
             fontFamily: TOKENS.fonts.primary, transition: TOKENS.transitions.fast, boxSizing: "border-box",
           }}
-          onFocus={e => { e.target.style.borderColor = `${agent?.color || "#a855f7"}60`; e.target.style.background = "rgba(255,255,255,0.05)"; }}
+          onFocus={e => { e.target.style.borderColor = `${agent?.color || "#a855f7"}60`; e.target.style.background = isDark() ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.06)"; }}
           onBlur={e => { e.target.style.borderColor = `${agent?.color || "#a855f7"}25`; e.target.style.background = "rgba(255,255,255,0.03)"; }}
         />
         <div style={{ display: "flex", gap: 10 }}>
@@ -663,7 +668,7 @@ function PremiumSolarPanel({ lang, onSend }) {
       <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         <div>
           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-            <span style={{ fontSize: 13, color: TOKENS.colors.textMuted }}>{t.capacity}</span>
+            <span style={{ fontSize: 13, color: isDark() ? TOKENS.colors.textMuted : "rgba(26,8,0,0.6)" }}>{t.capacity}</span>
             <span style={{ fontSize: 14, fontWeight: 800, color: "#f59e0b" }}>{kw} KW</span>
           </div>
           <input type="range" min="1" max="10" step="0.5" value={kw}
@@ -704,7 +709,7 @@ function PremiumSolarPanel({ lang, onSend }) {
           ))}
         </div>
         {type === "commercial" && (
-          <div style={{ padding: "14px", borderRadius: TOKENS.radii.lg, background: "rgba(245,158,11,0.06)", border: "1px solid rgba(245,158,11,0.15)", fontSize: 12, lineHeight: 1.7, color: TOKENS.colors.textMuted, whiteSpace: "pre-line" }}>
+          <div style={{ padding: "14px", borderRadius: TOKENS.radii.lg, background: "rgba(245,158,11,0.06)", border: "1px solid rgba(245,158,11,0.15)", fontSize: 12, lineHeight: 1.7, color: isDark() ? TOKENS.colors.textMuted : "rgba(26,8,0,0.6)", whiteSpace: "pre-line" }}>
             {t.commercialNote}
           </div>
         )}
@@ -772,7 +777,7 @@ function TypingIndicator({ agent, t }) {
         <div style={{ position: "absolute", inset: -3, borderRadius: "50%", background: `radial-gradient(circle, ${agent.color}50 0%, transparent 70%)`, filter: TOKENS.blur.sm, animation: "pulse-glow 2s ease-in-out infinite" }} />
         <img src={LOGO} alt="SAHAYAK" style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover", border: "2px solid "+agent.color+"50", position: "relative", zIndex: 1 }} />
       </div>
-      <div style={{ background: TOKENS.colors.surface, borderRadius: "18px 18px 18px 4px", padding: "11px 15px", display: "flex", gap: 4, border: "1px solid rgba(124,58,237,0.15)", backdropFilter: TOKENS.blur.md }}>
+      <div style={{ background: isDark() ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.88,0,0.05)", borderRadius: "18px 18px 18px 4px", padding: "11px 15px", display: "flex", gap: 4, border: "1px solid rgba(124,58,237,0.15)", backdropFilter: TOKENS.blur.md }}>
         {[0, 1, 2].map(i => (
           <div key={i} style={{ width: 6, height: 6, borderRadius: "50%", background: agent.color, animation: `typing-bounce 1.4s ${i * 0.15}s infinite ease-in-out` }} />
         ))}
@@ -788,44 +793,154 @@ function TypingIndicator({ agent, t }) {
 // ── PolicyPage ──
 function PolicyPage({ lang, onBack, darkMode }) {
   const isH = lang !== "english";
-  const bg = darkMode ? "#05050a" : "#f0f2f8";
-  const fg = darkMode ? "#fff" : "#12002e";
-  const hdr = darkMode ? "rgba(5,5,10,0.97)" : "rgba(240,242,248,0.97)";
-  const card = (col) => darkMode ? col+"0f" : col+"18";
   const s = (hi, en) => isH ? hi : en;
+  const pageBg = isDark() ? "linear-gradient(160deg,#030308,#080514)" : "linear-gradient(160deg,#f5f0ff,#fff8f0)";
+
+  const GLASS = { background:"rgba(12,10,28,0.88)", backdropFilter:"blur(20px)", WebkitBackdropFilter:"blur(20px)", borderRadius:18, border:"1px solid rgba(167,139,250,0.22)", boxShadow:"0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)", padding:"18px 16px", marginBottom:14 };
+  const TITLE = { fontWeight:800, fontSize:13.5, marginBottom:10, letterSpacing:0.3 };
+  const ROW = { fontSize:12.5, color:"rgba(220,210,255,0.88)", lineHeight:2 };
+  const LABEL = { color:"rgba(196,181,253,0.55)", fontSize:11, marginRight:4 };
+
   return (
-    <div style={{minHeight:"100vh",background:bg,color:fg,fontFamily:"'Noto Sans Devanagari','Segoe UI',sans-serif",display:"flex",flexDirection:"column"}}>
-      <div style={{padding:"12px 16px",display:"flex",alignItems:"center",gap:10,background:hdr,borderBottom:"1px solid rgba(124,58,237,0.15)",position:"sticky",top:0,zIndex:10,backdropFilter:"blur(16px)"}}>
-        <button onClick={onBack} style={{background:"none",border:"none",color:darkMode?"rgba(255,255,255,0.5)":"rgba(0,0,0,0.4)",fontSize:22,cursor:"pointer",padding:0}}>{"<"}</button>
-        <div style={{fontWeight:800,fontSize:16}}>{"📋 "+s("नीति एवं प्रमाण-पत्र","Policy & Certificates")}</div>
-      </div>
-      <div style={{flex:1,padding:"20px 16px",maxWidth:560,margin:"0 auto",width:"100%",boxSizing:"border-box",overflowY:"auto"}}>
-        {[
-          {color:"#4ade80",icon:"🏢",title:s("कंपनी जानकारी","Company Info"),items:["HAANS Solar® — Ankit Singh","GST: 09DIYPS3881N1ZT | PAN: DIYPS3881N","Nawanagar, Chouhattar Kalan, Balrampur UP 271208","xsuvidha@gmail.com | +91 8115776644"]},
-          {color:"#60a5fa",icon:"🛡️",title:s("VLE-IRDAI बीमा प्रमाण-पत्र","VLE-IRDAI Insurance"),items:["ID: CSC/VLEINS/UP/2025/452693","Ankit Singh | CSC ID: 324617760019","Issued: 13 October 2025","CSC e-Governance Services India Ltd."]},
-          {color:"#f39c12",icon:"☀️",title:s("MFINS Solar चैनल पार्टनर","MFINS Solar Partner"),items:["MFINS Services Private Limited","Solar Channel Partner","Issued: 26 August 2025"]},
-          {color:"#fb923c",icon:"📊",title:s("GST Suvidha Kendra","GST Suvidha Kendra"),items:["GSTSK/2024/REGISTRATION/20240039824","Issued: 03 October 2024 | Valid Till: 2049","Prologic Web Solutions Pvt. Ltd."]},
-        ].map((cert,i)=>(
-          <div key={i} style={{background:card(cert.color),border:"1px solid "+cert.color+"30",borderRadius:14,padding:14,marginBottom:12}}>
-            <div style={{fontWeight:800,fontSize:13,color:cert.color,marginBottom:8}}>{cert.icon+" "+cert.title}</div>
-            {cert.items.map((item,j)=><div key={j} style={{fontSize:12,opacity:0.82,lineHeight:1.9}}>{item}</div>)}
+    <div style={{ minHeight:"100vh", background:pageBg, fontFamily:"'Noto Sans Devanagari','Segoe UI',sans-serif", display:"flex", flexDirection:"column" }}>
+      {/* Header */}
+      <div style={{ padding:"10px 14px", display:"flex", alignItems:"center", gap:10, background:"rgba(8,6,20,0.95)", backdropFilter:"blur(20px)", borderBottom:"1px solid rgba(167,139,250,0.18)", position:"sticky", top:0, zIndex:10 }}>
+        <button onClick={onBack} style={{ background:"none", border:"none", color:"rgba(196,181,253,0.6)", fontSize:22, cursor:"pointer", padding:0 }}>{"<"}</button>
+        <div style={{ flex:1, display:"flex", alignItems:"center", gap:10, background:"rgba(10,8,25,0.82)", backdropFilter:"blur(16px)", borderRadius:14, padding:"5px 12px 5px 5px", border:"1px solid rgba(167,139,250,0.22)", boxShadow:"0 4px 16px rgba(0,0,0,0.3)" }}>
+          <div style={{ width:32, height:32, borderRadius:9, background:"linear-gradient(135deg,#a855f7,#6366f1)", display:"flex", alignItems:"center", justifyContent:"center", overflow:"hidden" }}>
+            <img src="/logo.svg" alt="S" style={{ width:22, height:22, objectFit:"cover" }}/>
           </div>
-        ))}
-        <div style={{background:darkMode?"rgba(167,139,250,0.06)":"rgba(124,58,237,0.08)",border:"1px solid rgba(167,139,250,0.2)",borderRadius:14,padding:14,marginBottom:12}}>
-          <div style={{fontWeight:800,fontSize:13,color:"#a78bfa",marginBottom:8}}>{"🔒 "+s("गोपनीयता नीति","Privacy Policy")}</div>
-          <div style={{fontSize:12,lineHeight:1.9,opacity:0.8}}>
-            {"• "+s("SAHAYAK केवल आपकी दी गई जानकारी एकत्र करता है।","SAHAYAK collects only information you provide.")}<br/>
-            {"• "+s("डेटा किसी को नहीं बेचा जाता।","Data is never sold to third parties.")}<br/>
-            {"• "+s("AI चैट इतिहास संग्रहीत नहीं होता।","AI chat history is not stored.")}
+          <div>
+            <div style={{ fontWeight:900, fontSize:15, letterSpacing:2, background:"linear-gradient(90deg,#c084fc,#fff 55%,#93c5fd)", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", lineHeight:1 }}>SAHAYAK</div>
+            <div style={{ fontSize:8, color:"rgba(196,181,253,0.7)", marginTop:1 }}>{s("नीति एवं प्रमाण-पत्र","Policy & Certificates")}</div>
           </div>
         </div>
-        <div style={{textAlign:"center",fontSize:10,opacity:0.25,marginBottom:20}}>{"HAANS Solar® 2026 • GST: 09DIYPS3881N1ZT"}</div>
+      
+        {/* Dark/Light + Language toggles */}
+        <div style={{ display:"flex", alignItems:"center", gap:6, marginLeft:"auto", flexShrink:0 }}>
+          <button onClick={() => { const d = !isDark(); setDarkMode(d); }}
+            style={{ width:32, height:32, borderRadius:9, border:"1px solid rgba(167,139,250,0.3)", background: isDark() ? "rgba(255,200,50,0.12)" : "rgba(100,100,255,0.12)", cursor:"pointer", fontSize:15, display:"flex", alignItems:"center", justifyContent:"center" }}
+          >{isDark() ? "🌙" : "☀️"}</button>
+          <div style={{ display:"flex", flexDirection:"column", background:"rgba(255,255,255,0.06)", borderRadius:12, padding:3, border:"1px solid rgba(167,139,250,0.2)", gap:2 }}>
+            {["hindi","english"].map(l => (
+              <button key={l} onClick={() => setLang(l)}
+                style={{ padding:"4px 9px", borderRadius:8, border:"none", background: lang===l ? "linear-gradient(135deg,#a855f7,#6366f1)" : "transparent", color: lang===l ? "#fff" : "rgba(196,181,253,0.55)", fontSize:10, fontWeight:700, cursor:"pointer", fontFamily:"inherit", boxShadow: lang===l ? "0 2px 8px rgba(168,85,247,0.5)" : "none" }}
+              >{l==="hindi"?"हिंदी":"EN"}</button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div style={{ flex:1, padding:"16px 14px", maxWidth:580, margin:"0 auto", width:"100%", boxSizing:"border-box", overflowY:"auto" }}>
+
+        {/* Company Info */}
+        <div style={GLASS}>
+          <div style={{...TITLE, color:"#4ade80"}}>{"🏢 "+s("कंपनी जानकारी","Company Information")}</div>
+          {[
+            [s("कंपनी","Company"), "HAANS Solar®"],
+            [s("संस्थापक","Founder"), "Ankit Singh"],
+            ["GST", "09DIYPS3881N1ZT"],
+            ["PAN", "DIYPS3881N"],
+            [s("पता","Address"), "Nawanagar, Chouhattar Kalan, Balrampur UP 271208"],
+            ["Email", "xsuvidha@gmail.com"],
+            [s("फोन","Phone"), "+91 8115776644"],
+          ].map(([k,v],i) => (
+            <div key={i} style={{ display:"flex", gap:8, marginBottom:6 }}>
+              <span style={LABEL}>{k}:</span>
+              <span style={{...ROW, marginBottom:0}}>{v}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* VLE-IRDAI */}
+        <div style={{...GLASS, border:"1px solid rgba(96,165,250,0.3)"}}>
+          <div style={{...TITLE, color:"#60a5fa"}}>{"🛡️ "+s("VLE-IRDAI बीमा प्रमाण-पत्र","VLE-IRDAI Insurance Certificate")}</div>
+          {[
+            ["ID", "CSC/VLEINS/UP/2025/452693"],
+            [s("नाम","Name"), "Ankit Singh"],
+            ["CSC ID", "324617760019"],
+            [s("जारी","Issued"), "13 October 2025"],
+            [s("द्वारा","By"), "CSC e-Governance Services India Ltd."],
+          ].map(([k,v],i) => (
+            <div key={i} style={{ display:"flex", gap:8, marginBottom:6 }}>
+              <span style={LABEL}>{k}:</span>
+              <span style={{...ROW, marginBottom:0}}>{v}</span>
+            </div>
+          ))}
+          <div style={{ marginTop:10, display:"inline-block", background:"rgba(96,165,250,0.15)", border:"1px solid rgba(96,165,250,0.3)", borderRadius:8, padding:"4px 12px", fontSize:11, color:"#60a5fa" }}>{"✅ "+s("IRDAI अधिकृत बीमा एजेंट","IRDAI Authorized Agent")}</div>
+        </div>
+
+        {/* MFINS Solar */}
+        <div style={{...GLASS, border:"1px solid rgba(251,146,60,0.3)"}}>
+          <div style={{...TITLE, color:"#fb923c"}}>{"☀️ "+s("MFINS Solar चैनल पार्टनर","MFINS Solar Channel Partner")}</div>
+          {[
+            [s("साझेदार","Partner"), "MFINS Services Private Limited"],
+            [s("मान्यता","As"), "Solar Channel Partner"],
+            [s("जारी","Issued"), "26 August 2025"],
+          ].map(([k,v],i) => (
+            <div key={i} style={{ display:"flex", gap:8, marginBottom:6 }}>
+              <span style={LABEL}>{k}:</span>
+              <span style={{...ROW, marginBottom:0}}>{v}</span>
+            </div>
+          ))}
+          <div style={{ marginTop:10, display:"inline-block", background:"rgba(251,146,60,0.15)", border:"1px solid rgba(251,146,60,0.3)", borderRadius:8, padding:"4px 12px", fontSize:11, color:"#fb923c" }}>{"✅ MFINS Official Solar Channel Partner"}</div>
+        </div>
+
+        {/* GST Suvidha Kendra */}
+        <div style={{...GLASS, border:"1px solid rgba(74,222,128,0.3)"}}>
+          <div style={{...TITLE, color:"#4ade80"}}>{"📊 "+s("GST Suvidha Kendra फ्रेंचाइज़ी","GST Suvidha Kendra Franchise")}</div>
+          {[
+            ["License", "GSTSK/2024/REGISTRATION/20240039824"],
+            [s("जारी","Issued"), "03 October 2024"],
+            [s("वैध तक","Valid Till"), "03 October 2049"],
+            [s("द्वारा","By"), "Prologic Web Solutions Pvt. Ltd."],
+          ].map(([k,v],i) => (
+            <div key={i} style={{ display:"flex", gap:8, marginBottom:6 }}>
+              <span style={LABEL}>{k}:</span>
+              <span style={{...ROW, marginBottom:0}}>{v}</span>
+            </div>
+          ))}
+          <div style={{ marginTop:10, display:"inline-block", background:"rgba(74,222,128,0.12)", border:"1px solid rgba(74,222,128,0.3)", borderRadius:8, padding:"4px 12px", fontSize:11, color:"#4ade80" }}>{"✅ "+s("Franchisee Partner — 2049 तक वैध","Franchisee — Valid till 2049")}</div>
+        </div>
+
+        {/* Privacy Policy */}
+        <div style={{...GLASS, border:"1px solid rgba(167,139,250,0.25)"}}>
+          <div style={{...TITLE, color:"#a78bfa"}}>{"🔒 "+s("गोपनीयता नीति","Privacy Policy")}</div>
+          {[
+            s("SAHAYAK केवल आपकी दी गई जानकारी एकत्र करता है।","SAHAYAK collects only information you provide."),
+            s("डेटा किसी तीसरे पक्ष को नहीं बेचा जाता।","Your data is never sold to third parties."),
+            s("AI चैट इतिहास संग्रहीत नहीं होता।","AI chat history is not stored."),
+            s("WhatsApp लीड केवल HAANS Solar टीम को जाती है।","WhatsApp leads go to HAANS Solar team only."),
+          ].map((item,i) => (
+            <div key={i} style={{ display:"flex", gap:8, marginBottom:7, alignItems:"flex-start" }}>
+              <span style={{ color:"#a78bfa", fontSize:12, flexShrink:0, marginTop:2 }}>•</span>
+              <span style={ROW}>{item}</span>
+            </div>
+          ))}
+        </div>
+
+        {/* Terms */}
+        <div style={{...GLASS, border:"1px solid rgba(248,113,113,0.25)"}}>
+          <div style={{...TITLE, color:"#f87171"}}>{"📜 "+s("नियम एवं अस्वीकरण","Terms & Disclaimer")}</div>
+          {[
+            s("SAHAYAK एक AI सूचना सेवा है — कानूनी या वित्तीय सलाह नहीं।","SAHAYAK is an AI info service — not legal/financial advice."),
+            s("सब्सिडी की राशि सरकारी नीतियों पर निर्भर है।","Subsidy amount depends on government policies."),
+            s("इस सेवा का उपयोग = इन नियमों से सहमति।","Using this service means agreement to these terms."),
+          ].map((item,i) => (
+            <div key={i} style={{ display:"flex", gap:8, marginBottom:7, alignItems:"flex-start" }}>
+              <span style={{ color:"#f87171", fontSize:12, flexShrink:0, marginTop:2 }}>•</span>
+              <span style={ROW}>{item}</span>
+            </div>
+          ))}
+        </div>
+
+        <div style={{ textAlign:"center", fontSize:10, color:"rgba(196,181,253,0.3)", marginBottom:24, letterSpacing:0.5 }}>{"HAANS Solar® 2026 • GST: 09DIYPS3881N1ZT"}</div>
       </div>
     </div>
   );
 }
 
-// ── SolarQuoteForm ──
+
 function SolarQuoteForm({ lang, onSubmit, onSkip }) {
   const isH = lang !== "english";
   const [name,setName] = useState(""); const [phone,setPhone] = useState("");
@@ -932,16 +1047,16 @@ function BlogImage({ src, alt, style }) {
 // ── BlogScreen ──
 function BlogScreen({ lang, onBack, darkMode }) {
   const isH = lang !== "english";
-  const bg = darkMode ? "#05050a" : "#f0f2f8";
-  const fg = darkMode ? "#fff" : "#12002e";
-  const hdr = darkMode ? "rgba(5,5,10,0.97)" : "rgba(240,242,248,0.97)";
-  const card = darkMode ? "rgba(255,255,255,0.025)" : "rgba(255,255,255,0.85)";
+  const bg = isDark() ? "#05050a" : "#f0f2f8";
+  const fg = isDark() ? "#fff" : "#12002e";
+  const hdr = isDark() ? "rgba(5,5,10,0.97)" : "rgba(240,242,248,0.97)";
+  const card = isDark() ? "rgba(255,255,255,0.025)" : "rgba(255,255,255,0.85)";
   const [posts,setPosts] = useState([]); const [loading,setLoading] = useState(true); const [sel,setSel] = useState(null);
   useEffect(()=>{ fetch("/api/blog").then(r=>r.json()).then(d=>{setPosts(d.posts||[]);setLoading(false);}).catch(()=>setLoading(false)); },[]);
   if (sel) return (
     <div style={{minHeight:"100vh",background:bg,color:fg,fontFamily:"'Noto Sans Devanagari','Segoe UI',sans-serif",display:"flex",flexDirection:"column"}}>
       <div style={{padding:"12px 16px",display:"flex",alignItems:"center",gap:10,background:hdr,borderBottom:"1px solid rgba(243,156,18,0.15)",position:"sticky",top:0,zIndex:10,backdropFilter:"blur(16px)"}}>
-        <button onClick={()=>setSel(null)} style={{background:"none",border:"none",color:darkMode?"rgba(255,255,255,0.5)":"rgba(0,0,0,0.4)",fontSize:22,cursor:"pointer",padding:0}}>{"<"}</button>
+        <button onClick={()=>setSel(null)} style={{background:"none",border:"none",color:isDark()?"rgba(255,255,255,0.5)":"rgba(0,0,0,0.4)",fontSize:22,cursor:"pointer",padding:0}}>{"<"}</button>
         <div style={{flex:1,fontSize:13,fontWeight:700,opacity:0.7}}>{sel.category}</div>
         <div style={{fontSize:11,opacity:0.35}}>{sel.reading_time}</div>
       </div>
@@ -955,7 +1070,7 @@ function BlogScreen({ lang, onBack, darkMode }) {
           <h1 style={{fontSize:22,fontWeight:900,lineHeight:1.4,marginBottom:14,color:fg}}>{sel.title}</h1>
           <div style={{height:3,width:50,background:"linear-gradient(90deg,#f39c12,#e67e22)",borderRadius:2,marginBottom:16}}/>
           {sel.key_takeaway&&<div style={{background:"rgba(243,156,18,0.08)",border:"1px solid rgba(243,156,18,0.2)",borderRadius:12,padding:"10px 14px",marginBottom:18,display:"flex",gap:10}}><div style={{fontSize:16,flexShrink:0}}>💡</div><div style={{fontSize:13,color:"#fbbf24",fontStyle:"italic",lineHeight:1.7}}>{sel.key_takeaway}</div></div>}
-          <div style={{fontSize:15,lineHeight:2,color:darkMode?"rgba(255,255,255,0.85)":fg}}>
+          <div style={{fontSize:15,lineHeight:2,color:isDark()?"rgba(255,255,255,0.85)":fg}}>
             {(sel.content||"").split("\n").map((p,i)=>p.trim()?<p key={i} style={{marginBottom:16}}>{p}</p>:<div key={i} style={{height:4}}/>)}
           </div>
           <div style={{marginTop:24,paddingTop:14,borderTop:"1px solid rgba(124,58,237,0.15)",display:"flex",justifyContent:"space-between"}}>
@@ -969,7 +1084,7 @@ function BlogScreen({ lang, onBack, darkMode }) {
   return (
     <div style={{minHeight:"100vh",background:bg,color:fg,fontFamily:"'Noto Sans Devanagari','Segoe UI',sans-serif",display:"flex",flexDirection:"column"}}>
       <div style={{padding:"12px 16px",display:"flex",alignItems:"center",gap:10,background:hdr,borderBottom:"1px solid rgba(243,156,18,0.15)",position:"sticky",top:0,zIndex:10}}>
-        <button onClick={onBack} style={{background:"none",border:"none",color:darkMode?"rgba(255,255,255,0.5)":"rgba(0,0,0,0.4)",fontSize:22,cursor:"pointer",padding:0}}>{"<"}</button>
+        <button onClick={onBack} style={{background:"none",border:"none",color:isDark()?"rgba(255,255,255,0.5)":"rgba(0,0,0,0.4)",fontSize:22,cursor:"pointer",padding:0}}>{"<"}</button>
         <div style={{fontWeight:800,fontSize:16}}>{"✍️ "+(isH?"ब्लॉग":"Blog")}</div>
       </div>
       <div style={{flex:1,padding:"14px",maxWidth:620,margin:"0 auto",width:"100%",boxSizing:"border-box"}}>
@@ -992,21 +1107,22 @@ export default function SahayakPremium() {
   const [leadDismissed, setLeadDismissed] = useState(false);
   const [lang, setLang] = useState("hindi");
   const isH = lang !== "english";
-  const [darkMode, setDarkMode] = useState(true);
+  const [darkMode, setDarkMode] = useState(() => {
+    try { const s = localStorage.getItem("sahayak_theme"); return s ? s === "dark" : true; }
+    catch { return true; }
+  });
+  _darkMode = darkMode; // sync global
+  // Persist on change
+  useEffect(() => {
+    try { localStorage.setItem("sahayak_theme", darkMode ? "dark" : "light"); } catch {}
+  }, [darkMode]);
 
   // Inject light mode CSS
   useEffect(() => {
     const style = document.getElementById('sahayak-theme') || document.createElement('style');
     style.id = 'sahayak-theme';
     if (!darkMode) {
-      style.textContent = [
-        "body,#root{background:#f0f2f8!important;color:#12002e!important}",
-        "input,textarea,select{background:#fff!important;color:#12002e!important;border-color:rgba(100,50,200,0.3)!important}",
-        "[data-sahayak-screen]{background:#f0f2f8!important;color:#12002e!important}",
-        ".msg-bubble-ai{background:rgba(0,0,0,0.06)!important;color:#12002e!important}",
-        ".chat-input-area{background:rgba(240,242,248,0.98)!important}",
-        ".glass-card{background:rgba(255,255,255,0.7)!important;border-color:rgba(100,50,200,0.15)!important}",
-      ].join("");
+      style.textContent = "body,#root,div{transition:background 0.3s,color 0.3s}";
     } else {
       style.textContent = "body,#root{background:#030305!important;color:#f8f8ff!important}";
     }
@@ -1217,78 +1333,134 @@ export default function SahayakPremium() {
     </div>
   );
   if (screen === "about") return (
-    <div style={{ minHeight: "100vh", background: darkMode ? TOKENS.colors.bg : "#f0f2f8", color: darkMode ? TOKENS.colors.text : "#12002e", fontFamily: TOKENS.fonts.primary, display: "flex", flexDirection: "column", position: "relative", overflow: "hidden" }}>
-      <PremiumBackground agent={null} />
-      <AmbientOrbs agent={null} />
-      <div style={{ position: "relative", zIndex: 10, display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-        <header style={{ padding: "16px 20px", display: "flex", alignItems: "center", gap: 12, borderBottom: "1px solid rgba(255,255,255,0.05)", background: "rgba(10,10,15,0.8)", backdropFilter: TOKENS.blur.lg, position: "sticky", top: 0, zIndex: 20 }}>
-          <button onClick={() => setScreen("home")} style={{ background: "none", border: "none", color: "rgba(255,255,255,0.5)", fontSize: 22, cursor: "pointer", padding: "8px", borderRadius: TOKENS.radii.md, transition: TOKENS.transitions.fast }} onMouseEnter={e => e.target.style.background = "rgba(255,255,255,0.06)"} onMouseLeave={e => e.target.style.background = "none"}>←</button>
-          <div style={{ fontWeight: 800, fontSize: 16 }}>{t.about}</div>
-        </header>
-        <div style={{ flex: 1, padding: "30px 20px", maxWidth: 540, margin: "0 auto", width: "100%", boxSizing: "border-box" }}>
-          <div style={{ textAlign: "center", marginBottom: 32 }}>
-            <div style={{ width: 100, height: 100, borderRadius: 25, background: "linear-gradient(135deg, #a855f7, #6366f1)", display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 16px", boxShadow: "0 0 40px rgba(168,85,247,0.5)", position: "relative", overflow: "hidden" }}>
-              <img src={LOGO} alt="SAHAYAK" style={{ width: 60, height: 60, objectFit: "cover" }} />
-              <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, transparent, rgba(255,255,255,0.2))" }} />
+    <div style={{ minHeight:"100vh", background: darkMode ? "linear-gradient(160deg,#030308,#080514)" : "linear-gradient(160deg,#f5f0ff,#fff8f0)", fontFamily:TOKENS.fonts.primary, display:"flex", flexDirection:"column", position:"relative", overflow:"hidden" }}>
+      <PremiumBackground agent={null}/>
+      <AmbientOrbs agent={null}/>
+      <div style={{ position:"relative", zIndex:10, display:"flex", flexDirection:"column", minHeight:"100vh" }}>
+
+        {/* Header */}
+        <header style={{ padding:"10px 14px", display:"flex", alignItems:"center", gap:10, background:"rgba(8,6,20,0.95)", backdropFilter:"blur(20px)", borderBottom:"1px solid rgba(167,139,250,0.18)", position:"sticky", top:0, zIndex:20 }}>
+          <button onClick={() => setScreen("home")} style={{ background:"none", border:"none", color:"rgba(196,181,253,0.6)", fontSize:22, cursor:"pointer", padding:0 }}>{"<"}</button>
+          <div style={{ flex:1, display:"flex", alignItems:"center", gap:10, background:"rgba(10,8,25,0.82)", backdropFilter:"blur(16px)", borderRadius:14, padding:"5px 12px 5px 5px", border:"1px solid rgba(167,139,250,0.22)", boxShadow:"0 4px 16px rgba(0,0,0,0.3)" }}>
+            <div style={{ width:32, height:32, borderRadius:9, background:"linear-gradient(135deg,#a855f7,#6366f1)", display:"flex", alignItems:"center", justifyContent:"center", overflow:"hidden" }}>
+              <img src={LOGO} alt="S" style={{ width:22, height:22, objectFit:"cover" }}/>
             </div>
-            <div style={{ fontSize: 32, fontWeight: 900, letterSpacing: 2, background: "linear-gradient(90deg, #a78bfa, #fff, #7dd3fc)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>SAHAYAK</div>
-            <div style={{ fontSize: 14, opacity: 0.5, marginTop: 6 }}>{lang === "hindi" ? "आपका AI Financial दोस्त 🇮🇳" : "Your AI Financial Friend 🇮🇳"}</div>
-            <div style={{ fontSize: 12, opacity: 0.3, marginTop: 4 }}>{t.version}</div>
+            <div>
+              <div style={{ fontWeight:900, fontSize:15, letterSpacing:2, background:"linear-gradient(90deg,#c084fc,#fff 55%,#93c5fd)", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", lineHeight:1 }}>SAHAYAK</div>
+              <div style={{ fontSize:8, color:"rgba(196,181,253,0.7)", marginTop:1 }}>{isH?"जानकारी":"About"}</div>
+            </div>
           </div>
-          <GlassCard style={{ padding: 20, marginBottom: 16 }} glowColor="#a855f7">
-            <div style={{ fontSize: 12, color: "#a78bfa", fontWeight: 700, letterSpacing: 1, marginBottom: 12, textTransform: "uppercase" }}>👨‍💼 {t.founder}</div>
-            <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-              <div style={{ width: 60, height: 60, borderRadius: "50%", background: "linear-gradient(135deg, #7c3aed, #4f46e5)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24, fontWeight: 900, flexShrink: 0, boxShadow: "0 0 20px rgba(124,58,237,0.4)" }}>A</div>
+        
+          {/* Dark/Light + Language toggles */}
+          <div style={{ display:"flex", alignItems:"center", gap:6, marginLeft:"auto", flexShrink:0 }}>
+            <button onClick={() => setDarkMode(d => !d)}
+              style={{ width:32, height:32, borderRadius:9, border:"1px solid rgba(167,139,250,0.3)", background: darkMode ? "rgba(255,200,50,0.12)" : "rgba(100,100,255,0.12)", cursor:"pointer", fontSize:15, display:"flex", alignItems:"center", justifyContent:"center" }}
+            >{darkMode ? "🌙" : "☀️"}</button>
+            <div style={{ display:"flex", flexDirection:"column", background:"rgba(255,255,255,0.06)", borderRadius:12, padding:3, border:"1px solid rgba(167,139,250,0.2)", gap:2 }}>
+              {["hindi","english"].map(l => (
+                <button key={l} onClick={() => setLang(l)}
+                  style={{ padding:"4px 9px", borderRadius:8, border:"none", background: lang===l ? "linear-gradient(135deg,#a855f7,#6366f1)" : "transparent", color: lang===l ? "#fff" : "rgba(196,181,253,0.55)", fontSize:10, fontWeight:700, cursor:"pointer", fontFamily:"inherit", boxShadow: lang===l ? "0 2px 8px rgba(168,85,247,0.5)" : "none" }}
+                >{l==="hindi"?"हिंदी":"EN"}</button>
+              ))}
+            </div>
+          </div>
+        </header>
+
+        <div style={{ flex:1, padding:"16px 14px", maxWidth:580, margin:"0 auto", width:"100%", boxSizing:"border-box", overflowY:"auto" }}>
+
+          {/* ── App Info Card ── */}
+          <div style={{ background:"rgba(12,10,28,0.88)", backdropFilter:"blur(20px)", WebkitBackdropFilter:"blur(20px)", borderRadius:18, border:"1px solid rgba(167,139,250,0.22)", boxShadow:"0 8px 32px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.06)", padding:"20px 16px", marginBottom:14 }}>
+            <div style={{ display:"flex", flexDirection:"column", alignItems:"center", marginBottom:16 }}>
+              <div style={{ width:80, height:80, borderRadius:22, background:"linear-gradient(135deg,#a855f7,#6366f1)", display:"flex", alignItems:"center", justifyContent:"center", boxShadow:"0 0 40px rgba(168,85,247,0.5)", marginBottom:12, overflow:"hidden" }}>
+                <img src={LOGO} alt="SAHAYAK" style={{ width:60, height:60, objectFit:"cover" }}/>
+              </div>
+              <div style={{ fontWeight:900, fontSize:26, letterSpacing:3, background:"linear-gradient(90deg,#c084fc,#fff,#93c5fd)", WebkitBackgroundClip:"text", WebkitTextFillColor:"transparent", marginBottom:4 }}>SAHAYAK</div>
+              <div style={{ fontSize:12, color:"rgba(196,181,253,0.7)", marginBottom:8 }}>{isH?"आपका AI Financial दोस्त":"Your AI Financial Dost"}</div>
+              <div style={{ background:"rgba(167,139,250,0.15)", border:"1px solid rgba(167,139,250,0.3)", borderRadius:20, padding:"4px 14px", fontSize:11, color:"#a78bfa" }}>v3.0 Ultra • HAANS Solar®</div>
+            </div>
+            <div style={{ display:"flex", justifyContent:"space-around", paddingTop:14, borderTop:"1px solid rgba(167,139,250,0.12)" }}>
+              {[["8", isH?"AI Agents":"AI Agents"],["100%", isH?"मुफ्त":"Free"],["🇮🇳", isH?"भारत में":"India"]].map(([val,lbl],i) => (
+                <div key={i} style={{ textAlign:"center" }}>
+                  <div style={{ fontWeight:900, fontSize:20, color:"#c084fc" }}>{val}</div>
+                  <div style={{ fontSize:10, color:"rgba(196,181,253,0.6)", marginTop:2 }}>{lbl}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* ── Founder Card ── */}
+          <div style={{ background:"rgba(12,10,28,0.88)", backdropFilter:"blur(20px)", WebkitBackdropFilter:"blur(20px)", borderRadius:18, border:"1px solid rgba(96,165,250,0.25)", boxShadow:"0 8px 32px rgba(0,0,0,0.4)", padding:"18px 16px", marginBottom:14 }}>
+            <div style={{ fontWeight:800, fontSize:13, color:"#60a5fa", marginBottom:14, letterSpacing:0.3 }}>{"👤 "+( isH?"संस्थापक":"Founder")}</div>
+            <div style={{ display:"flex", alignItems:"center", gap:14, marginBottom:14 }}>
+              <div style={{ width:56, height:56, borderRadius:16, background:"linear-gradient(135deg,#60a5fa,#a78bfa)", display:"flex", alignItems:"center", justifyContent:"center", flexShrink:0, fontSize:26, fontWeight:900, color:"#fff", boxShadow:"0 4px 20px rgba(96,165,250,0.4)" }}>A</div>
               <div>
-                <div style={{ fontSize: 18, fontWeight: 800 }}>Ankit Singh</div>
-                <div style={{ fontSize: 12, opacity: 0.55, marginTop: 2 }}>Founder & Creator, SAHAYAK</div>
-                <div style={{ fontSize: 11, opacity: 0.4, marginTop: 1 }}>Balrampur, Uttar Pradesh 🇮🇳</div>
+                <div style={{ fontWeight:800, fontSize:16, color:"#fff", marginBottom:3 }}>Ankit Singh</div>
+                <div style={{ fontSize:12, color:"rgba(196,181,253,0.7)" }}>{"Founder & CEO, HAANS Solar®"}</div>
+                <div style={{ fontSize:11, color:"rgba(196,181,253,0.5)", marginTop:2 }}>{"Balrampur, UP • "+( isH?"स्वप्नदर्शी":"Visionary")}</div>
               </div>
             </div>
-          </GlassCard>
-          <GlassCard style={{ padding: 16, marginBottom: 16 }}>
-            <div style={{ fontSize: 12, color: "#a78bfa", fontWeight: 700, letterSpacing: 1, marginBottom: 12, textTransform: "uppercase" }}>📞 {t.contact}</div>
-            <a href="mailto:xsuvidha@gmail.com" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", color: "#e2e8f0", marginBottom: 10, padding: "8px 0", borderRadius: TOKENS.radii.md, transition: TOKENS.transitions.fast }} onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.03)"} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
-              <span style={{ fontSize: 20 }}>📧</span><span style={{ fontSize: 14 }}>xsuvidha@gmail.com</span>
-            </a>
-            <a href="https://wa.me/918115776644" target="_blank" rel="noreferrer" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", color: "#e2e8f0", marginBottom: 10, padding: "8px 0", borderRadius: TOKENS.radii.md, transition: TOKENS.transitions.fast }} onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.03)"} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
-              <span style={{ fontSize: 20 }}>💬</span><span style={{ fontSize: 14 }}>+91 81157 76644</span>
-            </a>
-          <button onClick={()=>setScreen("policy")} title="Policy" style={{height:34,padding:"0 10px",borderRadius:20,background:"rgba(74,222,128,0.08)",border:"1px solid rgba(74,222,128,0.2)",cursor:"pointer",display:"flex",alignItems:"center",gap:4,color:"#4ade80",fontWeight:700,fontSize:12,fontFamily:"inherit"}}>📋</button>
-          <button onClick={()=>setDarkMode(d=>!d)} title="Theme" style={{width:34,height:34,borderRadius:9,border:"1px solid rgba(124,58,237,0.2)",background:darkMode?"rgba(255,200,50,0.1)":"rgba(100,100,255,0.12)",cursor:"pointer",fontSize:16,display:"flex",alignItems:"center",justifyContent:"center"}}>
-            {darkMode?"🌙":"☀️"}
-          </button>
-          </GlassCard>
-          <GlassCard style={{ padding: 16, marginBottom: 16 }}>
-            <div style={{ fontSize: 12, color: "#a78bfa", fontWeight: 700, letterSpacing: 1, marginBottom: 12, textTransform: "uppercase" }}>🏆 {t.certifications}</div>
-            {[["🏛️","VLE-IRDAI","Insurance License — Govt. of India"],["📊","GST Suvidha Network","Authorized Tax Partner"],["☀️","MFINS Solar","Channel Partner"],["🌞","PM Surya Ghar","Authorized Vendor"]].map(([icon, title, sub], i) => (
-              <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: i < 3 ? 10 : 0, padding: "6px 0" }}>
-                <span style={{ fontSize: 18, flexShrink: 0 }}>{icon}</span>
-                <div><div style={{ fontSize: 13, fontWeight: 700 }}>{title}</div><div style={{ fontSize: 11, opacity: 0.45 }}>{sub}</div></div>
+            {[
+              ["🛡️","#60a5fa", isH?"VLE-IRDAI Certified":"VLE-IRDAI Certified", "CSC/VLEINS/UP/2025/452693"],
+              ["☀️","#fb923c", isH?"MFINS Solar Partner":"MFINS Solar Partner", isH?"अधिकृत चैनल पार्टनर":"Authorized Channel Partner"],
+              ["📊","#4ade80", isH?"GST Suvidha Kendra":"GST Suvidha Kendra", isH?"फ्रेंचाइज़ी पार्टनर":"Franchise Partner"],
+              ["🌞","#fbbf24", isH?"PM Surya Ghar Vendor":"PM Surya Ghar Vendor", isH?"सरकारी अधिकृत":"Government Authorized"],
+            ].map(([icon,col,title,sub],i) => (
+              <div key={i} style={{ display:"flex", alignItems:"center", gap:10, padding:"8px 12px", background:"rgba(255,255,255,0.04)", borderRadius:12, marginBottom:8, border:"1px solid "+col+"25" }}>
+                <span style={{ fontSize:18, flexShrink:0 }}>{icon}</span>
+                <div>
+                  <div style={{ fontSize:12, fontWeight:700, color:col }}>{title}</div>
+                  <div style={{ fontSize:10.5, color:"rgba(196,181,253,0.6)", marginTop:1 }}>{sub}</div>
+                </div>
               </div>
             ))}
-          </GlassCard>
-          <GlassCard style={{ padding: 16, marginBottom: 20, background: "linear-gradient(135deg,rgba(124,58,237,0.1),rgba(79,70,229,0.05))" }} glowColor="#a855f7">
-            <div style={{ fontSize: 12, color: "#a78bfa", fontWeight: 700, letterSpacing: 1, marginBottom: 8, textTransform: "uppercase" }}>🎯 {t.mission}</div>
-            <div style={{ fontSize: 13, lineHeight: 1.8, opacity: 0.75 }}>
-              {lang === "hindi" ? "हर भारतीय को उनकी अपनी भाषा में, पूरी तरह मुफ्त वित्तीय मार्गदर्शन उपलब्ध कराना। कोई भ्रम नहीं, कोई शोषण नहीं। SAHAYAK आपका भरोसेमंद दोस्त है — बीमा, टैक्स, सोलर और लोन के लिए।" : "To make financial guidance accessible to every Indian — in their own language, completely free. No more confusion, no more exploitation. SAHAYAK is your trusted friend for Insurance, Tax, Solar, and Loans."}
+          </div>
+
+          {/* ── Contact Card ── */}
+          <div style={{ background:"rgba(12,10,28,0.88)", backdropFilter:"blur(20px)", WebkitBackdropFilter:"blur(20px)", borderRadius:18, border:"1px solid rgba(74,222,128,0.25)", boxShadow:"0 8px 32px rgba(0,0,0,0.4)", padding:"18px 16px", marginBottom:14 }}>
+            <div style={{ fontWeight:800, fontSize:13, color:"#4ade80", marginBottom:14, letterSpacing:0.3 }}>{"📞 "+(isH?"संपर्क करें":"Contact Us")}</div>
+            {[
+              ["📧","mailto:xsuvidha@gmail.com","xsuvidha@gmail.com","#60a5fa"],
+              ["📱","https://wa.me/918115776644","+91 8115776644","#25d366"],
+              ["🌐","mailto:haans.solars@gmail.com","haans.solars@gmail.com","#fb923c"],
+              ["📸","https://instagram.com/singh.ankit07","@singh.ankit07","#e1306c"],
+            ].map(([icon,href,label,col],i) => (
+              <a key={i} href={href} target="_blank" rel="noreferrer" style={{ display:"flex", alignItems:"center", gap:12, padding:"11px 14px", background:"rgba(255,255,255,0.04)", borderRadius:12, marginBottom:8, textDecoration:"none", border:"1px solid rgba(255,255,255,0.06)", cursor:"pointer" }}>
+                <span style={{ fontSize:20, flexShrink:0 }}>{icon}</span>
+                <span style={{ fontSize:13, color:col, fontWeight:600 }}>{label}</span>
+              </a>
+            ))}
+          </div>
+
+          {/* ── Mission Card ── */}
+          <div style={{ background:"rgba(12,10,28,0.88)", backdropFilter:"blur(20px)", WebkitBackdropFilter:"blur(20px)", borderRadius:18, border:"1px solid rgba(251,191,36,0.25)", boxShadow:"0 8px 32px rgba(0,0,0,0.4)", padding:"18px 16px", marginBottom:14 }}>
+            <div style={{ fontWeight:800, fontSize:13, color:"#fbbf24", marginBottom:12, letterSpacing:0.3 }}>{"🎯 "+(isH?"हमारा लक्ष्य":"Our Mission")}</div>
+            <div style={{ fontSize:13, color:"rgba(220,210,255,0.88)", lineHeight:1.9 }}>
+              {isH
+                ? "भारत के हर गांव और शहर में वित्तीय जागरूकता फैलाना। Insurance, GST, Solar, Loan — हर जानकारी हिंदी में, बिल्कुल मुफ्त।"
+                : "Spreading financial awareness in every village and city of India. Insurance, GST, Solar, Loan — every information in Hindi, completely free."}
             </div>
-          </GlassCard>
-          <a href="https://instagram.com/singh.ankit07" target="_blank" rel="noreferrer" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12, padding: "14px 20px", borderRadius: TOKENS.radii.xl, textDecoration: "none", color: "#fff", background: "linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)", boxShadow: "0 4px 20px rgba(220,39,67,0.3)", marginBottom: 20, fontWeight: 800, transition: TOKENS.transitions.fast }} onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 8px 30px rgba(220,39,67,0.4)"; }} onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 4px 20px rgba(220,39,67,0.3)"; }}>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-            <div><div style={{ fontWeight: 800, fontSize: 15 }}>{t.followInstagram}</div><div style={{ fontSize: 12, opacity: 0.85 }}>@singh.ankit07</div></div>
+          </div>
+
+          {/* ── Instagram Follow ── */}
+          <a href="https://instagram.com/singh.ankit07" target="_blank" rel="noreferrer" style={{ display:"block", textDecoration:"none", marginBottom:14 }}>
+            <div style={{ background:"linear-gradient(135deg,rgba(225,48,108,0.2),rgba(131,58,180,0.2))", backdropFilter:"blur(20px)", borderRadius:18, border:"1px solid rgba(225,48,108,0.3)", padding:"16px", display:"flex", alignItems:"center", gap:14, boxShadow:"0 8px 24px rgba(0,0,0,0.3)" }}>
+              <div style={{ fontSize:36 }}>📸</div>
+              <div>
+                <div style={{ fontWeight:800, fontSize:14, color:"#f472b6", marginBottom:3 }}>{isH?"Instagram पर फॉलो करें":"Follow on Instagram"}</div>
+                <div style={{ fontSize:12, color:"rgba(244,114,182,0.7)" }}>{"@singh.ankit07"}</div>
+              </div>
+            </div>
           </a>
-          <div style={{ textAlign: "center", fontSize: 11, opacity: 0.3 }}>SAHAYAK v3.0 Ultra • {t.madeInIndia}</div>
+
+          <div style={{ textAlign:"center", fontSize:10, color:"rgba(196,181,253,0.3)", marginBottom:24, letterSpacing:0.5 }}>
+            {"SAHAYAK v3.0 Ultra • "+(isH?"भारत में निर्मित 🇮🇳":"Made in India 🇮🇳")}
+          </div>
         </div>
       </div>
     </div>
   );
-
-  // ═══════════════════════════════════════════════════════════
-  // HOME SCREEN — Cinematic Entrance Experience
-  // ═══════════════════════════════════════════════════════════
   if (screen === "home") return (
-    <div data-theme={darkMode?"dark":"light"} style={{ minHeight: "100vh", fontFamily: TOKENS.fonts.primary, background: darkMode ? "#030305" : "#f0f2f8", color: darkMode ? "#f8f8ff" : "#12002e", display: "flex", flexDirection: "column", transition: "background 0.3s, color 0.3s", position: "relative", overflow: "hidden" }}>
+    <div data-theme={darkMode?"dark":"light"} style={{ minHeight: "100vh", fontFamily: TOKENS.fonts.primary, background: darkMode ? "#030305" : "#fff8f0", color: darkMode ? "#f8f8ff" : "#0a0020", display: "flex", flexDirection: "column", transition: "background 0.3s, color 0.3s", position: "relative", overflow: "hidden" }}>
       <PremiumBackground agent={null} />
       <AmbientOrbs agent={null} />
 
@@ -1297,54 +1469,94 @@ export default function SahayakPremium() {
 
       {/* Header */}
       <header style={{
-        padding: "16px 20px", display: "flex", alignItems: "center", justifyContent: "space-between",
-        position: "relative", zIndex: 10,
-        background: scrollY > 50 ? "rgba(3,3,5,0.85)" : "transparent",
-        backdropFilter: scrollY > 50 ? TOKENS.blur.lg : "none",
-        transition: "all 0.4s cubic-bezier(0.4,0,0.2,1)",
-        borderBottom: scrollY > 50 ? "1px solid rgba(124,58,237,0.15)" : "1px solid transparent",
+        position: "sticky", top: 0, zIndex: 20,
+        background: darkMode ? "rgba(5,5,12,0.97)" : "rgba(255,252,245,0.97)",
+        backdropFilter: "blur(20px)",
+        borderBottom: "1px solid rgba(124,58,237,0.18)",
+        transition: "none",
       }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+        {/* ── Row 1: Logo + Brand ── */}
+        <div style={{ padding: "10px 14px", display: "flex", alignItems: "center", gap: 10 }}>
+          {/* Dark glass tile — always visible regardless of theme */}
           <div style={{
-            width: 48, height: 48, borderRadius: 14,
-            background: "linear-gradient(135deg, #a855f7, #6366f1)",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            boxShadow: "0 0 30px rgba(168,85,247,0.5)",
-            position: "relative", overflow: "hidden",
-            animation: isLoaded ? "logoReveal 0.8s cubic-bezier(0.34,1.56,0.64,1)" : "none",
+            display: "flex", alignItems: "center", gap: 10,
+            background: "rgba(10,8,25,0.82)",
+            backdropFilter: "blur(16px)",
+            WebkitBackdropFilter: "blur(16px)",
+            borderRadius: 16,
+            padding: "6px 14px 6px 6px",
+            border: "1px solid rgba(167,139,250,0.25)",
+            boxShadow: "0 4px 20px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.08)",
           }}>
-            <img src={LOGO} alt="SAHAYAK" style={{ width: 32, height: 32, objectFit: "cover" }} />
-            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, transparent, rgba(255,255,255,0.2))" }} />
-          </div>
-          <div style={{ animation: isLoaded ? "fadeSlideRight 0.6s 0.2s both" : "none" }}>
-            <div style={{ fontWeight: 900, fontSize: 22, letterSpacing: 2, background: "linear-gradient(90deg, #a78bfa, #fff 50%, #7dd3fc)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>SAHAYAK</div>
-            <div style={{ fontSize: 10, opacity: 0.35, letterSpacing: 1, marginTop: 2 }}>{t.appSub}</div>
+            <div style={{
+              width: 40, height: 40, borderRadius: 11, flexShrink: 0,
+              background: "linear-gradient(135deg, #a855f7, #6366f1)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              boxShadow: "0 0 18px rgba(168,85,247,0.5)",
+              overflow: "hidden",
+            }}>
+              <img src={LOGO} alt="SAHAYAK" style={{ width: 28, height: 28, objectFit: "cover" }} />
+            </div>
+            <div>
+              <div style={{ fontWeight: 900, fontSize: 19, letterSpacing: 2, background: "linear-gradient(90deg, #c084fc, #fff 55%, #93c5fd)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", lineHeight: 1 }}>SAHAYAK</div>
+              <div style={{ fontSize: 9, color: "rgba(196,181,253,0.75)", letterSpacing: 0.8, marginTop: 2 }}>{t.appSub}</div>
+            </div>
           </div>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 8, animation: isLoaded ? "fadeSlideLeft 0.6s 0.3s both" : "none" }}>
-          <button onClick={() => setScreen("blog")} title={isH?"ब्लॉग":"Blog"}
-            style={{width:34,height:34,borderRadius:9,border:"1px solid rgba(243,156,18,0.25)",background:"rgba(243,156,18,0.1)",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16}}
-          >✍️</button>
-          <button onClick={() => setScreen("about")} title={isH?"जानकारी":"Info"}
-            style={{width:34,height:34,borderRadius:9,border:"1px solid rgba(124,58,237,0.2)",background:"rgba(124,58,237,0.1)",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,color:"#a78bfa"}}
-          >ℹ️</button>
-          <button onClick={() => setScreen("policy")} title="Policy"
-            style={{width:34,height:34,borderRadius:9,border:"1px solid rgba(74,222,128,0.2)",background:"rgba(74,222,128,0.08)",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",fontSize:15}}
-          >📋</button>
-          <button onClick={() => setDarkMode(d => !d)} title={darkMode?"Light Mode":"Dark Mode"}
-            style={{width:34,height:34,borderRadius:9,border:"1px solid rgba(124,58,237,0.22)",background:darkMode?"rgba(255,200,50,0.1)":"rgba(100,100,255,0.12)",cursor:"pointer",fontSize:16,display:"flex",alignItems:"center",justifyContent:"center",transition:"all 0.25s"}}
-          >{darkMode ? "🌙" : "☀️"}</button>
-          <div style={{ display: "flex", flexDirection: "column", background: TOKENS.colors.surface, borderRadius: 14, padding: 3, border: "1px solid rgba(124,58,237,0.15)", backdropFilter: TOKENS.blur.sm, gap: 2 }}>
-            {["hindi", "english"].map((l, i) => (
+
+        {/* ── Row 2: Sub-header Toolbar ── */}
+        <div style={{
+          display: "flex", alignItems: "center",
+          padding: "8px 12px 10px",
+          gap: 6,
+          borderTop: "1px solid rgba(124,58,237,0.1)",
+          background: darkMode ? "rgba(255,255,255,0.02)" : "rgba(0,0,0,0.03)",
+          overflowX: "auto",
+        }}>
+          {/* Blog */}
+          <button onClick={() => setScreen("blog")}
+            style={{ flex: 1, minWidth: 54, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, padding: "7px 4px", borderRadius: 12, border: "1px solid rgba(243,156,18,0.25)", background: "rgba(243,156,18,0.1)", cursor: "pointer", transition: "all 0.2s" }}
+            onMouseEnter={e => e.currentTarget.style.background = "rgba(243,156,18,0.2)"}
+            onMouseLeave={e => e.currentTarget.style.background = "rgba(243,156,18,0.1)"}
+          >
+            <span style={{ fontSize: 18 }}>✍️</span>
+            <span style={{ fontSize: 9.5, fontWeight: 700, color: "#f39c12", whiteSpace: "nowrap" }}>{isH ? "ब्लॉग" : "Blog"}</span>
+          </button>
+
+          {/* Info */}
+          <button onClick={() => setScreen("about")}
+            style={{ flex: 1, minWidth: 54, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, padding: "7px 4px", borderRadius: 12, border: "1px solid rgba(124,58,237,0.22)", background: "rgba(124,58,237,0.1)", cursor: "pointer", transition: "all 0.2s" }}
+            onMouseEnter={e => e.currentTarget.style.background = "rgba(124,58,237,0.2)"}
+            onMouseLeave={e => e.currentTarget.style.background = "rgba(124,58,237,0.1)"}
+          >
+            <span style={{ fontSize: 18 }}>ℹ️</span>
+            <span style={{ fontSize: 9.5, fontWeight: 700, color: "#a78bfa", whiteSpace: "nowrap" }}>{isH ? "जानकारी" : "Info"}</span>
+          </button>
+
+          {/* Policy */}
+          <button onClick={() => setScreen("policy")}
+            style={{ flex: 1, minWidth: 54, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, padding: "7px 4px", borderRadius: 12, border: "1px solid rgba(74,222,128,0.2)", background: "rgba(74,222,128,0.08)", cursor: "pointer", transition: "all 0.2s" }}
+            onMouseEnter={e => e.currentTarget.style.background = "rgba(74,222,128,0.18)"}
+            onMouseLeave={e => e.currentTarget.style.background = "rgba(74,222,128,0.08)"}
+          >
+            <span style={{ fontSize: 18 }}>📋</span>
+            <span style={{ fontSize: 9.5, fontWeight: 700, color: "#4ade80", whiteSpace: "nowrap" }}>{isH ? "नीति" : "Policy"}</span>
+          </button>
+
+          {/* Dark/Light */}
+          <button onClick={() => setDarkMode(d => !d)}
+            style={{ flex: 1, minWidth: 54, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, padding: "7px 4px", borderRadius: 12, border: darkMode ? "1px solid rgba(255,200,50,0.25)" : "1px solid rgba(100,100,255,0.25)", background: darkMode ? "rgba(255,200,50,0.1)" : "rgba(100,100,255,0.1)", cursor: "pointer", transition: "all 0.25s" }}
+          >
+            <span style={{ fontSize: 18 }}>{darkMode ? "🌙" : "☀️"}</span>
+            <span style={{ fontSize: 9.5, fontWeight: 700, color: darkMode ? "#fbbf24" : "#6366f1", whiteSpace: "nowrap" }}>{darkMode ? (isH ? "डार्क" : "Dark") : (isH ? "लाइट" : "Light")}</span>
+          </button>
+
+          {/* Language Toggle */}
+          <div style={{ flex: 1, minWidth: 54, display: "flex", flexDirection: "column", alignItems: "center", gap: 3, padding: "4px", borderRadius: 12, border: "1px solid rgba(124,58,237,0.18)", background: darkMode ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.05)" }}>
+            <span style={{ fontSize: 9, fontWeight: 700, color: darkMode ? "rgba(255,255,255,0.4)" : "rgba(0,0,0,0.4)", marginTop: 2 }}>{isH ? "भाषा" : "Lang"}</span>
+            {["hindi", "english"].map(l => (
               <button key={l} onClick={() => setLang(l)}
-                style={{
-                  padding: "5px 11px", borderRadius: TOKENS.radii.md, border: "none",
-                  background: lang === l ? TOKENS.colors.accent.primary : "transparent",
-                  color: "#fff", fontSize: 12, fontWeight: 700, cursor: "pointer",
-                  fontFamily: "inherit", transition: TOKENS.transitions.fast,
-                  boxShadow: lang === l ? "0 2px 12px rgba(168,85,247,0.5)" : "none",
-                  animation: isLoaded ? `fadeSlideUp 0.5s ${0.4 + i * 0.1}s both` : "none",
-                }}
+                style={{ width: "100%", padding: "4px 2px", borderRadius: 8, border: "none", background: lang === l ? "linear-gradient(135deg,#a855f7,#6366f1)" : "transparent", color: lang === l ? "#fff" : (darkMode ? "rgba(255,255,255,0.5)" : "rgba(0,0,0,0.5)"), fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "inherit", transition: "all 0.2s", boxShadow: lang === l ? "0 2px 8px rgba(168,85,247,0.5)" : "none" }}
               >{l === "hindi" ? "हिंदी" : "EN"}</button>
             ))}
           </div>
@@ -1360,12 +1572,11 @@ export default function SahayakPremium() {
           marginBottom: 24, backdropFilter: TOKENS.blur.sm,
           animation: isLoaded ? "fadeSlideUp 0.6s 0.5s both" : "none",
         }}>
-          <span style={{ fontSize: 16 }}>🇮🇳</span>
           <span style={{ fontSize: 12, color: "#a78bfa", fontWeight: 700, letterSpacing: 1 }}>{t.tagline}</span>
         </div>
         <h1 style={{
           margin: 0, fontSize: 32, fontWeight: 900, lineHeight: 1.2,
-          color: TOKENS.colors.text, letterSpacing: -1,
+          color: darkMode ? TOKENS.colors.text : "#0a0020", letterSpacing: -1,
           animation: isLoaded ? "fadeSlideUp 0.7s 0.6s both" : "none",
         }}>
           {t.headline1}<br/>
@@ -1420,9 +1631,19 @@ export default function SahayakPremium() {
 
         {/* Section Title */}
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16, animation: isLoaded ? "fadeSlideUp 0.8s 0.9s both" : "none" }}>
-          <div style={{ width: 4, height: 4, borderRadius: "50%", background: TOKENS.colors.accent.primary }} />
-          <p style={{ fontSize: 11, opacity: 0.4, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase" }}>{t.otherExperts}</p>
-          <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, rgba(255,255,255,0.06), transparent)" }} />
+          <div style={{
+              width: "100%", textAlign: "center",
+              background: "linear-gradient(90deg, #7c3aed, #a855f7, #ec4899, #a855f7, #7c3aed)",
+              backgroundSize: "200% 100%",
+              padding: "10px 20px",
+              borderRadius: 0,
+              position: "relative",
+              clipPath: "polygon(12px 0%, calc(100% - 12px) 0%, 100% 50%, calc(100% - 12px) 100%, 12px 100%, 0% 50%)",
+              boxShadow: "0 4px 24px rgba(168,85,247,0.5)",
+              margin: "0 20px",
+            }}>
+              <p style={{ fontSize: 13.2, color: "#fff", fontWeight: 800, letterSpacing: 3, textTransform: "uppercase", margin: 0, textShadow: "0 1px 4px rgba(0,0,0,0.4)" }}>{t.otherExperts}</p>
+            </div>
         </div>
 
         {/* Agent Grid */}
@@ -1435,7 +1656,7 @@ export default function SahayakPremium() {
                 borderRadius: TOKENS.radii.xxl,
                 padding: "20px 12px 16px",
                 cursor: "pointer", textAlign: "center",
-                color: TOKENS.colors.text,
+                color: darkMode ? TOKENS.colors.text : "#0a0020",
                 fontFamily: "inherit",
                 transition: TOKENS.transitions.spring,
                 backdropFilter: TOKENS.blur.md,
@@ -1462,11 +1683,11 @@ export default function SahayakPremium() {
                 filter: TOKENS.blur.md, opacity: 0, transition: "opacity 0.3s",
               }} className="agent-glow" />
               <div style={{
-                fontSize: 28, marginBottom: 10, display: "inline-block",
+                fontSize: 50, marginBottom: 10, display: "inline-block",
                 transition: "transform 0.3s", filter: `drop-shadow(0 4px 8px ${ag.color}40)`,
               }} className="agent-icon">{ag.icon}</div>
-              <div style={{ fontWeight: 800, fontSize: 11, color: ag.color, lineHeight: 1.3, marginBottom: 4 }}>{ag.name}</div>
-              <div style={{ fontSize: 9, opacity: 0.35, lineHeight: 1.4 }}>{ag.tag}</div>
+              <div style={{ fontWeight: 800, fontSize: 11, color: ag.color, lineHeight: 1.35, marginBottom: 6, fontSize: 21, fontWeight: 900 }}>{ag.name}</div>
+              <div style={{ fontSize: 13, opacity: 0.70, lineHeight: 1.5 }}>{ag.tag}</div>
             </button>
           ))}
         </div>
@@ -1479,7 +1700,7 @@ export default function SahayakPremium() {
             borderRadius: TOKENS.radii.xxl,
             background: "rgba(37,211,102,0.06)",
             border: "1px solid rgba(37,211,102,0.15)",
-            textDecoration: "none", color: TOKENS.colors.text,
+            textDecoration: "none", color: darkMode ? TOKENS.colors.text : "#0a0020",
             transition: TOKENS.transitions.slow,
             backdropFilter: TOKENS.blur.md,
             animation: isLoaded ? "fadeSlideUp 1.0s 1.4s both" : "none",
@@ -1607,20 +1828,20 @@ export default function SahayakPremium() {
   // ═══════════════════════════════════════════════════════════
   const starters = agent.starters;
   return (
-    <div style={{ minHeight: "100vh", fontFamily: TOKENS.fonts.primary, background: darkMode ? "#030305" : "#f0f2f8", color: darkMode ? "#f8f8ff" : "#12002e", display: "flex", flexDirection: "column", transition: "background 0.3s, color 0.3s", position: "relative", overflow: "hidden" }}>
+    <div style={{ minHeight: "100vh", fontFamily: TOKENS.fonts.primary, background: darkMode ? "#030305" : "#fff8f0", color: darkMode ? "#f8f8ff" : "#0a0020", display: "flex", flexDirection: "column", transition: "background 0.3s, color 0.3s", position: "relative", overflow: "hidden" }}>
       <PremiumBackground agent={agent} />
       <AmbientOrbs agent={agent} />
 
       {/* Chat Header */}
       <header style={{
         padding: "12px 16px", display: "flex", alignItems: "center", gap: 14,
-        background: darkMode ? "rgba(3,3,5,0.88)" : "rgba(240,242,248,0.95)", backdropFilter: TOKENS.blur.xl,
+        background: darkMode ? "rgba(3,3,5,0.88)" : "rgba(255,248,240,0.97)", backdropFilter: TOKENS.blur.xl,
         borderBottom: "1px solid rgba(124,58,237,0.15)",
         position: "sticky", top: 0, zIndex: 20,
       }}>
         <button onClick={() => { setScreen("home"); stopSpeech(); }}
           style={{
-            background: "none", border: "none", color: TOKENS.colors.textMuted,
+            background: "none", border: "none", color: darkMode ? TOKENS.colors.textMuted : "rgba(26,8,0,0.6)",
             fontSize: 22, cursor: "pointer", padding: "6px 10px",
             borderRadius: TOKENS.radii.md, transition: TOKENS.transitions.fast,
           }}
@@ -1680,7 +1901,7 @@ export default function SahayakPremium() {
               style={{
                 background: agent.color+"08", border: "1px solid "+agent.color+"15",
                 borderRadius: TOKENS.radii.full, padding: "10px 18px",
-                color: TOKENS.colors.textMuted, cursor: "pointer", fontSize: 13,
+                color: darkMode ? TOKENS.colors.textMuted : "rgba(26,8,0,0.6)", cursor: "pointer", fontSize: 13,
                 fontFamily: "inherit", transition: TOKENS.transitions.fast,
                 backdropFilter: TOKENS.blur.sm, fontWeight: 500,
                 animation: `fadeSlideUp 0.4s ${i * 0.1}s both`,
@@ -1744,9 +1965,11 @@ export default function SahayakPremium() {
                 {/* Message Bubble */}
                 <div style={{
                   background: isUser
-                    ? `linear-gradient(135deg, ${agent.color}15, ${agent.color}05)`
-                    : TOKENS.colors.surface,
-                  border: `1px solid ${isUser ? `${agent.color}35` : TOKENS.colors.border}`,
+                    ? (darkMode ? "linear-gradient(135deg, "+agent.color+"20, "+agent.color+"08)" : "linear-gradient(135deg, "+agent.color+"25, "+agent.color+"12)")
+                    : (darkMode ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.9)"),
+                  border: isUser
+                    ? "1px solid "+agent.color+(darkMode?"35":"50")
+                    : (darkMode ? "1px solid rgba(255,255,255,0.1)" : "1px solid rgba(0,0,0,0.08)"),
                   borderRadius: isUser ? "20px 20px 4px 20px" : "20px 20px 20px 4px",
                   padding: "16px 20px",
                   backdropFilter: TOKENS.blur.lg,
