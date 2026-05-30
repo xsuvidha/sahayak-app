@@ -939,72 +939,111 @@ function SolarQuoteForm({ lang, onSubmit, onSkip }) {
 
 // Image component with SAHAYAK watermark overlay
 function BlogImage({ src, alt, style }) {
-  const [loaded, setLoaded] = useState(false);
-  const [error, setError] = useState(false);
+  const [status, setStatus] = useState("loading"); // loading | loaded | error
+  const [retryCount, setRetryCount] = useState(0);
 
-  if (!src || error) {
-    // Fallback gradient placeholder
-    return (
-      <div style={{
-        ...style,
-        background: "linear-gradient(135deg,#1a1a2e,#0a0a1a)",
-        display: "flex", alignItems: "center", justifyContent: "center",
-        position: "relative", overflow: "hidden",
-        borderRadius: style?.borderRadius || 14,
-      }}>
-        <div style={{ fontSize: 48, opacity: 0.3 }}>✍️</div>
-        {/* Watermark */}
-        <div style={{
-          position: "absolute", bottom: 10, right: 12,
-          fontWeight: 900, fontSize: 13, letterSpacing: 2,
-          color: "rgba(255,255,255,0.4)",
-          textShadow: "0 1px 4px rgba(0,0,0,0.8)",
-          fontFamily: "'Poppins','Segoe UI',sans-serif",
-        }}>SAHAYAK</div>
-      </div>
-    );
-  }
+  useEffect(() => {
+    if (!src) { setStatus("error"); return; }
+    setStatus("loading");
+    
+    // Give Pollinations.ai 15 seconds to load
+    const timer = setTimeout(() => {
+      if (status === "loading") setStatus("error");
+    }, 15000);
+
+    const img = new Image();
+    img.onload = () => { clearTimeout(timer); setStatus("loaded"); };
+    img.onerror = () => {
+      clearTimeout(timer);
+      if (retryCount < 2) {
+        // Retry after 3 seconds
+        setTimeout(() => {
+          setRetryCount(r => r + 1);
+          setStatus("loading");
+        }, 3000);
+      } else {
+        setStatus("error");
+      }
+    };
+    img.src = src + (retryCount > 0 ? "&retry=" + retryCount : "");
+
+    return () => clearTimeout(timer);
+  }, [src, retryCount]);
+
+  const containerStyle = {
+    ...style,
+    position: "relative",
+    overflow: "hidden",
+    borderRadius: style?.borderRadius || 14,
+    background: "#0a0a1a",
+  };
 
   return (
-    <div style={{
-      ...style, position: "relative", overflow: "hidden",
-      borderRadius: style?.borderRadius || 14,
-      background: "#0a0a1a",
-    }}>
-      {!loaded && (
+    <div style={containerStyle}>
+      {/* Loading shimmer */}
+      {status === "loading" && (
         <div style={{
           position: "absolute", inset: 0,
-          background: "linear-gradient(90deg,#1a1a2e 25%,#252540 50%,#1a1a2e 75%)",
-          animation: "shimmer 1.5s infinite",
-        }}/>
+          background: "linear-gradient(110deg,#0d0d1f 30%,#1a1a35 50%,#0d0d1f 70%)",
+          backgroundSize: "200% 100%",
+          animation: "shimmer 1.8s infinite linear",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          flexDirection: "column", gap: 8,
+        }}>
+          <div style={{ fontSize: 28, opacity: 0.3 }}>🌅</div>
+          <div style={{ fontSize: 10, opacity: 0.3, letterSpacing: 1 }}>Loading...</div>
+        </div>
       )}
-      <img
-        src={src} alt={alt || "SAHAYAK Blog"}
-        onLoad={() => setLoaded(true)}
-        onError={() => setError(true)}
-        style={{
-          width: "100%", height: "100%",
-          objectFit: "cover", display: "block",
-          opacity: loaded ? 1 : 0,
-          transition: "opacity 0.4s ease",
-        }}
-      />
-      {/* SAHAYAK Watermark */}
+
+      {/* Error fallback */}
+      {status === "error" && (
+        <div style={{
+          position: "absolute", inset: 0,
+          background: "linear-gradient(135deg,#0d0d25,#0a0a1a)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+        }}>
+          <div style={{ fontSize: 40, opacity: 0.25 }}>✍️</div>
+        </div>
+      )}
+
+      {/* Actual image */}
+      {src && status !== "error" && (
+        <img
+          src={src}
+          alt={alt || "SAHAYAK Blog"}
+          onLoad={() => setStatus("loaded")}
+          onError={() => {
+            if (retryCount < 2) {
+              setTimeout(() => { setRetryCount(r => r + 1); setStatus("loading"); }, 3000);
+            } else {
+              setStatus("error");
+            }
+          }}
+          style={{
+            width: "100%", height: "100%",
+            objectFit: "cover", display: "block",
+            opacity: status === "loaded" ? 1 : 0,
+            transition: "opacity 0.5s ease",
+          }}
+        />
+      )}
+
+      {/* SAHAYAK Watermark — always visible */}
       <div style={{
         position: "absolute", bottom: 0, left: 0, right: 0,
-        background: "linear-gradient(transparent, rgba(0,0,0,0.72))",
-        padding: "20px 14px 10px",
+        background: "linear-gradient(transparent,rgba(0,0,0,0.7))",
+        padding: "18px 14px 10px",
         display: "flex", justifyContent: "flex-end",
+        pointerEvents: "none",
       }}>
         <div style={{
-          fontWeight: 900, fontSize: 13, letterSpacing: 2.5,
-          color: "rgba(255,255,255,0.85)",
+          fontWeight: 900, fontSize: 12, letterSpacing: 2.5,
+          color: "rgba(255,255,255,0.9)",
           textShadow: "0 1px 6px rgba(0,0,0,0.9)",
-          fontFamily: "'Poppins','Segoe UI',sans-serif",
-          background: "rgba(124,58,237,0.4)",
-          backdropFilter: "blur(4px)",
+          background: "rgba(124,58,237,0.5)",
+          backdropFilter: "blur(6px)",
           padding: "3px 10px", borderRadius: 20,
-          border: "1px solid rgba(167,139,250,0.3)",
+          border: "1px solid rgba(167,139,250,0.4)",
         }}>SAHAYAK</div>
       </div>
     </div>
@@ -1167,7 +1206,7 @@ function BlogScreen({ lang, onBack }) {
         )}
       </div>
 
-      <style>{"@keyframes shimmer { 0%{background-position:-400px 0} 100%{background-position:400px 0} }"}</style>
+      <style>{"@keyframes shimmer { 0%{background-position:-200% 0} 100%{background-position:200% 0} }"}</style>
     </div>
   );
 }
