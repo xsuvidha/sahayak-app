@@ -7,38 +7,78 @@ const WA_BASE = `https://wa.me/${WA_NUMBER}`;
 // ═══════════════════════════════════════════════════════════
 // PREMIUM DESIGN TOKENS — World-Class Luxury Fintech
 // ═══════════════════════════════════════════════════════════
-const TOKENS = {
+// ── Dark Theme (Default) ──
+const DARK_TOKENS = {
   colors: {
     bg: "#030305",
     bgElevated: "#0a0a0f",
     surface: "rgba(255,255,255,0.025)",
     surfaceHover: "rgba(255,255,255,0.06)",
     surfaceActive: "rgba(255,255,255,0.09)",
-    border: "rgba(255,255,255,0.04)",
-    borderHover: "rgba(255,255,255,0.10)",
-    borderActive: "rgba(255,255,255,0.18)",
+    border: "rgba(124,58,237,0.15)",
+    borderHover: "rgba(124,58,237,0.28)",
+    borderActive: "rgba(124,58,237,0.42)",
     text: "#f8f8ff",
-    textMuted: "rgba(248,248,255,0.50)",
-    textDim: "rgba(248,248,255,0.22)",
-    textGhost: "rgba(248,248,255,0.10)",
+    textMuted: "rgba(248,248,255,0.55)",
+    textDim: "rgba(248,248,255,0.28)",
+    textGhost: "rgba(248,248,255,0.12)",
     accent: { primary: "#a855f7", secondary: "#6366f1", tertiary: "#06b6d4", quaternary: "#f59e0b" },
-    holographic: "linear-gradient(135deg, #a855f7, #6366f1, #06b6d4, #f59e0b)",
-    glow: { purple: "rgba(168,85,247,0.35)", blue: "rgba(99,102,241,0.30)", cyan: "rgba(6,182,212,0.25)", amber: "rgba(245,158,11,0.30)", green: "rgba(16,185,129,0.30)" },
-    success: "#22c55e", warning: "#f59e0b", danger: "#ef4444", info: "#3b82f6",
+    success: "#4ade80",
+    error: "#f87171",
+    warning: "#fb923c",
+    inputBg: "rgba(255,245,235,0.92)",
+    inputText: "#1a1a2e",
+    inputBorder: "rgba(124,58,237,0.3)",
+    cardBg: "rgba(255,255,255,0.03)",
+    msgUserBg: null,
+    msgAiBg: "rgba(255,255,255,0.05)",
+    headerBg: "rgba(3,3,5,0.92)",
+    sidebarBg: "#030305",
   },
-  blur: { xs: "blur(4px)", sm: "blur(8px)", md: "blur(16px)", lg: "blur(24px)", xl: "blur(40px)", xxl: "blur(80px)" },
-  shadows: {
-    sm: "0 2px 8px rgba(0,0,0,0.3)", md: "0 4px 16px rgba(0,0,0,0.4)", lg: "0 8px 32px rgba(0,0,0,0.5)", xl: "0 16px 48px rgba(0,0,0,0.6)",
-    glow: { purple: "0 0 40px rgba(168,85,247,0.4)", blue: "0 0 40px rgba(99,102,241,0.4)", cyan: "0 0 40px rgba(6,182,212,0.4)" },
-  },
-  transitions: { fast: "all 0.15s cubic-bezier(0.4,0,0.2,1)", normal: "all 0.3s cubic-bezier(0.4,0,0.2,1)", slow: "all 0.5s cubic-bezier(0.4,0,0.2,1)", spring: "all 0.5s cubic-bezier(0.34,1.56,0.64,1)", bounce: "all 0.6s cubic-bezier(0.68,-0.55,0.265,1.55)" },
-  fonts: { primary: "'Noto Sans Devanagari','Inter','SF Pro Display',-apple-system,sans-serif", display: "'Inter','SF Pro Display',-apple-system,sans-serif", mono: "'JetBrains Mono','Fira Code',monospace" },
-  radii: { sm: 8, md: 12, lg: 16, xl: 20, xxl: 24, full: 9999 },
 };
 
-// ═══════════════════════════════════════════════════════════
-// LUXURY UI TEXT — Bilingual Excellence
-// ═══════════════════════════════════════════════════════════
+// ── Light Theme ──
+const LIGHT_TOKENS = {
+  colors: {
+    bg: "#f0f2f8",
+    bgElevated: "#ffffff",
+    surface: "rgba(0,0,0,0.05)",
+    surfaceHover: "rgba(0,0,0,0.09)",
+    surfaceActive: "rgba(0,0,0,0.13)",
+    border: "rgba(100,50,200,0.22)",
+    borderHover: "rgba(100,50,200,0.38)",
+    borderActive: "rgba(100,50,200,0.55)",
+    text: "#12002e",
+    textMuted: "rgba(18,0,46,0.60)",
+    textDim: "rgba(18,0,46,0.38)",
+    textGhost: "rgba(18,0,46,0.18)",
+    accent: { primary: "#7c22d8", secondary: "#4f46e5", tertiary: "#0891b2", quaternary: "#d97706" },
+    success: "#16a34a",
+    error: "#dc2626",
+    warning: "#ea580c",
+    inputBg: "#ffffff",
+    inputText: "#12002e",
+    inputBorder: "rgba(100,50,200,0.4)",
+    cardBg: "rgba(255,255,255,0.85)",
+    msgUserBg: null,
+    msgAiBg: "rgba(0,0,0,0.06)",
+    headerBg: "rgba(240,242,248,0.96)",
+    sidebarBg: "#f0f2f8",
+    accent: { primary: "#7c22d8", secondary: "#4f46e5", tertiary: "#0891b2", quaternary: "#d97706" },
+  },
+};
+
+// ── Global theme state (updated by main component) ──
+let _currentTheme = "dark";
+const getT = () => _currentTheme === "dark" ? DARK_TOKENS.colors : LIGHT_TOKENS.colors;
+
+// Shorthand: T always returns current theme
+// Components use getT() instead of T
+
+// Keep backward-compat alias (used in old code)
+const TOKENS = DARK_TOKENS;
+
+
 const UI = {
   hindi: {
     appSub: "GST Suvidha • VLE-IRDAI • MFINS Solar",
@@ -289,16 +329,16 @@ function formatInline(text) {
 
     switch (first.type) {
       case "bold":
-        parts.push(<strong key={key++} style={{ color: TOKENS.colors.text, fontWeight: 800, letterSpacing: "-0.01em" }}>{first.inner}</strong>);
+        parts.push(<strong key={key++} style={{ color: getT().text, fontWeight: 800, letterSpacing: "-0.01em" }}>{first.inner}</strong>);
         break;
       case "underline":
         parts.push(<span key={key++} style={{ textDecoration: "underline", textDecorationColor: "#a78bfa", textUnderlineOffset: 3, textDecorationThickness: 2 }}>{first.inner}</span>);
         break;
       case "highlight":
-        parts.push(<mark key={key++} style={{ background: "rgba(167,139,250,0.20)", color: TOKENS.colors.text, borderRadius: 6, padding: "2px 6px", fontWeight: 600 }}>{first.inner}</mark>);
+        parts.push(<mark key={key++} style={{ background: "rgba(167,139,250,0.20)", color: getT().text, borderRadius: 6, padding: "2px 6px", fontWeight: 600 }}>{first.inner}</mark>);
         break;
       case "code":
-        parts.push(<code key={key++} style={{ background: "rgba(255,255,255,0.06)", color: "#c4b5fd", padding: "2px 8px", borderRadius: 6, fontSize: "0.88em", fontFamily: TOKENS.fonts.mono, border: "1px solid rgba(255,255,255,0.06)" }}>{first.inner}</code>);
+        parts.push(<code key={key++} style={{ background: getT().surfaceHover, color: "#c4b5fd", padding: "2px 8px", borderRadius: 6, fontSize: "0.88em", fontFamily: TOKENS.fonts.mono, border: "1px solid rgba(124,58,237,0.12)" }}>{first.inner}</code>);
         break;
       case "strikethrough":
         parts.push(<span key={key++} style={{ textDecoration: "line-through", opacity: 0.5 }}>{first.inner}</span>);
@@ -319,7 +359,7 @@ function renderText(text) {
       return (
         <div key={i} style={{ display: "flex", gap: 12, margin: "6px 0", alignItems: "flex-start" }}>
           <span style={{ color: "#a78bfa", flexShrink: 0, fontSize: 18, lineHeight: 1.6, textShadow: "0 0 12px rgba(167,139,250,0.6)", marginTop: 2 }}>◆</span>
-          <span style={{ lineHeight: 1.7, color: TOKENS.colors.textMuted, flex: 1, fontSize: 14 }}>{formatInline(content)}</span>
+          <span style={{ lineHeight: 1.7, color: getT().textMuted, flex: 1, fontSize: 14 }}>{formatInline(content)}</span>
         </div>
       );
     }
@@ -329,14 +369,14 @@ function renderText(text) {
       return (
         <div key={i} style={{ display: "flex", gap: 12, margin: "6px 0", alignItems: "flex-start" }}>
           <span style={{ color: "#a78bfa", flexShrink: 0, fontWeight: 900, fontSize: 14, lineHeight: 1.7, minWidth: 24, textAlign: "center", background: "rgba(167,139,250,0.15)", borderRadius: 6, padding: "2px 6px" }}>{num}</span>
-          <span style={{ lineHeight: 1.7, color: TOKENS.colors.textMuted, flex: 1, fontSize: 14 }}>{formatInline(rest)}</span>
+          <span style={{ lineHeight: 1.7, color: getT().textMuted, flex: 1, fontSize: 14 }}>{formatInline(rest)}</span>
         </div>
       );
     }
     if (line.startsWith("## ") || line.startsWith("# ")) {
       const txt = line.replace(/^#+\s/, "");
       return (
-        <p key={i} style={{ margin: "14px 0 8px", lineHeight: 1.4, color: TOKENS.colors.text, fontWeight: 800, fontSize: 16, borderBottom: "1px solid rgba(167,139,250,0.15)", paddingBottom: 6, letterSpacing: "-0.01em" }}>{formatInline(txt)}</p>
+        <p key={i} style={{ margin: "14px 0 8px", lineHeight: 1.4, color: getT().text, fontWeight: 800, fontSize: 16, borderBottom: "1px solid rgba(167,139,250,0.15)", paddingBottom: 6, letterSpacing: "-0.01em" }}>{formatInline(txt)}</p>
       );
     }
     if (line === "---" || line === "———") {
@@ -344,7 +384,7 @@ function renderText(text) {
     }
     if (!line.trim()) return <div key={i} style={{ height: 8 }}/>;
     return (
-      <p key={i} style={{ margin: "5px 0", lineHeight: 1.75, color: TOKENS.colors.textMuted, fontSize: 14 }}>{formatInline(line)}</p>
+      <p key={i} style={{ margin: "5px 0", lineHeight: 1.75, color: getT().textMuted, fontSize: 14 }}>{formatInline(line)}</p>
     );
   });
 }
@@ -468,7 +508,7 @@ function GlassCard({ children, style = {}, hoverEffect = true, glowColor = null 
       style={{
         position: 'relative',
         background: isHovered ? 'rgba(255,255,255,0.06)' : 'rgba(255,255,255,0.025)',
-        border: "1px solid "+(isHovered?"rgba(255,255,255,0.12)":"rgba(255,255,255,0.04)"),
+        border: "1px solid "+(isHovered?"rgba(255,255,255,0.12)":getT().surface),
         borderRadius: TOKENS.radii.xl,
         backdropFilter: TOKENS.blur.lg,
         WebkitBackdropFilter: TOKENS.blur.lg,
@@ -492,25 +532,26 @@ function GlassCard({ children, style = {}, hoverEffect = true, glowColor = null 
 // ═══════════════════════════════════════════════════════════
 // PREMIUM BUTTON — Haptic Feedback Style
 // ═══════════════════════════════════════════════════════════
-function PremiumButton({ children, onClick, variant = 'primary', color = TOKENS.colors.accent.primary, disabled = false, style = {}, icon = null }) {
+function PremiumButton({ children, onClick, variant = 'primary', color, disabled = false, style = {}, icon = null }) {
+  const resolvedColor = color || getT()?.accent?.primary || '#a855f7';
   const [isPressed, setIsPressed] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
   const variants = {
     primary: {
-      background: disabled ? 'rgba(255,255,255,0.05)' : "linear-gradient(135deg, "+color+", "+color+"dd)",
+      background: disabled ? 'rgba(255,255,255,0.05)' : "linear-gradient(135deg, "+resolvedColor+", "+resolvedColor+"dd)",
       color: '#fff',
-      border: "1px solid "+(disabled?"rgba(255,255,255,0.05)":color+"60"),
-      boxShadow: isHovered && !disabled ? "0 8px 32px "+color+"40, 0 0 0 1px "+color+"30" : 'none',
+      border: "1px solid "+(disabled?getT().msgAiBg:resolvedColor+"60"),
+      boxShadow: isHovered && !disabled ? "0 8px 32px "+resolvedColor+"40, 0 0 0 1px "+resolvedColor+"30" : 'none',
     },
     secondary: {
       background: isHovered ? 'rgba(124,58,237,0.1)' : 'rgba(255,255,255,0.03)',
-      color: TOKENS.colors.text,
-      border: "1px solid "+(isHovered?"rgba(255,255,255,0.15)":"rgba(255,255,255,0.06)"),
+      color: getT().text,
+      border: "1px solid "+(isHovered?"rgba(255,255,255,0.15)":getT().surfaceHover),
       boxShadow: 'none',
     },
     ghost: {
-      background: 'transparent', color: TOKENS.colors.textMuted,
+      background: 'transparent', color: getT().textMuted,
       border: '1px solid transparent', boxShadow: 'none',
     },
   };
@@ -571,7 +612,7 @@ function SmartLeadForm({ agent, t, lang = "hindi", onSubmit, onSkip }) {
   if (step === "success") {
     setTimeout(()=>{ onSkip&&onSkip(); }, 2000);
     return (
-      <GlassCard style={{ padding: "24px", textAlign: "center", borderColor: "rgba(34,197,94,0.3)" }} glowColor={TOKENS.colors.success}>
+      <GlassCard style={{ padding: "24px", textAlign: "center", borderColor: "rgba(34,197,94,0.3)" }} glowColor={getT().success}>
         <div style={{ fontSize: 48, marginBottom: 16, animation: "bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)" }}>🎉</div>
         <div style={{ fontWeight: 800, color: "#4ade80", fontSize: 16, marginBottom: 8 }}>
           {lang === "hindi" ? t.thankYou + "!" : t.thankYou + "!"}
@@ -606,11 +647,11 @@ function SmartLeadForm({ agent, t, lang = "hindi", onSubmit, onSkip }) {
           style={{
             width: "100%", padding: "12px 16px", borderRadius: TOKENS.radii.lg,
             border: `1px solid ${agent?.color || "#a855f7"}25`,
-            background: "rgba(255,255,255,0.03)", color: "#fff", fontSize: 14, outline: "none",
+            background: getT().cardBg, color: getT().text, fontSize: 14, outline: "none",
             fontFamily: TOKENS.fonts.primary, transition: TOKENS.transitions.fast, boxSizing: "border-box",
           }}
-          onFocus={e => { e.target.style.borderColor = `${agent?.color || "#a855f7"}60`; e.target.style.background = "rgba(255,255,255,0.05)"; }}
-          onBlur={e => { e.target.style.borderColor = `${agent?.color || "#a855f7"}25`; e.target.style.background = "rgba(255,255,255,0.03)"; }}
+          onFocus={e => { e.target.style.borderColor = `${agent?.color || "#a855f7"}60`; e.target.style.background = getT().msgAiBg; }}
+          onBlur={e => { e.target.style.borderColor = `${agent?.color || "#a855f7"}25`; e.target.style.background = getT().cardBg; }}
         />
         <input
           placeholder={t?.phonePlaceholder || "Mobile number (10 digits)"}
@@ -620,11 +661,11 @@ function SmartLeadForm({ agent, t, lang = "hindi", onSubmit, onSkip }) {
           style={{
             width: "100%", padding: "12px 16px", borderRadius: TOKENS.radii.lg,
             border: `1px solid ${agent?.color || "#a855f7"}25`,
-            background: "rgba(255,255,255,0.03)", color: "#fff", fontSize: 14, outline: "none",
+            background: getT().cardBg, color: getT().text, fontSize: 14, outline: "none",
             fontFamily: TOKENS.fonts.primary, transition: TOKENS.transitions.fast, boxSizing: "border-box",
           }}
-          onFocus={e => { e.target.style.borderColor = `${agent?.color || "#a855f7"}60`; e.target.style.background = "rgba(255,255,255,0.05)"; }}
-          onBlur={e => { e.target.style.borderColor = `${agent?.color || "#a855f7"}25`; e.target.style.background = "rgba(255,255,255,0.03)"; }}
+          onFocus={e => { e.target.style.borderColor = `${agent?.color || "#a855f7"}60`; e.target.style.background = getT().msgAiBg; }}
+          onBlur={e => { e.target.style.borderColor = `${agent?.color || "#a855f7"}25`; e.target.style.background = getT().cardBg; }}
         />
         <div style={{ display: "flex", gap: 10 }}>
           <PremiumButton onClick={submit} disabled={!ready || isSubmitting} color={agent?.color} style={{ flex: 1 }} icon={isSubmitting ? "⏳" : "📱"}>
@@ -651,7 +692,7 @@ function PremiumSolarPanel({ lang, onSend }) {
   const formatCurrency = (num) => "₹" + num.toLocaleString("en-IN");
 
   return (
-    <GlassCard style={{ margin: "16px", padding: "24px" }} glowColor={TOKENS.colors.accent.quaternary}>
+    <GlassCard style={{ margin: "16px", padding: "24px" }} glowColor={"#f59e0b"}>
       <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 20 }}>
         <div style={{
           width: 48, height: 48, borderRadius: 14,
@@ -667,12 +708,12 @@ function PremiumSolarPanel({ lang, onSend }) {
       <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
         <div>
           <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-            <span style={{ fontSize: 13, color: TOKENS.colors.textMuted }}>{t.capacity}</span>
+            <span style={{ fontSize: 13, color: getT().textMuted }}>{t.capacity}</span>
             <span style={{ fontSize: 14, fontWeight: 800, color: "#f59e0b" }}>{kw} KW</span>
           </div>
           <input type="range" min="1" max="10" step="0.5" value={kw}
             onChange={e => setKw(parseFloat(e.target.value))}
-            style={{ width: "100%", height: 6, borderRadius: 3, background: "rgba(255,255,255,0.06)", outline: "none", appearance: "none", WebkitAppearance: "none" }}
+            style={{ width: "100%", height: 6, borderRadius: 3, background: getT().surfaceHover, outline: "none", appearance: "none", WebkitAppearance: "none" }}
           />
         </div>
         <div style={{ display: "flex", gap: 8 }}>
@@ -701,14 +742,14 @@ function PremiumSolarPanel({ lang, onSend }) {
             { label: t.annualSaving, value: formatCurrency(result.saving), color: "#14b8a6" },
             { label: t.payback, value: `${result.payback} ${t.years}`, color: "#ef4444" },
           ].map((item, i) => (
-            <div key={i} style={{ padding: "14px", borderRadius: TOKENS.radii.lg, background: "rgba(255,255,255,0.02)", border: "1px solid rgba(255,255,255,0.04)", textAlign: "center" }}>
+            <div key={i} style={{ padding: "14px", borderRadius: TOKENS.radii.lg, background: "rgba(255,255,255,0.02)", border: "1px solid rgba(124,58,237,0.1)", textAlign: "center" }}>
               <div style={{ fontSize: 11, opacity: 0.4, marginBottom: 4 }}>{item.label}</div>
               <div style={{ fontSize: 16, fontWeight: 800, color: item.color }}>{item.value}</div>
             </div>
           ))}
         </div>
         {type === "commercial" && (
-          <div style={{ padding: "14px", borderRadius: TOKENS.radii.lg, background: "rgba(245,158,11,0.06)", border: "1px solid rgba(245,158,11,0.15)", fontSize: 12, lineHeight: 1.7, color: TOKENS.colors.textMuted, whiteSpace: "pre-line" }}>
+          <div style={{ padding: "14px", borderRadius: TOKENS.radii.lg, background: "rgba(245,158,11,0.06)", border: "1px solid rgba(245,158,11,0.15)", fontSize: 12, lineHeight: 1.7, color: getT().textMuted, whiteSpace: "pre-line" }}>
             {t.commercialNote}
           </div>
         )}
@@ -776,12 +817,12 @@ function TypingIndicator({ agent, t }) {
         <div style={{ position: "absolute", inset: -3, borderRadius: "50%", background: `radial-gradient(circle, ${agent.color}50 0%, transparent 70%)`, filter: TOKENS.blur.sm, animation: "pulse-glow 2s ease-in-out infinite" }} />
         <img src={LOGO} alt="SAHAYAK" style={{ width: 32, height: 32, borderRadius: "50%", objectFit: "cover", border: "2px solid "+agent.color+"50", position: "relative", zIndex: 1 }} />
       </div>
-      <div style={{ background: TOKENS.colors.surface, borderRadius: "18px 18px 18px 4px", padding: "11px 15px", display: "flex", gap: 4, border: "1px solid rgba(124,58,237,0.1)", backdropFilter: TOKENS.blur.md }}>
+      <div style={{ background: getT().surface, borderRadius: "18px 18px 18px 4px", padding: "11px 15px", display: "flex", gap: 4, border: "1px solid rgba(124,58,237,0.1)", backdropFilter: TOKENS.blur.md }}>
         {[0, 1, 2].map(i => (
           <div key={i} style={{ width: 6, height: 6, borderRadius: "50%", background: agent.color, animation: `typing-bounce 1.4s ${i * 0.15}s infinite ease-in-out` }} />
         ))}
       </div>
-      <span style={{ fontSize: 10, color: TOKENS.colors.textDim, marginLeft: 4 }}>{t.typing}</span>
+      <span style={{ fontSize: 10, color: getT().textDim, marginLeft: 4 }}>{t.typing}</span>
     </div>
   );
 }
@@ -789,12 +830,13 @@ function TypingIndicator({ agent, t }) {
 // ═══════════════════════════════════════════════════════════
 // MAIN SAHAYAK PREMIUM APP — World-Class Experience
 // ═══════════════════════════════════════════════════════════
-function PolicyPage({ lang, onBack }) {
+function PolicyPage({ lang, onBack, darkMode, T }) {
+  if (!T) T = DARK_TOKENS.colors;
   const isH = lang !== "english";
   const s = (hi, en) => isH ? hi : en;
   return (
-    <div style={{ minHeight:"100vh", fontFamily:"'Noto Sans Devanagari','Segoe UI',sans-serif", background:"#05050a", color:"#fff", display:"flex", flexDirection:"column" }}>
-      <div style={{ padding:"12px 16px", display:"flex", alignItems:"center", gap:10, borderBottom:"1px solid rgba(74,222,128,0.12)", background:"rgba(5,5,10,0.95)", position:"sticky", top:0, zIndex:10 }}>
+    <div style={{ minHeight:"100vh", fontFamily:"'Noto Sans Devanagari','Segoe UI',sans-serif", background:getT().bg, color:getT().text, display:"flex", flexDirection:"column" }}>
+      <div style={{ padding:"12px 16px", display:"flex", alignItems:"center", gap:10, borderBottom:"1px solid rgba(74,222,128,0.12)", background:getT().headerBg, position:"sticky", top:0, zIndex:10 }}>
         <button onClick={onBack} style={{ background:"none", border:"none", color:"rgba(255,255,255,0.5)", fontSize:22, cursor:"pointer", padding:0 }}>{"<"}</button>
         <div style={{ fontWeight:800, fontSize:16 }}>{"📋 "+s("नीति एवं प्रमाण-पत्र","Policy & Certificates")}</div>
       </div>
@@ -802,13 +844,13 @@ function PolicyPage({ lang, onBack }) {
         <div style={{ background:"rgba(74,222,128,0.06)", border:"1px solid rgba(74,222,128,0.2)", borderRadius:14, padding:16, marginBottom:12 }}>
           <div style={{ fontWeight:800, fontSize:13, color:"#4ade80", marginBottom:8 }}>{"🏢 "+s("कंपनी जानकारी","Company Information")}</div>
           <div style={{ fontSize:12.5, lineHeight:2, opacity:0.85 }}>
-            <div><strong style={{color:"#fff"}}>{s("कंपनी:","Company:")}</strong>{" HAANS Solar®"}</div>
-            <div><strong style={{color:"#fff"}}>{s("संस्थापक:","Founder:")}</strong>{" Ankit Singh"}</div>
-            <div><strong style={{color:"#fff"}}>{"GST:"}</strong>{" 09DIYPS3881N1ZT"}</div>
-            <div><strong style={{color:"#fff"}}>{"PAN:"}</strong>{" DIYPS3881N"}</div>
-            <div><strong style={{color:"#fff"}}>{s("पता:","Address:")}</strong>{" Nawanagar, Chouhattar Kalan, Balrampur UP 271208"}</div>
-            <div><strong style={{color:"#fff"}}>{"Email:"}</strong>{" xsuvidha@gmail.com | haans.solars@gmail.com"}</div>
-            <div><strong style={{color:"#fff"}}>{s("फोन:","Phone:")}</strong>{" +91 8115776644"}</div>
+            <div><strong style={{color:getT().text}}>{s("कंपनी:","Company:")}</strong>{" HAANS Solar®"}</div>
+            <div><strong style={{color:getT().text}}>{s("संस्थापक:","Founder:")}</strong>{" Ankit Singh"}</div>
+            <div><strong style={{color:getT().text}}>{"GST:"}</strong>{" 09DIYPS3881N1ZT"}</div>
+            <div><strong style={{color:getT().text}}>{"PAN:"}</strong>{" DIYPS3881N"}</div>
+            <div><strong style={{color:getT().text}}>{s("पता:","Address:")}</strong>{" Nawanagar, Chouhattar Kalan, Balrampur UP 271208"}</div>
+            <div><strong style={{color:getT().text}}>{"Email:"}</strong>{" xsuvidha@gmail.com | haans.solars@gmail.com"}</div>
+            <div><strong style={{color:getT().text}}>{s("फोन:","Phone:")}</strong>{" +91 8115776644"}</div>
           </div>
         </div>
         {[
@@ -884,7 +926,7 @@ function SolarQuoteForm({ lang, onSubmit, onSkip }) {
     </div>
   );
 
-  const inp = {width:"100%",padding:"11px 14px",borderRadius:12,border:"1px solid rgba(0,184,148,0.3)",background:"rgba(0,184,148,0.05)",color:"#fff",fontSize:14,outline:"none",fontFamily:"inherit",boxSizing:"border-box",marginBottom:12};
+  const inp = {width:"100%",padding:"11px 14px",borderRadius:12,border:"1px solid rgba(0,184,148,0.3)",background:"rgba(0,184,148,0.05)",color:getT().text,fontSize:14,outline:"none",fontFamily:"inherit",boxSizing:"border-box",marginBottom:12};
 
   return (
     <div style={{display:"flex",flexDirection:"column",gap:0}}>
@@ -902,7 +944,7 @@ function SolarQuoteForm({ lang, onSubmit, onSkip }) {
       <label style={{fontSize:12,color:"#00b894",marginBottom:8,display:"block"}}>{isH?"सिस्टम प्रकार *":"System Type *"}</label>
       <div style={{display:"flex",gap:10,marginBottom:12}}>
         {[{v:"ongrid",hi:"⚡ ऑनग्रिड",en:"⚡ On-Grid",shi:isH?"Net Metering":"Net Metering"},{v:"hybrid",hi:"🔋 हाइब्रिड",en:"🔋 Hybrid",shi:isH?"Battery Backup":"Battery Backup"}].map(o=>(
-          <button key={o.v} onClick={()=>setSys(o.v)} style={{flex:1,padding:"10px 8px",borderRadius:12,border:"none",background:sys===o.v?"linear-gradient(135deg,#00b894,#00796b)":"rgba(255,255,255,0.05)",color:"#fff",fontWeight:700,fontSize:13,cursor:"pointer",fontFamily:"inherit",boxShadow:sys===o.v?"0 4px 16px rgba(0,184,148,0.4)":"none",transition:"all 0.2s"}}>
+          <button key={o.v} onClick={()=>setSys(o.v)} style={{flex:1,padding:"10px 8px",borderRadius:12,border:"none",background:sys===o.v?"linear-gradient(135deg,#00b894,#00796b)":getT().msgAiBg,color:getT().text,fontWeight:700,fontSize:13,cursor:"pointer",fontFamily:"inherit",boxShadow:sys===o.v?"0 4px 16px rgba(0,184,148,0.4)":"none",transition:"all 0.2s"}}>
             <div>{isH?o.hi:o.en}</div>
             <div style={{fontSize:9.5,opacity:0.7,marginTop:3,fontWeight:400}}>{o.shi}</div>
           </button>
@@ -925,7 +967,7 @@ function SolarQuoteForm({ lang, onSubmit, onSkip }) {
         <div>{"📞 24 घंटे में कोटेशन"}</div>
       </div>
 
-      <button onClick={submit} disabled={!ready} style={{width:"100%",padding:"14px 0",borderRadius:14,border:"none",background:ready?"linear-gradient(135deg,#00b894,#00796b)":"rgba(255,255,255,0.07)",color:"#fff",fontWeight:800,fontSize:15,cursor:ready?"pointer":"not-allowed",fontFamily:"inherit",boxShadow:ready?"0 6px 24px rgba(0,184,148,0.5)":"none",transition:"all 0.2s"}}>
+      <button onClick={submit} disabled={!ready} style={{width:"100%",padding:"14px 0",borderRadius:14,border:"none",background:ready?"linear-gradient(135deg,#00b894,#00796b)":"rgba(255,255,255,0.07)",color:getT().text,fontWeight:800,fontSize:15,cursor:ready?"pointer":"not-allowed",fontFamily:"inherit",boxShadow:ready?"0 6px 24px rgba(0,184,148,0.5)":"none",transition:"all 0.2s"}}>
         {"📱 "+(isH?"WhatsApp पर कोटेशन मांगें":"Request Quote on WhatsApp")}
       </button>
       {!ready&&<div style={{textAlign:"center",fontSize:11,opacity:0.35,marginTop:8}}>{isH?"* अनिवार्य जानकारी भरें":"* Fill required fields"}</div>}
@@ -1050,7 +1092,8 @@ function BlogImage({ src, alt, style }) {
   );
 }
 
-function BlogScreen({ lang, onBack }) {
+function BlogScreen({ lang, onBack, darkMode, T }) {
+  if (!T) T = DARK_TOKENS.colors;
   const isH = lang !== "english";
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -1065,8 +1108,8 @@ function BlogScreen({ lang, onBack }) {
 
   // ── Single post view ──
   if (selected) return (
-    <div style={{ minHeight:"100vh", background:"#05050a", color:"#fff", fontFamily:"'Noto Sans Devanagari','Segoe UI',sans-serif", display:"flex", flexDirection:"column" }}>
-      <div style={{ padding:"12px 16px", display:"flex", alignItems:"center", gap:10, background:"rgba(5,5,10,0.97)", borderBottom:"1px solid rgba(243,156,18,0.12)", position:"sticky", top:0, zIndex:10, backdropFilter:"blur(16px)" }}>
+    <div style={{ minHeight:"100vh", background:getT().bg, color:getT().text, fontFamily:"'Noto Sans Devanagari','Segoe UI',sans-serif", display:"flex", flexDirection:"column" }}>
+      <div style={{ padding:"12px 16px", display:"flex", alignItems:"center", gap:10, background:getT().headerBg, borderBottom:"1px solid rgba(243,156,18,0.12)", position:"sticky", top:0, zIndex:10, backdropFilter:"blur(16px)" }}>
         <button onClick={()=>setSelected(null)} style={{ background:"none", border:"none", color:"rgba(255,255,255,0.5)", fontSize:22, cursor:"pointer", padding:0 }}>{"<"}</button>
         <div style={{ flex:1, fontWeight:700, fontSize:13, opacity:0.7 }}>{selected.category}</div>
         <div style={{ fontSize:11, opacity:0.35 }}>{selected.reading_time}</div>
@@ -1088,7 +1131,7 @@ function BlogScreen({ lang, onBack }) {
           </div>
 
           {/* Title */}
-          <h1 style={{ fontSize:23, fontWeight:900, lineHeight:1.4, marginBottom:14, color:"#fff" }}>{selected.title}</h1>
+          <h1 style={{ fontSize:23, fontWeight:900, lineHeight:1.4, marginBottom:14, color:getT().text }}>{selected.title}</h1>
 
           {/* Gold divider */}
           <div style={{ height:3, width:50, background:"linear-gradient(90deg,#f39c12,#e67e22)", borderRadius:2, marginBottom:18 }}/>
@@ -1105,7 +1148,7 @@ function BlogScreen({ lang, onBack }) {
           {selected.tags?.length > 0 && (
             <div style={{ display:"flex", flexWrap:"wrap", gap:6, marginBottom:20 }}>
               {selected.tags.map((tag,i) => (
-                <span key={i} style={{ fontSize:10, padding:"3px 10px", borderRadius:20, background:"rgba(255,255,255,0.05)", border:"1px solid rgba(124,58,237,0.1)", color:"rgba(255,255,255,0.5)" }}>#{tag}</span>
+                <span key={i} style={{ fontSize:10, padding:"3px 10px", borderRadius:20, background:getT().msgAiBg, border:"1px solid rgba(124,58,237,0.1)", color:"rgba(255,255,255,0.5)" }}>#{tag}</span>
               ))}
             </div>
           )}
@@ -1120,7 +1163,7 @@ function BlogScreen({ lang, onBack }) {
           </div>
 
           {/* Footer */}
-          <div style={{ marginTop:28, paddingTop:16, borderTop:"1px solid rgba(255,255,255,0.06)", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
+          <div style={{ marginTop:28, paddingTop:16, borderTop:"1px solid rgba(124,58,237,0.12)", display:"flex", justifyContent:"space-between", alignItems:"center" }}>
             <div style={{ fontSize:11, opacity:0.3 }}>SAHAYAK • HAANS Solar®</div>
             <div style={{ fontSize:11, opacity:0.3 }}>{selected.date}</div>
           </div>
@@ -1131,8 +1174,8 @@ function BlogScreen({ lang, onBack }) {
 
   // ── Post list view ──
   return (
-    <div style={{ minHeight:"100vh", background:"#05050a", color:"#fff", fontFamily:"'Noto Sans Devanagari','Segoe UI',sans-serif", display:"flex", flexDirection:"column" }}>
-      <div style={{ padding:"12px 16px", display:"flex", alignItems:"center", gap:10, background:"rgba(5,5,10,0.97)", borderBottom:"1px solid rgba(243,156,18,0.12)", position:"sticky", top:0, zIndex:10 }}>
+    <div style={{ minHeight:"100vh", background:getT().bg, color:getT().text, fontFamily:"'Noto Sans Devanagari','Segoe UI',sans-serif", display:"flex", flexDirection:"column" }}>
+      <div style={{ padding:"12px 16px", display:"flex", alignItems:"center", gap:10, background:getT().headerBg, borderBottom:"1px solid rgba(243,156,18,0.12)", position:"sticky", top:0, zIndex:10 }}>
         <button onClick={onBack} style={{ background:"none", border:"none", color:"rgba(255,255,255,0.5)", fontSize:22, cursor:"pointer", padding:0 }}>{"<"}</button>
         <div style={{ fontWeight:800, fontSize:16 }}>{"✍️ "+(isH?"ब्लॉग":"Blog")}</div>
       </div>
@@ -1142,12 +1185,12 @@ function BlogScreen({ lang, onBack }) {
           // Skeleton loading
           <div style={{ display:"flex", flexDirection:"column", gap:16, marginTop:4 }}>
             {[1,2,3].map(i => (
-              <div key={i} style={{ borderRadius:16, overflow:"hidden", background:"rgba(255,255,255,0.03)" }}>
+              <div key={i} style={{ borderRadius:16, overflow:"hidden", background:getT().cardBg }}>
                 <div style={{ height:160, background:"linear-gradient(90deg,rgba(255,255,255,0.04) 25%,rgba(124,58,237,0.1) 50%,rgba(255,255,255,0.04) 75%)" }}/>
                 <div style={{ padding:14 }}>
-                  <div style={{ height:11, background:"rgba(255,255,255,0.06)", borderRadius:6, width:"40%", marginBottom:10 }}/>
-                  <div style={{ height:14, background:"rgba(255,255,255,0.05)", borderRadius:6, width:"85%", marginBottom:8 }}/>
-                  <div style={{ height:11, background:"rgba(255,255,255,0.04)", borderRadius:6, width:"65%" }}/>
+                  <div style={{ height:11, background:getT().surfaceHover, borderRadius:6, width:"40%", marginBottom:10 }}/>
+                  <div style={{ height:14, background:getT().msgAiBg, borderRadius:6, width:"85%", marginBottom:8 }}/>
+                  <div style={{ height:11, background:getT().surface, borderRadius:6, width:"65%" }}/>
                 </div>
               </div>
             ))}
@@ -1192,7 +1235,7 @@ function BlogScreen({ lang, onBack }) {
                     <div style={{ fontSize:10.5, color:"#f39c12", fontWeight:700, textTransform:"uppercase", letterSpacing:0.8 }}>{post.category}</div>
                     <div style={{ fontSize:10, opacity:0.35 }}>{post.reading_time} • {post.date}</div>
                   </div>
-                  <div style={{ fontWeight:800, fontSize:15.5, lineHeight:1.45, marginBottom:8, color:"#fff" }}>{post.title}</div>
+                  <div style={{ fontWeight:800, fontSize:15.5, lineHeight:1.45, marginBottom:8, color:getT().text }}>{post.title}</div>
                   <div style={{ fontSize:12.5, opacity:0.5, lineHeight:1.75, marginBottom:10 }}>
                     {(post.summary || "").slice(0,110)}{"..."}
                   </div>
@@ -1212,6 +1255,43 @@ function BlogScreen({ lang, onBack }) {
 }
 
 
+// ── SolarCalcBubble — floating calculator for solar agent ──
+function SolarCalcBubble({ agent, lang, isH, onSend }) {
+  const [showCalc, setShowCalc] = useState(false);
+  return (
+    <>
+      {showCalc && (
+        <div style={{
+          position: "fixed", bottom: 90, right: 16, zIndex: 50,
+          background: darkMode?"rgba(10,10,20,0.97)":"rgba(255,255,255,0.97)",
+          border: "1px solid " + agent.color + "30",
+          borderRadius: 18, padding: 16, width: 280,
+          boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
+          backdropFilter: "blur(20px)",
+        }}>
+          <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:12 }}>
+            <div style={{ fontWeight:800, fontSize:13, color:agent.color }}>{"☀️ "+(isH?"सोलर कैलकुलेटर":"Solar Calculator")}</div>
+            <button onClick={()=>setShowCalc(false)} style={{ background:"none", border:"none", color:"rgba(255,255,255,0.4)", cursor:"pointer", fontSize:20, padding:0, lineHeight:1 }}>×</button>
+          </div>
+          <PremiumSolarPanel lang={lang} onSend={(msg)=>{ onSend(msg); setShowCalc(false); }} />
+        </div>
+      )}
+      <div style={{ position:"fixed", bottom: 90, right: 16, zIndex: 49 }}>
+        <button onClick={()=>setShowCalc(c=>!c)} style={{
+          width:52, height:52, borderRadius:"50%", border:"1.5px solid "+agent.color+"50",
+          background: showCalc ? "linear-gradient(135deg,"+agent.color+","+agent.color+"99)" : "rgba(10,10,20,0.92)",
+          color: showCalc ? "#fff" : agent.color,
+          fontSize:22, cursor:"pointer",
+          boxShadow:"0 4px 20px "+agent.color+"40",
+          display:"flex", alignItems:"center", justifyContent:"center",
+          transition:"all 0.25s",
+        }}>🧮</button>
+      </div>
+    </>
+  );
+}
+
+
 export default function SahayakPremium() {
   const [screen, setScreen] = useState("home");
   const [agent, setAgent] = useState(null);
@@ -1222,6 +1302,16 @@ export default function SahayakPremium() {
   const [leadDismissed, setLeadDismissed] = useState(false);
   const [lang, setLang] = useState("hindi");
   const isH = lang !== "english";
+  const [darkMode, setDarkMode] = useState(true);
+  const T = darkMode ? DARK_TOKENS.colors : LIGHT_TOKENS.colors;
+  // Update global theme for sub-components
+  _currentTheme = darkMode ? "dark" : "light";
+  const themeStyle = {
+    fontFamily: "'Noto Sans Devanagari','Segoe UI',sans-serif",
+    background: T.bg,
+    color: T.text,
+    minHeight: "100vh",
+  };
   const [speaking, setSpeaking] = useState(null);
   const [uploadedDoc, setUploadedDoc] = useState(null);
   const [isListening, setIsListening] = useState(false);
@@ -1413,20 +1503,20 @@ export default function SahayakPremium() {
   // ═══════════════════════════════════════════════════════════
   // ── Blog Screen ──
   if (screen === "blog") return (
-    <BlogScreen lang={lang} onBack={()=>setScreen("home")} />
+    <BlogScreen lang={lang} darkMode={darkMode} T={T} onBack={()=>setScreen("home")} />
   );
 
   if (screen === "policy") return (
-    <PolicyPage lang={lang} onBack={()=>setScreen("home")} />
+    <PolicyPage lang={lang} darkMode={darkMode} T={T} onBack={()=>setScreen("home")} />
   );
 
   if (screen === "about") return (
-    <div style={{ minHeight: "100vh", background: TOKENS.colors.bg, color: TOKENS.colors.text, fontFamily: TOKENS.fonts.primary, display: "flex", flexDirection: "column", position: "relative", overflow: "hidden" }}>
+    <div style={{ minHeight: "100vh", background: T.bg, color: T.text, fontFamily: TOKENS.fonts.primary, display: "flex", flexDirection: "column", position: "relative", overflow: "hidden" }}>
       <PremiumBackground agent={null} />
       <AmbientOrbs agent={null} />
       <div style={{ position: "relative", zIndex: 10, display: "flex", flexDirection: "column", minHeight: "100vh" }}>
         <header style={{ padding: "16px 20px", display: "flex", alignItems: "center", gap: 12, borderBottom: "none", background: "rgba(10,10,15,0.8)", backdropFilter: TOKENS.blur.lg, position: "sticky", top: 0, zIndex: 20 }}>
-          <button onClick={() => setScreen("home")} style={{ background: "none", border: "none", color: "rgba(255,255,255,0.5)", fontSize: 22, cursor: "pointer", padding: "8px", borderRadius: TOKENS.radii.md, transition: TOKENS.transitions.fast }} onMouseEnter={e => e.target.style.background = "rgba(255,255,255,0.06)"} onMouseLeave={e => e.target.style.background = "none"}>←</button>
+          <button onClick={() => setScreen("home")} style={{ background: "none", border: "none", color: "rgba(255,255,255,0.5)", fontSize: 22, cursor: "pointer", padding: "8px", borderRadius: TOKENS.radii.md, transition: TOKENS.transitions.fast }} onMouseEnter={e => e.target.style.background = T.surfaceHover} onMouseLeave={e => e.target.style.background = "none"}>←</button>
           <div style={{ fontWeight: 800, fontSize: 16 }}>{t.about}</div>
         </header>
         <div style={{ flex: 1, padding: "30px 20px", maxWidth: 540, margin: "0 auto", width: "100%", boxSizing: "border-box" }}>
@@ -1452,10 +1542,10 @@ export default function SahayakPremium() {
           </GlassCard>
           <GlassCard style={{ padding: 16, marginBottom: 16 }}>
             <div style={{ fontSize: 12, color: "#a78bfa", fontWeight: 700, letterSpacing: 1, marginBottom: 12, textTransform: "uppercase" }}>📞 {t.contact}</div>
-            <a href="mailto:xsuvidha@gmail.com" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", color: "#e2e8f0", marginBottom: 10, padding: "8px 0", borderRadius: TOKENS.radii.md, transition: TOKENS.transitions.fast }} onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.03)"} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+            <a href="mailto:xsuvidha@gmail.com" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", color: "#e2e8f0", marginBottom: 10, padding: "8px 0", borderRadius: TOKENS.radii.md, transition: TOKENS.transitions.fast }} onMouseEnter={e => e.currentTarget.style.background = T.cardBg} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
               <span style={{ fontSize: 20 }}>📧</span><span style={{ fontSize: 14 }}>xsuvidha@gmail.com</span>
             </a>
-            <a href="https://wa.me/918115776644" target="_blank" rel="noreferrer" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", color: "#e2e8f0", marginBottom: 10, padding: "8px 0", borderRadius: TOKENS.radii.md, transition: TOKENS.transitions.fast }} onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.03)"} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+            <a href="https://wa.me/918115776644" target="_blank" rel="noreferrer" style={{ display: "flex", alignItems: "center", gap: 10, textDecoration: "none", color: "#e2e8f0", marginBottom: 10, padding: "8px 0", borderRadius: TOKENS.radii.md, transition: TOKENS.transitions.fast }} onMouseEnter={e => e.currentTarget.style.background = T.cardBg} onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
               <span style={{ fontSize: 20 }}>💬</span><span style={{ fontSize: 14 }}>+91 81157 76644</span>
             </a>
           <button onClick={() => setScreen("policy")} title="Privacy & Terms"
@@ -1479,7 +1569,7 @@ export default function SahayakPremium() {
               {lang === "hindi" ? "हर भारतीय को उनकी अपनी भाषा में, पूरी तरह मुफ्त वित्तीय मार्गदर्शन उपलब्ध कराना। कोई भ्रम नहीं, कोई शोषण नहीं। SAHAYAK आपका भरोसेमंद दोस्त है — बीमा, टैक्स, सोलर और लोन के लिए।" : "To make financial guidance accessible to every Indian — in their own language, completely free. No more confusion, no more exploitation. SAHAYAK is your trusted friend for Insurance, Tax, Solar, and Loans."}
             </div>
           </GlassCard>
-          <a href="https://instagram.com/singh.ankit07" target="_blank" rel="noreferrer" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12, padding: "14px 20px", borderRadius: TOKENS.radii.xl, textDecoration: "none", color: "#fff", background: "linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)", boxShadow: "0 4px 20px rgba(220,39,67,0.3)", marginBottom: 20, fontWeight: 800, transition: TOKENS.transitions.fast }} onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 8px 30px rgba(220,39,67,0.4)"; }} onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 4px 20px rgba(220,39,67,0.3)"; }}>
+          <a href="https://instagram.com/singh.ankit07" target="_blank" rel="noreferrer" style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12, padding: "14px 20px", borderRadius: TOKENS.radii.xl, textDecoration: "none", color: T.text, background: "linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)", boxShadow: "0 4px 20px rgba(220,39,67,0.3)", marginBottom: 20, fontWeight: 800, transition: TOKENS.transitions.fast }} onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 8px 30px rgba(220,39,67,0.4)"; }} onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 4px 20px rgba(220,39,67,0.3)"; }}>
             <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
             <div><div style={{ fontWeight: 800, fontSize: 15 }}>{t.followInstagram}</div><div style={{ fontSize: 12, opacity: 0.85 }}>@singh.ankit07</div></div>
           </a>
@@ -1491,8 +1581,8 @@ export default function SahayakPremium() {
 
   // Solar Quotation Screen
   if (screen === "solarquote") return (
-    <div style={{minHeight:"100vh",fontFamily:"'Noto Sans Devanagari','Segoe UI',sans-serif",background:"#05050a",color:"#fff",display:"flex",flexDirection:"column",backgroundImage:"radial-gradient(ellipse 70% 40% at 50% 0%,rgba(0,184,148,0.15),transparent 60%)"}}>
-      <div style={{padding:"12px 16px",display:"flex",alignItems:"center",gap:10,background:"rgba(5,5,10,0.9)",backdropFilter:"blur(16px)",borderBottom:"1px solid rgba(0,184,148,0.15)",position:"sticky",top:0,zIndex:10}}>
+    <div style={{minHeight:"100vh",fontFamily:"'Noto Sans Devanagari','Segoe UI',sans-serif",background:T.bg,color:T.text,display:"flex",flexDirection:"column",backgroundImage:"radial-gradient(ellipse 70% 40% at 50% 0%,rgba(0,184,148,0.15),transparent 60%)"}}>
+      <div style={{padding:"12px 16px",display:"flex",alignItems:"center",gap:10,background:T.headerBg,backdropFilter:"blur(16px)",borderBottom:"1px solid rgba(0,184,148,0.15)",position:"sticky",top:0,zIndex:10}}>
         <button onClick={()=>setScreen("home")} style={{background:"none",border:"none",color:"rgba(255,255,255,0.5)",fontSize:22,cursor:"pointer",padding:0}}>{"<"}</button>
         <div style={{fontSize:24}}>🧾</div>
         <div style={{flex:1}}>
@@ -1515,7 +1605,7 @@ export default function SahayakPremium() {
   // HOME SCREEN — Cinematic Entrance Experience
   // ═══════════════════════════════════════════════════════════
   if (screen === "home") return (
-    <div style={{ minHeight: "100vh", fontFamily: TOKENS.fonts.primary, background: TOKENS.colors.bg, color: TOKENS.colors.text, display: "flex", flexDirection: "column", position: "relative", overflow: "hidden" }}>
+    <div style={{ minHeight: "100vh", fontFamily: TOKENS.fonts.primary, background: T.bg, color: T.text, display: "flex", flexDirection: "column", position: "relative", overflow: "hidden" }}>
       <PremiumBackground agent={null} />
       <AmbientOrbs agent={null} />
 
@@ -1559,9 +1649,14 @@ export default function SahayakPremium() {
             onMouseEnter={e=>{ e.currentTarget.style.background="rgba(124,58,237,0.2)"; }}
             onMouseLeave={e=>{ e.currentTarget.style.background="rgba(124,58,237,0.1)"; }}
           >ℹ️ {isH?"जानकारी":"Info"}</button>
+          <button onClick={()=>setDarkMode(d=>!d)}
+            style={{ width:36, height:36, borderRadius:10, border:"1px solid rgba(124,58,237,0.2)", background: darkMode?"rgba(255,200,50,0.1)":"rgba(100,120,255,0.1)", cursor:"pointer", fontSize:17, display:"flex", alignItems:"center", justifyContent:"center", transition:"all 0.3s" }}
+            title={darkMode?"Light Mode":"Dark Mode"}
+          >{darkMode?"🌙":"☀️"}</button>
+
           <div style={{
               display: "flex", flexDirection: "column",
-              background: TOKENS.colors.surface,
+              background: T.surface,
               borderRadius: 14, padding: 3,
               border: "1px solid rgba(124,58,237,0.1)",
               backdropFilter: TOKENS.blur.sm, gap: 2,
@@ -1570,7 +1665,7 @@ export default function SahayakPremium() {
               <button key={l} onClick={() => setLang(l)}
                 style={{
                   padding: "5px 12px", borderRadius: 10, border: "none",
-                  background: lang === l ? TOKENS.colors.accent.primary : "transparent",
+                  background: lang === l ? T?.accent?.primary || "#a855f7" : "transparent",
                   color: lang === l ? "#fff" : "rgba(255,255,255,0.45)",
                   fontSize: 11, fontWeight: 700, cursor: "pointer",
                   fontFamily: "inherit", transition: TOKENS.transitions.fast,
@@ -1597,7 +1692,7 @@ export default function SahayakPremium() {
         </div>
         <h1 style={{
           margin: 0, fontSize: 32, fontWeight: 900, lineHeight: 1.2,
-          color: TOKENS.colors.text, letterSpacing: -1,
+          color: T.text, letterSpacing: -1,
           animation: isLoaded ? "fadeSlideUp 0.7s 0.6s both" : "none",
         }}>
           {t.headline1}<br/>
@@ -1652,7 +1747,7 @@ export default function SahayakPremium() {
 
         {/* Section Title */}
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 16, animation: isLoaded ? "fadeSlideUp 0.8s 0.9s both" : "none" }}>
-          <div style={{ width: 4, height: 4, borderRadius: "50%", background: TOKENS.colors.accent.primary }} />
+          <div style={{ width: 4, height: 4, borderRadius: "50%", background: T?.accent?.primary || "#a855f7" }} />
           <p style={{ fontSize: 11, opacity: 0.4, fontWeight: 700, letterSpacing: 2, textTransform: "uppercase" }}>{t.otherExperts}</p>
           <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg, rgba(255,255,255,0.06), transparent)" }} />
         </div>
@@ -1662,17 +1757,18 @@ export default function SahayakPremium() {
           {agentList.filter(a => !a.solar).map((ag, index) => (
             <button key={ag.id} onClick={() => openAgent(ag)}
               style={{
-                background: "rgba(255,255,255,0.02)",
-                border: "1px solid "+ag.color+"12",
+                background: ag.color+"18",
+                border: "2px solid "+ag.color+"40",
                 borderRadius: TOKENS.radii.xxl,
-                padding: "20px 12px 16px",
+                padding: "22px 12px 18px",
                 cursor: "pointer", textAlign: "center",
-                color: TOKENS.colors.text,
+                color: T.text,
                 fontFamily: "inherit",
                 transition: TOKENS.transitions.spring,
                 backdropFilter: TOKENS.blur.md,
                 position: "relative", overflow: "hidden",
-                animation: isLoaded ? `fadeSlideUp 0.5s ${1.0 + index * 0.08}s both` : "none",
+                boxShadow: "0 4px 20px "+ag.color+"20",
+                animation: isLoaded ? "fadeSlideUp 0.5s "+(1.0 + index * 0.08)+"s both" : "none",
               }}
               onMouseEnter={e => {
                 e.currentTarget.style.background = `${ag.color}10`;
@@ -1697,8 +1793,8 @@ export default function SahayakPremium() {
                 fontSize: 28, marginBottom: 10, display: "inline-block",
                 transition: "transform 0.3s", filter: `drop-shadow(0 4px 8px ${ag.color}40)`,
               }} className="agent-icon">{ag.icon}</div>
-              <div style={{ fontWeight: 800, fontSize: 11, color: ag.color, lineHeight: 1.3, marginBottom: 4 }}>{ag.name}</div>
-              <div style={{ fontSize: 9, opacity: 0.35, lineHeight: 1.4 }}>{ag.tag}</div>
+              <div style={{ fontWeight: 800, fontSize: 11, color: ag.color, lineHeight: 1.3, marginBottom: 5, fontSize: 13 }}>{ag.name}</div>
+              <div style={{ fontSize: 10, opacity: 0.5, lineHeight: 1.4 }}>{ag.tag}</div>
             </button>
           ))}
         </div>
@@ -1711,7 +1807,7 @@ export default function SahayakPremium() {
             borderRadius: TOKENS.radii.xxl,
             background: "rgba(37,211,102,0.06)",
             border: "1px solid rgba(37,211,102,0.15)",
-            textDecoration: "none", color: TOKENS.colors.text,
+            textDecoration: "none", color: T.text,
             transition: TOKENS.transitions.slow,
             backdropFilter: TOKENS.blur.md,
             animation: isLoaded ? "fadeSlideUp 1.0s 1.4s both" : "none",
@@ -1839,20 +1935,20 @@ export default function SahayakPremium() {
   // ═══════════════════════════════════════════════════════════
   const starters = agent.starters;
   return (
-    <div style={{ minHeight: "100vh", fontFamily: TOKENS.fonts.primary, background: TOKENS.colors.bg, color: TOKENS.colors.text, display: "flex", flexDirection: "column", position: "relative", overflow: "hidden" }}>
+    <div style={{ minHeight: "100vh", fontFamily: TOKENS.fonts.primary, background: T.bg, color: T.text, display: "flex", flexDirection: "column", position: "relative", overflow: "hidden" }}>
       <PremiumBackground agent={agent} />
       <AmbientOrbs agent={agent} />
 
       {/* Chat Header */}
       <header style={{
         padding: "12px 16px", display: "flex", alignItems: "center", gap: 14,
-        background: "rgba(3,3,5,0.88)", backdropFilter: TOKENS.blur.xl,
+        background: T.headerBg, backdropFilter: TOKENS.blur.xl,
         borderBottom: "1px solid rgba(124,58,237,0.1)",
         position: "sticky", top: 0, zIndex: 20,
       }}>
         <button onClick={() => { setScreen("home"); stopSpeech(); }}
           style={{
-            background: "none", border: "none", color: TOKENS.colors.textMuted,
+            background: "none", border: "none", color: T.textMuted,
             fontSize: 22, cursor: "pointer", padding: "6px 10px",
             borderRadius: TOKENS.radii.md, transition: TOKENS.transitions.fast,
           }}
@@ -1873,16 +1969,16 @@ export default function SahayakPremium() {
           }} />
           <div style={{
             position: "absolute", bottom: 0, right: 0, width: 12, height: 12,
-            borderRadius: "50%", background: TOKENS.colors.success,
+            borderRadius: "50%", background: T.success,
             border: `2px solid ${TOKENS.colors.bg}`, zIndex: 2,
-            boxShadow: `0 0 10px ${TOKENS.colors.success}`,
+            boxShadow: `0 0 10px ${T.success}`,
           }} />
         </div>
 
         <div style={{ flex: 1 }}>
-          <div style={{ fontWeight: 800, fontSize: 15, color: TOKENS.colors.text }}>{agent.name} {t.expert}</div>
-          <div style={{ fontSize: 11, color: TOKENS.colors.success, display: "flex", alignItems: "center", gap: 6, fontWeight: 600 }}>
-            <span style={{ width: 6, height: 6, borderRadius: "50%", background: TOKENS.colors.success, display: "inline-block", boxShadow: `0 0 8px ${TOKENS.colors.success}` }} />
+          <div style={{ fontWeight: 800, fontSize: 15, color: T.text }}>{agent.name} {t.expert}</div>
+          <div style={{ fontSize: 11, color: T.success, display: "flex", alignItems: "center", gap: 6, fontWeight: 600 }}>
+            <span style={{ width: 6, height: 6, borderRadius: "50%", background: T.success, display: "inline-block", boxShadow: `0 0 8px ${T.success}` }} />
             {t.online}
           </div>
         </div>
@@ -1891,7 +1987,7 @@ export default function SahayakPremium() {
           target="_blank" rel="noreferrer"
           style={{
             background: "linear-gradient(135deg, #25d366, #128c7e)", borderRadius: TOKENS.radii.lg,
-            padding: "10px 18px", fontSize: 12, color: "#fff", textDecoration: "none",
+            padding: "10px 18px", fontSize: 12, color: T.text, textDecoration: "none",
             fontWeight: 800, whiteSpace: "nowrap",
             boxShadow: "0 4px 20px rgba(37,211,102,0.35)",
             transition: TOKENS.transitions.fast,
@@ -1912,7 +2008,7 @@ export default function SahayakPremium() {
               style={{
                 background: agent.color+"08", border: "1px solid "+agent.color+"15",
                 borderRadius: TOKENS.radii.full, padding: "10px 18px",
-                color: TOKENS.colors.textMuted, cursor: "pointer", fontSize: 13,
+                color: T.textMuted, cursor: "pointer", fontSize: 13,
                 fontFamily: "inherit", transition: TOKENS.transitions.fast,
                 backdropFilter: TOKENS.blur.sm, fontWeight: 500,
                 animation: `fadeSlideUp 0.4s ${i * 0.1}s both`,
@@ -1978,7 +2074,7 @@ export default function SahayakPremium() {
                   background: isUser
                     ? `linear-gradient(135deg, ${agent.color}15, ${agent.color}05)`
                     : TOKENS.colors.surface,
-                  border: `1px solid ${isUser ? `${agent.color}35` : TOKENS.colors.border}`,
+                  border: `1px solid ${isUser ? `${agent.color}35` : T.border}`,
                   borderRadius: isUser ? "20px 20px 4px 20px" : "20px 20px 20px 4px",
                   padding: "16px 20px",
                   backdropFilter: TOKENS.blur.lg,
@@ -2008,7 +2104,7 @@ export default function SahayakPremium() {
                         border: `2px solid ${speaking === i ? agent.color : "rgba(124,58,237,0.1)"}`,
                         background: speaking === i
                           ? "linear-gradient(135deg, "+agent.color+"90, "+agent.color+"60)"
-                          : "rgba(255,255,255,0.03)",
+                          : T.cardBg,
                         color: speaking === i ? "#fff" : TOKENS.colors.textMuted,
                         fontSize: 12, fontWeight: 700, fontFamily: "inherit",
                         cursor: "pointer", transition: TOKENS.transitions.fast,
@@ -2022,7 +2118,7 @@ export default function SahayakPremium() {
                       }}
                       onMouseLeave={e => {
                         if (speaking !== i) {
-                          e.target.style.background = "rgba(255,255,255,0.03)";
+                          e.target.style.background = T.cardBg;
                           e.target.style.borderColor = "rgba(124,58,237,0.1)";
                         }
                       }}
@@ -2035,7 +2131,7 @@ export default function SahayakPremium() {
                       }}>{speaking === i ? "⏸" : "▶"}</span>
                       {speaking === i ? t.stop : t.listen}
                     </button>
-                    <span style={{ fontSize: 10, color: TOKENS.colors.textDim, opacity: 0.5 }}>
+                    <span style={{ fontSize: 10, color: T.textDim, opacity: 0.5 }}>
                       {msg.timestamp?.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true })}
                     </span>
                   </div>
@@ -2075,7 +2171,7 @@ export default function SahayakPremium() {
                 }}>{agent.icon}</div>
                 <div>
                   <div style={{ fontWeight: 800, fontSize: 15, color: agent.color }}>{t.callback}</div>
-                  <div style={{ fontSize: 11, color: TOKENS.colors.textDim, marginTop: 2 }}>{t.callbackSub}</div>
+                  <div style={{ fontSize: 11, color: T.textDim, marginTop: 2 }}>{t.callbackSub}</div>
                 </div>
               </div>
               <div style={{
@@ -2086,7 +2182,7 @@ export default function SahayakPremium() {
                 border: "1px solid rgba(16,185,129,0.12)",
               }}>
                 <span style={{ fontSize: 16 }}>🔒</span>
-                <span style={{ fontSize: 12, color: TOKENS.colors.success, fontWeight: 600 }}>{t.trustBadge}</span>
+                <span style={{ fontSize: 12, color: T.success, fontWeight: 600 }}>{t.trustBadge}</span>
               </div>
               <SmartLeadForm agent={agent} t={t} lang={lang} onSubmit={handleLeadSubmit} onSkip={() => { setShowLead(false); setLeadDismissed(true); }} />
             </div>
@@ -2099,45 +2195,7 @@ export default function SahayakPremium() {
       </div>
 
       {/* Solar Calculator */}
-      {agent.solar && (() => {
-        const [showCalc, setShowCalc_] = useState(false);
-        return (
-          <>
-            {/* 🧮 Floating Calculator Bubble */}
-            <div style={{
-              position: "fixed", bottom: 90, right: 16, zIndex: 50,
-              display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 10,
-            }}>
-              {showCalc && (
-                <div style={{
-                  background: "rgba(10,10,20,0.97)", border: "1px solid "+agent.color+"30",
-                  borderRadius: 18, padding: 16, width: 280,
-                  boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
-                  backdropFilter: "blur(20px)",
-                }}>
-                  <div style={{ display:"flex", justifyContent:"space-between", alignItems:"center", marginBottom:12 }}>
-                    <div style={{ fontWeight:800, fontSize:13, color:agent.color }}>☀️ {isH?"सोलर कैलकुलेटर":"Solar Calculator"}</div>
-                    <button onClick={()=>setShowCalc_(false)} style={{ background:"none", border:"none", color:"rgba(255,255,255,0.4)", cursor:"pointer", fontSize:18, padding:0 }}>×</button>
-                  </div>
-                  <PremiumSolarPanel lang={lang} onSend={(msg)=>{ send(msg); setShowCalc_(false); }} />
-                </div>
-              )}
-              <button onClick={()=>setShowCalc_(c=>!c)} style={{
-                width: 52, height: 52, borderRadius: "50%", border: "none",
-                background: showCalc ? "linear-gradient(135deg,"+agent.color+","+agent.color+"99)" : "rgba(10,10,20,0.9)",
-                color: showCalc ? "#fff" : agent.color,
-                fontSize: 22, cursor: "pointer",
-                boxShadow: "0 4px 20px "+agent.color+"40",
-                border: "1.5px solid "+agent.color+"50",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                transition: "all 0.25s",
-              }} title={isH?"सोलर कैलकुलेटर":"Solar Calculator"}>
-                🧮
-              </button>
-            </div>
-          </>
-        );
-      })()}
+      {agent.solar && <SolarCalcBubble agent={agent} lang={lang} isH={isH} onSend={send} />}
 
       {/* Input Area */}
       <div style={{
@@ -2201,7 +2259,7 @@ export default function SahayakPremium() {
               animation: isListening ? "voicePulse 0.8s ease-in-out infinite" : "none",
               borderRadius: TOKENS.radii.lg,
               padding: "12px 16px",
-              color: "#1a1a2e",
+              color: T.inputText,
               fontSize: 14,
               resize: "none",
               outline: "none",
@@ -2227,7 +2285,7 @@ export default function SahayakPremium() {
                 ? "1px solid rgba(99,102,241,0.5)"
                 : "1px solid rgba(124,58,237,0.1)",
               cursor: input.trim() && !loading ? "pointer" : "not-allowed",
-              color: "#fff",
+              color: T.text,
               display: "flex", alignItems: "center", justifyContent: "center",
               transition: TOKENS.transitions.fast,
               boxShadow: input.trim() && !loading
