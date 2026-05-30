@@ -181,8 +181,8 @@ const AGENTS = {
       starters:["UP में कितनी सब्सिडी मिलेगी?","3KW सोलर का खर्च?","EMI पर सोलर मिलेगा?"],
       description: "सोलर रूफटॉप विशेषज्ञ — PM सूर्य घर योजना के तहत सब्सिडी" },
     { id:"solarquote", icon:"🧾", name:"सोलर कोटेशन", tag:"MFINS Partner — मुफ्त कोटेशन पाएं", color:"#00b894", glow:"rgba(0,184,148,0.3)", grad:"135deg,#00b894,#00796b", iconBg:"rgba(0,184,148,0.1)", solarQuote:true,
-      starters:["मुफ्त कोटेशन चाहिए","अपना बिजली बिल बताएं","Ongrid vs Hybrid?"],
-      description:"HAANS Solar — MFINS Partner से सोलर कोटेशन" },
+      starters:["मुफ्त कोटेशन चाहिए"],
+      description:"HAANS Solar — MFINS Partner" },
   ],
   english: [
     { id:"life", icon:"🛡️", name:"Life Insurance", tag:"Secure your family's future", color:"#ef4444", glow:"rgba(239,68,68,0.35)", grad:"135deg,#ef4444,#991b1b", iconBg:"rgba(239,68,68,0.12)",
@@ -207,8 +207,8 @@ const AGENTS = {
       starters:["How much subsidy in UP?","Cost of 3KW solar?","Solar on EMI?"],
       description: "Solar Rooftop Expert — Subsidy under PM Surya Ghar scheme" },
     { id:"solarquote", icon:"🧾", name:"Solar Quotation", tag:"MFINS Partner — Free Quotation", color:"#00b894", glow:"rgba(0,184,148,0.3)", grad:"135deg,#00b894,#00796b", iconBg:"rgba(0,184,148,0.1)", solarQuote:true,
-      starters:["Get free solar quotation","Share your electricity bill","Ongrid vs Hybrid?"],
-      description:"HAANS Solar — MFINS Partner solar quotation" },
+      starters:["Get free solar quotation"],
+      description:"HAANS Solar — MFINS Partner" },
   ]
 };
 
@@ -569,6 +569,7 @@ function SmartLeadForm({ agent, t, lang = "hindi", onSubmit, onSkip }) {
   };
 
   if (step === "success") {
+    setTimeout(()=>{ onSkip&&onSkip(); }, 2000);
     return (
       <GlassCard style={{ padding: "24px", textAlign: "center", borderColor: "rgba(34,197,94,0.3)" }} glowColor={TOKENS.colors.success}>
         <div style={{ fontSize: 48, marginBottom: 16, animation: "bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55)" }}>🎉</div>
@@ -798,78 +799,48 @@ function PolicyPage({ lang, onBack }) {
         <div style={{ fontWeight:800, fontSize:16 }}>{"📋 "+s("नीति एवं प्रमाण-पत्र","Policy & Certificates")}</div>
       </div>
       <div style={{ flex:1, padding:"20px 16px", maxWidth:560, margin:"0 auto", width:"100%", boxSizing:"border-box", overflowY:"auto" }}>
-        <Section color="#4ade80" title={"🏢 "+s("कंपनी जानकारी","Company Info")}>
-          <Row label={s("कंपनी:","Company:")} val="HAANS Solar" />
-          <Row label={s("संस्थापक:","Founder:")} val="Ankit Singh" />
-          <Row label="GST:" val="09DIYPS3881N1ZT" />
-          <Row label="PAN:" val="DIYPS3881N" />
-          <Row label={s("पता:","Address:")} val="Nawanagar, Chouhattar Kalan, Balrampur UP 271208" />
-          <Row label="Email:" val="xsuvidha@gmail.com" />
-          <Row label={s("सोलर:","Solar:")} val="haans.solars@gmail.com" />
-          <Row label={s("फोन:","Phone:")} val="+91 8115776644" />
-        </Section>
-        <Section color="#60a5fa" title={"🛡️ VLE-IRDAI "+s("बीमा प्रमाण-पत्र","Insurance Certificate")}>
-          <Row label="ID:" val="CSC/VLEINS/UP/2025/452693" />
-          <Row label={s("नाम:","Name:")} val="Ankit Singh" />
-          <Row label="CSC ID:" val="324617760019" />
-          <Row label={s("जारी:","Issued:")} val="13 October 2025" />
-          <Row label={s("द्वारा:","By:")} val="CSC e-Governance Services India Ltd." />
-          <Badge color="#93c5fd">{s("✅ IRDAI अधिकृत बीमा एजेंट","✅ IRDAI Authorized Insurance Agent")}</Badge>
-        </Section>
-        <Section color="#f39c12" title={"☀️ MFINS Solar "+s("चैनल पार्टनर","Channel Partner")}>
-          <Row label={s("साझेदार:","Partner:")} val="MFINS Services Private Limited" />
-          <Row label={s("मान्यता:","As:")} val="Solar Channel Partner" />
-          <Row label={s("जारी:","Issued:")} val="26 August 2025" />
-          <Badge color="#fbbf24">{s("✅ MFINS द्वारा आधिकारिक Solar Channel Partner","✅ Official Solar Channel Partner by MFINS")}</Badge>
-        </Section>
-        <Section color="#fb923c" title={"📊 GST Suvidha Kendra "+s("फ्रेंचाइज़ी","Franchise")}>
-          <Row label={s("लाइसेंस:","License:")} val="GSTSK/2024/REGISTRATION/20240039824" />
-          <Row label={s("जारी:","Issued:")} val="03 October 2024" />
-          <Row label={s("वैध तक:","Valid Till:")} val="03 October 2049" />
-          <Row label={s("द्वारा:","By:")} val="Prologic Web Solutions Pvt. Ltd." />
-          <Badge color="#fdba74">{s("✅ GST Suvidha Kendra Franchisee — 2049 तक","✅ GST Suvidha Kendra Franchisee — Till 2049")}</Badge>
-        </Section>
-        <Section color="#a78bfa" title={"🔒 "+s("गोपनीयता नीति","Privacy Policy")}>
-          <p style={{fontSize:12,lineHeight:1.9,opacity:0.75}}>
-            {"• "+s("SAHAYAK केवल आपकी दी गई जानकारी एकत्र करता है।","SAHAYAK collects only information you provide.")}<br/>
-            {"• "+s("डेटा तीसरे पक्ष को नहीं बेचा जाता।","Data is never sold to third parties.")}<br/>
+        <div style={{ background:"rgba(74,222,128,0.06)", border:"1px solid rgba(74,222,128,0.2)", borderRadius:14, padding:16, marginBottom:12 }}>
+          <div style={{ fontWeight:800, fontSize:13, color:"#4ade80", marginBottom:8 }}>{"🏢 "+s("कंपनी जानकारी","Company Information")}</div>
+          <div style={{ fontSize:12.5, lineHeight:2, opacity:0.85 }}>
+            <div><strong style={{color:"#fff"}}>{s("कंपनी:","Company:")}</strong>{" HAANS Solar®"}</div>
+            <div><strong style={{color:"#fff"}}>{s("संस्थापक:","Founder:")}</strong>{" Ankit Singh"}</div>
+            <div><strong style={{color:"#fff"}}>{"GST:"}</strong>{" 09DIYPS3881N1ZT"}</div>
+            <div><strong style={{color:"#fff"}}>{"PAN:"}</strong>{" DIYPS3881N"}</div>
+            <div><strong style={{color:"#fff"}}>{s("पता:","Address:")}</strong>{" Nawanagar, Chouhattar Kalan, Balrampur UP 271208"}</div>
+            <div><strong style={{color:"#fff"}}>{"Email:"}</strong>{" xsuvidha@gmail.com | haans.solars@gmail.com"}</div>
+            <div><strong style={{color:"#fff"}}>{s("फोन:","Phone:")}</strong>{" +91 8115776644"}</div>
+          </div>
+        </div>
+        {[
+          {color:"#60a5fa", icon:"🛡️", title:s("VLE-IRDAI बीमा प्रमाण-पत्र","VLE-IRDAI Insurance Certificate"), items:["ID: CSC/VLEINS/UP/2025/452693",s("नाम:","Name:")+" Ankit Singh","CSC ID: 324617760019",s("जारी:","Issued:")+" 13 October 2025",s("द्वारा:","By:")+" CSC e-Governance Services India Ltd."], badge:s("✅ IRDAI अधिकृत बीमा एजेंट","✅ IRDAI Authorized Insurance Agent")},
+          {color:"#f39c12", icon:"☀️", title:s("MFINS Solar चैनल पार्टनर","MFINS Solar Channel Partner"), items:[s("साझेदार:","Partner:")+" MFINS Services Private Limited",s("मान्यता:","As:")+" Solar Channel Partner",s("जारी:","Issued:")+" 26 August 2025"], badge:s("✅ MFINS Official Solar Channel Partner","✅ MFINS Official Solar Channel Partner")},
+          {color:"#fb923c", icon:"📊", title:s("GST Suvidha Kendra फ्रेंचाइज़ी","GST Suvidha Kendra Franchise"), items:["License: GSTSK/2024/REGISTRATION/20240039824",s("जारी:","Issued:")+" 03 October 2024",s("वैध तक:","Valid Till:")+" 03 October 2049",s("द्वारा:","By:")+" Prologic Web Solutions Pvt. Ltd."], badge:s("✅ Franchisee Partner — 2049 तक वैध","✅ Franchisee Partner — Valid till 2049")},
+        ].map((cert, i) => (
+          <div key={i} style={{ background:cert.color+"0f", border:"1px solid "+cert.color+"30", borderRadius:14, padding:14, marginBottom:12 }}>
+            <div style={{ fontWeight:800, fontSize:13, color:cert.color, marginBottom:8 }}>{cert.icon+" "+cert.title}</div>
+            {cert.items.map((item,j) => <div key={j} style={{ fontSize:12, opacity:0.8, lineHeight:1.9 }}>{item}</div>)}
+            <div style={{ marginTop:8, padding:"5px 10px", borderRadius:8, background:cert.color+"18", fontSize:11, color:cert.color }}>{cert.badge}</div>
+          </div>
+        ))}
+        <div style={{ background:"rgba(167,139,250,0.06)", border:"1px solid rgba(167,139,250,0.15)", borderRadius:14, padding:14, marginBottom:12 }}>
+          <div style={{ fontWeight:800, fontSize:13, color:"#a78bfa", marginBottom:8 }}>{"🔒 "+s("गोपनीयता नीति","Privacy Policy")}</div>
+          <div style={{ fontSize:12, lineHeight:1.9, opacity:0.75 }}>
+            {"• "+s("SAHAYAK केवल आपकी दी गई जानकारी एकत्र करता है।","SAHAYAK collects only information you voluntarily provide.")}<br/>
+            {"• "+s("डेटा तीसरे पक्ष को नहीं बेचा जाता।","Your data is never sold to third parties.")}<br/>
             {"• "+s("AI चैट इतिहास संग्रहीत नहीं होता।","AI chat history is not stored.")}<br/>
             {"• "+s("WhatsApp लीड HAANS Solar टीम को जाती है।","WhatsApp leads go to HAANS Solar team only.")}
-          </p>
-        </Section>
-        <Section color="#f87171" title={"📜 "+s("नियम एवं अस्वीकरण","Terms & Disclaimer")}>
-          <p style={{fontSize:12,lineHeight:1.9,opacity:0.75}}>
-            {"• "+s("SAHAYAK AI सूचना सेवा है — कानूनी सलाह नहीं।","SAHAYAK is AI info service — not legal advice.")}<br/>
+          </div>
+        </div>
+        <div style={{ background:"rgba(231,76,60,0.05)", border:"1px solid rgba(231,76,60,0.15)", borderRadius:14, padding:14, marginBottom:20 }}>
+          <div style={{ fontWeight:800, fontSize:13, color:"#f87171", marginBottom:8 }}>{"📜 "+s("नियम एवं अस्वीकरण","Terms & Disclaimer")}</div>
+          <div style={{ fontSize:12, lineHeight:1.9, opacity:0.75 }}>
+            {"• "+s("SAHAYAK एक AI सूचना सेवा है — कानूनी सलाह नहीं।","SAHAYAK is AI info service — not legal/financial advice.")}<br/>
             {"• "+s("सब्सिडी सरकारी नीतियों पर निर्भर है।","Subsidy depends on government policies.")}<br/>
             {"• "+s("सेवा उपयोग = इन नियमों से सहमति।","Using this service means agreement to these terms.")}
-          </p>
-        </Section>
-        <div style={{textAlign:"center",fontSize:10,opacity:0.2,marginBottom:20}}>
-          {"HAANS Solar 2026 • GST: 09DIYPS3881N1ZT"}
+          </div>
         </div>
+        <div style={{textAlign:"center",fontSize:10,opacity:0.2,marginBottom:20}}>{"HAANS Solar® 2026 • GST: 09DIYPS3881N1ZT"}</div>
       </div>
-    </div>
-  );
-}
-function Section({ color, title, children }) {
-  return (
-    <div style={{ background:color+"0f", border:"1px solid "+color+"30", borderRadius:14, padding:14, marginBottom:12 }}>
-      <div style={{ fontWeight:800, fontSize:13, color:color, marginBottom:8 }}>{title}</div>
-      {children}
-    </div>
-  );
-}
-function Row({ label, val }) {
-  return (
-    <div style={{ fontSize:12.5, lineHeight:1.9, opacity:0.82 }}>
-      <strong style={{color:"#fff"}}>{label}</strong>{" "+val}
-    </div>
-  );
-}
-function Badge({ color, children }) {
-  return (
-    <div style={{ marginTop:6, padding:"5px 10px", borderRadius:8, background:color+"18", fontSize:11, color:color }}>
-      {children}
     </div>
   );
 }
@@ -881,38 +852,83 @@ function SolarQuoteForm({ lang, onSubmit, onSkip }) {
   const [city, setCity] = useState("");
   const [sys, setSys] = useState("ongrid");
   const [units, setUnits] = useState("");
-  const ready = name.trim() && phone.length===10 && city.trim() && units.trim();
+  const [bill, setBill] = useState("");
+  const [roof, setRoof] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+
+  const ready = name.trim() && phone.length === 10 && city.trim() && units.trim();
+
   const submit = () => {
     if (!ready) return;
-    const sl = isH ? (sys==="ongrid"?"ऑनग्रिड":"हाइब्रिड") : (sys==="ongrid"?"On-Grid":"Hybrid");
-    const msg = "Solar Quotation Request%0AName: "+name+"%0AMobile: +91"+phone+"%0ACity: "+city+"%0ASystem: "+sl+"%0AUnits: "+units+"%0AFrom SAHAYAK App";
-    window.open("https://wa.me/918115776644?text="+msg, "_blank");
-    onSubmit(name);
+    const sl = isH ? (sys==="ongrid"?"ऑनग्रिड (Grid-Tied)":"हाइब्रिड (Battery Backup)") : (sys==="ongrid"?"On-Grid (Grid-Tied)":"Hybrid (Battery Backup)");
+    const msg = (isH?"🌞 *सोलर कोटेशन अनुरोध — SAHAYAK App*":"🌞 *Solar Quotation Request — SAHAYAK App*")
+      +"%0A%0A"+(isH?"*नाम:* ":"*Name:* ")+name
+      +"%0A"+(isH?"*मोबाइल:* ":"*Mobile:* ")+"+91"+phone
+      +"%0A"+(isH?"*शहर:* ":"*City:* ")+city
+      +"%0A"+(isH?"*सिस्टम:* ":"*System:* ")+sl
+      +"%0A"+(isH?"*मासिक खपत:* ":"*Monthly Units:* ")+units+(isH?" यूनिट":" Units")
+      +(bill?"%0A"+(isH?"*बिजली बिल:* ₹":"*Bill:* ₹")+bill+(isH?"/माह":"/month"):"")
+      +(roof?"%0A"+(isH?"*छत:* ":"*Roof:* ")+roof+" sq.ft":"")
+      +"%0A%0A"+(isH?"कृपया कोटेशन भेजें। धन्यवाद!":"Please send quotation. Thank you!");
+    window.open("https://wa.me/918115776644?text="+msg,"_blank");
+    setSubmitted(true);
+    setTimeout(()=>{ onSubmit&&onSubmit(name); }, 2000);
   };
-  const inp = { width:"100%", padding:"10px 13px", borderRadius:11, border:"1px solid rgba(0,184,148,0.35)", background:"rgba(0,184,148,0.06)", color:"#fff", fontSize:13, outline:"none", fontFamily:"inherit", boxSizing:"border-box", marginBottom:10 };
+
+  if (submitted) return (
+    <div style={{textAlign:"center",padding:"40px 20px",borderRadius:18,background:"rgba(0,184,148,0.08)",border:"1px solid rgba(0,184,148,0.3)"}}>
+      <div style={{fontSize:56,marginBottom:12}}>🎉</div>
+      <div style={{fontWeight:800,fontSize:18,color:"#00b894",marginBottom:8}}>{isH?"कोटेशन अनुरोध भेजा गया!":"Quotation Request Sent!"}</div>
+      <div style={{fontSize:13,opacity:0.6,lineHeight:1.8}}>{isH?"HAANS Solar® टीम जल्द WhatsApp पर संपर्क करेगी।":"HAANS Solar® team will contact you on WhatsApp soon."}</div>
+      <div style={{fontSize:11,opacity:0.35,marginTop:12}}>+91 8115776644</div>
+    </div>
+  );
+
+  const inp = {width:"100%",padding:"11px 14px",borderRadius:12,border:"1px solid rgba(0,184,148,0.3)",background:"rgba(0,184,148,0.05)",color:"#fff",fontSize:14,outline:"none",fontFamily:"inherit",boxSizing:"border-box",marginBottom:12};
+
   return (
-    <div style={{ margin:"6px 0", borderRadius:18, background:"rgba(0,184,148,0.08)", border:"1px solid rgba(0,184,148,0.3)", padding:16 }}>
-      <div style={{ fontWeight:800, fontSize:14, color:"#00b894", marginBottom:4 }}>{"🧾 "+(isH?"मुफ्त सोलर कोटेशन!":"Free Solar Quotation!")}</div>
-      <div style={{ fontSize:11, opacity:0.5, marginBottom:12 }}>{"HAANS Solar — MFINS Partner"}</div>
-      <input placeholder={isH?"आपका नाम *":"Your Name *"} value={name} onChange={e=>setName(e.target.value)} style={inp}/>
-      <input placeholder={isH?"मोबाइल * (10 अंक)":"Mobile * (10 digits)"} value={phone} onChange={e=>setPhone(e.target.value.replace(/\D/,"").slice(0,10))} type="tel" style={inp}/>
-      <input placeholder={isH?"शहर *":"City *"} value={city} onChange={e=>setCity(e.target.value)} style={inp}/>
-      <div style={{ display:"flex", gap:8, marginBottom:10 }}>
-        {[{v:"ongrid",hi:"⚡ ऑनग्रिड",en:"⚡ On-Grid"},{v:"hybrid",hi:"🔋 हाइब्रिड",en:"🔋 Hybrid"}].map(o=>(
-          <button key={o.v} onClick={()=>setSys(o.v)} style={{ flex:1, padding:"9px 0", borderRadius:10, border:"none", fontFamily:"inherit", background:sys===o.v?"linear-gradient(135deg,#00b894,#00796b)":"rgba(255,255,255,0.06)", color:"#fff", fontWeight:700, fontSize:13, cursor:"pointer" }}>
-            {isH?o.hi:o.en}
+    <div style={{display:"flex",flexDirection:"column",gap:0}}>
+      <div style={{fontSize:11,color:"rgba(0,184,148,0.7)",marginBottom:14,letterSpacing:0.5}}>{"* "+(isH?"अनिवार्य जानकारी":"Required fields")}</div>
+
+      <label style={{fontSize:12,color:"#00b894",marginBottom:4,display:"block"}}>{isH?"आपका नाम *":"Full Name *"}</label>
+      <input placeholder={isH?"जैसे: Rahul Sharma":"e.g. Rahul Sharma"} value={name} onChange={e=>setName(e.target.value)} style={inp}/>
+
+      <label style={{fontSize:12,color:"#00b894",marginBottom:4,display:"block"}}>{isH?"मोबाइल नंबर * (10 अंक)":"Mobile Number * (10 digits)"}</label>
+      <input placeholder={isH?"जैसे: 9876543210":"e.g. 9876543210"} value={phone} onChange={e=>setPhone(e.target.value.replace(/\D/,"").slice(0,10))} type="tel" style={inp}/>
+
+      <label style={{fontSize:12,color:"#00b894",marginBottom:4,display:"block"}}>{isH?"शहर / जिला *":"City / District *"}</label>
+      <input placeholder={isH?"जैसे: Balrampur, Lucknow":"e.g. Balrampur, Lucknow"} value={city} onChange={e=>setCity(e.target.value)} style={inp}/>
+
+      <label style={{fontSize:12,color:"#00b894",marginBottom:8,display:"block"}}>{isH?"सिस्टम प्रकार *":"System Type *"}</label>
+      <div style={{display:"flex",gap:10,marginBottom:12}}>
+        {[{v:"ongrid",hi:"⚡ ऑनग्रिड",en:"⚡ On-Grid",shi:isH?"Net Metering":"Net Metering"},{v:"hybrid",hi:"🔋 हाइब्रिड",en:"🔋 Hybrid",shi:isH?"Battery Backup":"Battery Backup"}].map(o=>(
+          <button key={o.v} onClick={()=>setSys(o.v)} style={{flex:1,padding:"10px 8px",borderRadius:12,border:"none",background:sys===o.v?"linear-gradient(135deg,#00b894,#00796b)":"rgba(255,255,255,0.05)",color:"#fff",fontWeight:700,fontSize:13,cursor:"pointer",fontFamily:"inherit",boxShadow:sys===o.v?"0 4px 16px rgba(0,184,148,0.4)":"none",transition:"all 0.2s"}}>
+            <div>{isH?o.hi:o.en}</div>
+            <div style={{fontSize:9.5,opacity:0.7,marginTop:3,fontWeight:400}}>{o.shi}</div>
           </button>
         ))}
       </div>
-      <input placeholder={isH?"मासिक खपत (यूनिट) * जैसे: 300":"Monthly Units * e.g. 300"} value={units} onChange={e=>setUnits(e.target.value.replace(/\D/,""))} type="tel" style={inp}/>
-      <div style={{ display:"flex", gap:8 }}>
-        <button onClick={submit} disabled={!ready} style={{ flex:1, padding:"12px 0", borderRadius:12, border:"none", background:ready?"linear-gradient(135deg,#00b894,#00796b)":"rgba(255,255,255,0.07)", color:"#fff", fontWeight:800, fontSize:13, cursor:ready?"pointer":"not-allowed", fontFamily:"inherit" }}>
-          {"📱 "+(isH?"WhatsApp पर कोटेशन मांगें":"Request Quote on WhatsApp")}
-        </button>
-        <button onClick={onSkip} style={{ padding:"12px 14px", borderRadius:12, border:"1px solid rgba(255,255,255,0.1)", background:"transparent", color:"rgba(255,255,255,0.4)", cursor:"pointer", fontSize:12, fontFamily:"inherit" }}>
-          {isH?"बाद में":"Later"}
-        </button>
+
+      <label style={{fontSize:12,color:"#00b894",marginBottom:4,display:"block"}}>{isH?"औसत मासिक खपत (यूनिट) *":"Avg Monthly Units *"}</label>
+      <input placeholder={isH?"जैसे: 300 यूनिट/माह":"e.g. 300 units/month"} value={units} onChange={e=>setUnits(e.target.value.replace(/\D/,""))} type="tel" style={inp}/>
+
+      <label style={{fontSize:12,color:"rgba(0,184,148,0.55)",marginBottom:4,display:"block"}}>{isH?"मौजूदा बिजली बिल ₹/माह (वैकल्पिक)":"Current Bill ₹/month (Optional)"}</label>
+      <input placeholder={isH?"जैसे: 2500":"e.g. 2500"} value={bill} onChange={e=>setBill(e.target.value.replace(/\D/,""))} type="tel" style={{...inp,border:"1px solid rgba(0,184,148,0.15)"}}/>
+
+      <label style={{fontSize:12,color:"rgba(0,184,148,0.55)",marginBottom:4,display:"block"}}>{isH?"छत का क्षेत्रफल वर्ग फुट (वैकल्पिक)":"Roof Area sq.ft (Optional)"}</label>
+      <input placeholder={isH?"जैसे: 500 sq.ft":"e.g. 500 sq.ft"} value={roof} onChange={e=>setRoof(e.target.value)} style={{...inp,border:"1px solid rgba(0,184,148,0.15)"}}/>
+
+      <div style={{background:"rgba(0,184,148,0.06)",border:"1px solid rgba(0,184,148,0.15)",borderRadius:12,padding:"10px 14px",marginBottom:16,fontSize:12,lineHeight:1.9,opacity:0.85}}>
+        {"✅ HAANS Solar® — MFINS Certified Partner
+☀️ PM Surya Ghar Authorized Vendor
+⚡ UP में ₹1,08,000 तक सब्सिडी
+📞 24 घंटे में कोटेशन"}
       </div>
+
+      <button onClick={submit} disabled={!ready} style={{width:"100%",padding:"14px 0",borderRadius:14,border:"none",background:ready?"linear-gradient(135deg,#00b894,#00796b)":"rgba(255,255,255,0.07)",color:"#fff",fontWeight:800,fontSize:15,cursor:ready?"pointer":"not-allowed",fontFamily:"inherit",boxShadow:ready?"0 6px 24px rgba(0,184,148,0.5)":"none",transition:"all 0.2s"}}>
+        {"📱 "+(isH?"WhatsApp पर कोटेशन मांगें":"Request Quote on WhatsApp")}
+      </button>
+      {!ready&&<div style={{textAlign:"center",fontSize:11,opacity:0.35,marginTop:8}}>{isH?"* अनिवार्य जानकारी भरें":"* Fill required fields"}</div>}
     </div>
   );
 }
@@ -969,6 +985,7 @@ export default function SahayakPremium() {
     stopSpeech();
     setAgent(ag);
     setShowLead(false);
+    if (ag.solarQuote) { setScreen("solarquote"); return; }
     const greeting = userName
       ? (lang === "english"
         ? `${t.welcomeBack}, **${userName}**! 🙏\n\nI'm your **${ag.name} ${t.expert}** from SAHAYAK. ${t.readyToHelp} — completely **free**. ${t.pickQuestion}! 👇`
@@ -1114,7 +1131,7 @@ export default function SahayakPremium() {
   // ABOUT SCREEN — Premium Profile Page
   // ═══════════════════════════════════════════════════════════
   if (screen === "policy") return (
-    <PolicyPage lang={lang} onBack={() => setScreen("home")} />
+    <PolicyPage lang={lang} onBack={()=>setScreen("home")} />
   );
 
   if (screen === "about") return (
@@ -1186,6 +1203,28 @@ export default function SahayakPremium() {
     </div>
   );
 
+  // Solar Quotation Screen
+  if (screen === "solarquote") return (
+    <div style={{minHeight:"100vh",fontFamily:"'Noto Sans Devanagari','Segoe UI',sans-serif",background:"#05050a",color:"#fff",display:"flex",flexDirection:"column",backgroundImage:"radial-gradient(ellipse 70% 40% at 50% 0%,rgba(0,184,148,0.15),transparent 60%)"}}>
+      <div style={{padding:"12px 16px",display:"flex",alignItems:"center",gap:10,background:"rgba(5,5,10,0.9)",backdropFilter:"blur(16px)",borderBottom:"1px solid rgba(0,184,148,0.15)",position:"sticky",top:0,zIndex:10}}>
+        <button onClick={()=>setScreen("home")} style={{background:"none",border:"none",color:"rgba(255,255,255,0.5)",fontSize:22,cursor:"pointer",padding:0}}>{"<"}</button>
+        <div style={{fontSize:24}}>🧾</div>
+        <div style={{flex:1}}>
+          <div style={{fontWeight:800,fontSize:14}}>{isH?"सोलर कोटेशन — MFINS Partner":"Solar Quotation — MFINS Partner"}</div>
+          <div style={{fontSize:10,color:"#00b894",marginTop:1}}>{isH?"मुफ्त कोटेशन • HAANS Solar®":"Free Quote • HAANS Solar®"}</div>
+        </div>
+      </div>
+      <div style={{flex:1,padding:"20px 16px",maxWidth:520,margin:"0 auto",width:"100%",boxSizing:"border-box",overflowY:"auto"}}>
+        <div style={{textAlign:"center",marginBottom:24}}>
+          <div style={{fontSize:48,marginBottom:8}}>☀️</div>
+          <div style={{fontWeight:900,fontSize:20,color:"#00b894",marginBottom:6}}>{isH?"मुफ्त सोलर कोटेशन पाएं":"Get Free Solar Quotation"}</div>
+          <div style={{fontSize:12,opacity:0.45,lineHeight:1.7}}>{isH?"HAANS Solar® | MFINS Channel Partner\nUP में ₹1,08,000 तक सब्सिडी":"HAANS Solar® | MFINS Channel Partner\nUP Subsidy upto ₹1,08,000"}</div>
+        </div>
+        <SolarQuoteForm lang={lang} onSubmit={()=>{ setTimeout(()=>setScreen("home"),500); }} onSkip={()=>setScreen("home")}/>
+      </div>
+    </div>
+  );
+
   // ═══════════════════════════════════════════════════════════
   // HOME SCREEN — Cinematic Entrance Experience
   // ═══════════════════════════════════════════════════════════
@@ -1229,6 +1268,11 @@ export default function SahayakPremium() {
             onMouseEnter={e => { e.currentTarget.style.background = "rgba(124,58,237,0.2)"; e.currentTarget.style.transform = "scale(1.1)"; }}
             onMouseLeave={e => { e.currentTarget.style.background = "rgba(124,58,237,0.1)"; e.currentTarget.style.transform = "scale(1)"; }}
           >ℹ️</button>
+          <a href="https://instagram.com/singh.ankit07" target="_blank" rel="noreferrer"
+            style={{ width: 40, height: 40, borderRadius: TOKENS.radii.lg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, textDecoration: "none", background: "linear-gradient(135deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)", boxShadow: "0 2px 10px rgba(220,39,67,0.35)", transition: TOKENS.transitions.fast }}
+            onMouseEnter={e => { e.currentTarget.style.transform = "scale(1.1)"; e.currentTarget.style.boxShadow = "0 4px 16px rgba(220,39,67,0.5)"; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = "scale(1)"; e.currentTarget.style.boxShadow = "0 2px 10px rgba(220,39,67,0.35)"; }}
+          >📸</a>
           <div style={{ display: "flex", background: TOKENS.colors.surface, borderRadius: TOKENS.radii.lg, padding: 3, border: "1px solid rgba(255,255,255,0.08)", backdropFilter: TOKENS.blur.sm }}>
             {["hindi", "english"].map((l, i) => (
               <button key={l} onClick={() => setLang(l)}
@@ -1420,9 +1464,7 @@ export default function SahayakPremium() {
           <span style={{ fontSize: 12, color: "#a78bfa", opacity: 0.7, fontWeight: 600 }}>
             🔒 {t.certified}
           </span>
-          <div style={{ marginTop: 10, fontSize: 11, opacity: 0.35, letterSpacing: 0.5 }}>
-            {"Powered by HAANS SOLAR®  •  GST: 09DIYPS3881N1ZT"}
-          </div>
+          <div style={{ marginTop:10, fontSize:11, opacity:0.3, letterSpacing:0.5 }}>{"Powered by HAANS SOLAR® • GST: 09DIYPS3881N1ZT"}</div>
         </div>
       </div>
 
@@ -1583,7 +1625,7 @@ export default function SahayakPremium() {
                 animation: `fadeSlideUp 0.4s ${i * 0.1}s both`,
               }}
               onMouseEnter={e => {
-                e.currentTarget.style.background = agent.color+"18";
+                e.currentTarget.style.background = `${agent.color}18`;
                 e.currentTarget.style.borderColor = agent.color+"40";
                 e.currentTarget.style.color = TOKENS.colors.text;
                 e.currentTarget.style.transform = "translateY(-2px)";
@@ -1711,10 +1753,8 @@ export default function SahayakPremium() {
         })}
 
         {/* Lead Form */}
-        {agent && agent.solarQuote && (
-          <SolarQuoteForm lang={lang} onSubmit={(n)=>{setMsgs(p=>[...p,{role:"assistant",content:isH?"धन्यवाद "+n+"! 🌞 कोटेशन HAANS Solar को भेजा।":"Thanks "+n+"! 🌞 Quote sent to HAANS Solar."}]);}} onSkip={()=>{}}/>
-        )}
-        {showLead && (
+        {agent&&agent.solarQuote&&(<SolarQuoteForm lang={lang} onSubmit={()=>{}} onSkip={()=>{}}/>)}
+        {showLead&&!agent?.solarQuote&&(
           <div style={{
             margin: "20px 0", borderRadius: TOKENS.radii.xxl,
             background: "linear-gradient(135deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%)",
