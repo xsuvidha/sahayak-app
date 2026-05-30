@@ -32,15 +32,38 @@ function getTodayDisplay() {
 // ── Fetch today's topic from Blog Calendar ──
 async function getTodayTopic(dateIST) {
   if (!AT_TOKEN || !AT_BASE) return null;
-  const url = `https://api.airtable.com/v0/${AT_BASE}/${encodeURIComponent(CAL_TABLE)}?filterByFormula={Date}='${dateIST}'&maxRecords=1`;
-  const res = await fetch(url, { headers: { "Authorization": `Bearer ${AT_TOKEN}` } });
-  if (!res.ok) return null;
-  const data = await res.json();
-  const record = data.records?.[0];
-  if (!record) return null;
+
+  // Strategy 1: Try to find topic matching today's date
+  const urlByDate = `https://api.airtable.com/v0/${AT_BASE}/${encodeURIComponent(CAL_TABLE)}?filterByFormula={Date}='${dateIST}'&maxRecords=1`;
+  const resByDate = await fetch(urlByDate, { headers: { "Authorization": `Bearer ${AT_TOKEN}` } });
+  
+  if (resByDate.ok) {
+    const dataByDate = await resByDate.json();
+    const byDate = dataByDate.records?.[0];
+    if (byDate?.fields?.["Topic"]) {
+      return {
+        id: byDate.id,
+        topic: byDate.fields["Topic"],
+        category: byDate.fields["Category"] || "Finance",
+        lang: byDate.fields["Language"] || "hindi",
+        keywords: byDate.fields["Keywords"] || "",
+        notes: byDate.fields["Notes"] || "",
+      };
+    }
+  }
+
+  // Strategy 2: Fallback — pick oldest "Scheduled" topic (no date needed)
+  const urlScheduled = `https://api.airtable.com/v0/${AT_BASE}/${encodeURIComponent(CAL_TABLE)}?filterByFormula={Status}='Scheduled'&maxRecords=1&sort[0][field]=Created Time&sort[0][direction]=asc`;
+  const resScheduled = await fetch(urlScheduled, { headers: { "Authorization": `Bearer ${AT_TOKEN}` } });
+
+  if (!resScheduled.ok) return null;
+  const dataScheduled = await resScheduled.json();
+  const record = dataScheduled.records?.[0];
+  if (!record?.fields?.["Topic"]) return null;
+
   return {
     id: record.id,
-    topic: record.fields["Topic"] || "",
+    topic: record.fields["Topic"],
     category: record.fields["Category"] || "Finance",
     lang: record.fields["Language"] || "hindi",
     keywords: record.fields["Keywords"] || "",
